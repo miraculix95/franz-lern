@@ -29,9 +29,11 @@ def correct_text(
     niveau: str,
     mentor: str,
     model: str,
+    ui_language_name: str = "English",
 ) -> str:
     messages = build_correction_prompt(
-        language=language, niveau=niveau, mentor=mentor, task=task, user_text=user_text,
+        language=language, niveau=niveau, mentor=mentor,
+        task=task, user_text=user_text, ui_language_name=ui_language_name,
     )
     response = client.chat.completions.create(model=model, messages=messages)
     return response.choices[0].message.content.strip()

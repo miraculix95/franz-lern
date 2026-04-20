@@ -326,6 +326,15 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str]:
         }
         st.caption(f"{t('key_source_label', ui_lang)}: {t(source_keys[source], ui_lang)}")
 
+        # Current vocabulary — always visible so the learner can see what's in play.
+        n_vocab = len(state.vocab_list)
+        expand = n_vocab > 0 and n_vocab <= 60
+        with st.expander(t("current_vocabs", ui_lang, n=n_vocab), expanded=expand):
+            if n_vocab == 0:
+                st.markdown(t("no_vocabs_yet", ui_lang))
+            else:
+                st.markdown("\n".join(f"- {w}" for w in sorted(state.vocab_list, key=str.lower)))
+
     state.file_path_extract_trigger = extract_files
     state.uploaded_vocab_file_trigger = uploaded_vocab
     state.url_extract_trigger = url_extract
@@ -352,7 +361,7 @@ def _handle_vocab_sources(
                 all_text, lang_en, level, number, model,
             )
             status.update(label=t("status_extracted_ok", ui_lang, n=len(state.vocab_list)), state="complete")
-        st.sidebar.write(sorted(state.vocab_list))
+        # Vocab list rendered by sidebar's "current vocabs" expander — no duplicate here.
         state.file_path_extract = extract_files
     elif url_extract and url_extract != state.html_path_extract:
         with st.status(t("status_load_url", ui_lang, url=url_extract), expanded=False) as status:
@@ -365,7 +374,6 @@ def _handle_vocab_sources(
                 label=t("status_extract_web_ok", ui_lang, n=len(state.vocab_list)),
                 state="complete",
             )
-        st.sidebar.write(sorted(state.vocab_list))
         state.html_path_extract = url_extract
     elif uploaded_vocab and uploaded_vocab != state.uploaded_vocab_file:
         content = uploaded_vocab.read().decode("utf-8")

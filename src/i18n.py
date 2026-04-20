@@ -173,6 +173,8 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "translation_direction": "Direction",
         "dir_to_learning": "→ into {learning} (produce)",
         "dir_to_native": "→ into {native} (understand)",
+        "current_vocabs": "📖 Current vocabulary ({n})",
+        "no_vocabs_yet": "_No vocabulary loaded yet._",
     },
     "de": {
         "app_title": "{language} — Lernprogramm",
@@ -247,6 +249,8 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "translation_direction": "Richtung",
         "dir_to_learning": "→ ins {learning} (produzieren)",
         "dir_to_native": "→ ins {native} (verstehen)",
+        "current_vocabs": "📖 Aktuelle Vokabeln ({n})",
+        "no_vocabs_yet": "_Noch keine Vokabeln geladen._",
     },
     "fr": {
         "app_title": "{language} — Tuteur de langue",
@@ -321,6 +325,8 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "translation_direction": "Direction",
         "dir_to_learning": "→ vers {learning} (produire)",
         "dir_to_native": "→ vers {native} (comprendre)",
+        "current_vocabs": "📖 Vocabulaire actuel ({n})",
+        "no_vocabs_yet": "_Aucun vocabulaire chargé._",
     },
     "es": {
         "app_title": "{language} — Tutor de idiomas",
@@ -395,6 +401,8 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "translation_direction": "Dirección",
         "dir_to_learning": "→ a {learning} (producir)",
         "dir_to_native": "→ a {native} (comprender)",
+        "current_vocabs": "📖 Vocabulario actual ({n})",
+        "no_vocabs_yet": "_Aún no se ha cargado vocabulario._",
     },
 }
 
