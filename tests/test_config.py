@@ -8,7 +8,6 @@ from src.config import (
     MODEL_TIERS,
     MODELS,
     NIVEAU_LEVELS,
-    RADIO_CHANNELS,
     THEMES,
     default_model_for_language,
 )
@@ -29,11 +28,6 @@ def test_default_model_is_in_models_list():
 
 def test_default_language_is_in_languages():
     assert DEFAULT_LANGUAGE in LANGUAGES
-
-
-def test_radio_channels_have_urls():
-    assert "France Info" in RADIO_CHANNELS
-    assert RADIO_CHANNELS["France Info"].startswith("http")
 
 
 def test_niveau_levels_spans_register_range():

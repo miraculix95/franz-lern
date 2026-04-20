@@ -36,10 +36,10 @@ and modernized as a portfolio piece — including the abandoned FastAPI port (se
 - **Ten mentor personas** — a single dropdown switches the voice of the corrector from
   Kind Teacher to Machiavelli to Chairman Mao to Elon Musk. It's a gimmick, but the
   stylistic contrast makes errors memorable. (![personas](docs/assets/02-coach-dropdown-open.png))
-- **Ten exercise types** from one shared vocabulary pool:
+- **Nine exercise types** from one shared vocabulary pool:
   writing, cloze, translation (both directions), sentence-building, error-detection,
-  synonym/antonym, verb conjugation, vocabulary quiz, **audio dictation with speed
-  slider**, and live French radio (local-only).
+  synonym/antonym, verb conjugation, vocabulary quiz, and **audio dictation with a
+  playback-speed slider**.
 - **Audio dictation (ElevenLabs)** — LLM writes a short text at the chosen CEFR level,
   ElevenLabs' Multilingual v2 speaks it, a speed slider (0.5×–1.5×) lets the learner
   replay at comprehension-pace. 36 scenarios × 6 styles injected so consecutive A1
@@ -90,7 +90,6 @@ src/
     ├── conjugation.py
     ├── quiz.py         # single-call batch translation
     ├── dictation.py    # ElevenLabs TTS + variety injection
-    └── radio.py        # stub (local audio only, see Roadmap)
 ```
 
 High-level flow: Streamlit UI → pure-function prompt builders →
@@ -112,7 +111,6 @@ test double — 76 tests run in ~100ms.
 | Verb conjugation              |  ❌  |    ✅     |   ✅   |                                         |
 | Vocabulary quiz               |  ❌  |    ✅     |   ✅   | Fuzzy matching, single-call batch       |
 | Audio dictation (ElevenLabs)  |  ❌  |    ✅     |   ✅   | Speed slider, word-by-word diff         |
-| Live French radio             |  ❌  |    ✅     |   ⚠️   | Local audio only (pyaudio)              |
 | Web-article vocab extraction  |  ❌  |    ✅     |   ✅   | newspaper3k                             |
 | Inline `<meta-comments>`      |  ✅  |    ✅     |   ✅   |                                         |
 
@@ -184,9 +182,10 @@ research/                                 (model/provider analysis)
 ## Roadmap
 
 - [ ] **V2: Next.js + BYOK web version** — Vercel-deployed, client-side only
-- [ ] **Radio transcription** — Whisper integration so the radio task produces a
-      transcript to answer questions against
-- [ ] **Mobile-responsive pass** — current Streamlit layout is desktop-optimized
+- [ ] **Live radio → Whisper dictation** — pull 30s of a French radio stream server-
+      side, pass through Whisper, present as a dictation-style exercise. Current
+      radio stub archived under `experiments/radio-task-archived/` because
+      `pyaudio`-based streaming doesn't work on headless deploys.
 - [ ] **Flutter shell over BYOK API** — stretch
 
 ## Lessons Learned

@@ -59,7 +59,6 @@ from src.tasks import sentence_building as sent_task  # noqa: E402
 from src.tasks import synonym_antonym as syn_task  # noqa: E402
 from src.tasks import translation as trans_task  # noqa: E402
 from src.tasks import writing as write_task  # noqa: E402
-from src.tasks.radio import RADIO_TASK_NAME, get_channels, is_audio_available  # noqa: E402
 from src.vocab import (  # noqa: E402
     extract_vocabulary_from_text,
     fetch_article_text,
@@ -712,8 +711,6 @@ def main() -> None:
 
     if task_key == "quiz":
         _render_quiz(client, lang_en, model, ui_lang, display_lang=language_display(language, ui_lang))
-    elif task_key == "radio":
-        _render_radio(ui_lang)
     elif task_key == "dictation":
         _render_dictation(client, lang_en, level, niveau, model, ui_lang)
     elif task_key:
@@ -868,16 +865,6 @@ def _render_dictation(
         if transcript.strip():
             orig = st.session_state["dictation_text"].strip()
             _render_dictation_diff(orig, transcript.strip())
-
-
-def _render_radio(ui_lang: str) -> None:
-    if not is_audio_available():
-        st.warning(t("radio_unavailable", ui_lang))
-        return
-    channels = get_channels()
-    channel = st.selectbox(t("radio_channel", ui_lang), list(channels.keys()))
-    st.info(t("radio_info", ui_lang))
-    st.code(channels[channel], language=None)
 
 
 if __name__ == "__main__":

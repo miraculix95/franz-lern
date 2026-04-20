@@ -40,7 +40,6 @@ TASK_KEYS: list[str] = [
     "synonym",
     "conjugation",
     "dictation",
-    "radio",
 ]
 
 
@@ -56,7 +55,6 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Synonyms and antonyms",
         "Verb conjugation",
         "Dictation (audio)",
-        "Listen to radio",
     ],
     "de": [
         "",
@@ -69,7 +67,6 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Synonyme und Antonyme",
         "Verb konjugieren",
         "Diktat (Audio)",
-        "Radio hören",
     ],
     "fr": [
         "",
@@ -82,7 +79,6 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Synonymes et antonymes",
         "Conjugaison des verbes",
         "Dictée (audio)",
-        "Écouter la radio",
     ],
     "es": [
         "",
@@ -95,7 +91,6 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Sinónimos y antónimos",
         "Conjugación de verbos",
         "Dictado (audio)",
-        "Escuchar la radio",
     ],
 }
 
@@ -159,9 +154,6 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "num_sentences": "Number of sentences",
         "error_no_key": "🔑 No API key. Enter your OpenRouter key in the sidebar.",
         "error_no_key_hint": "💡 Get one at https://openrouter.ai/keys — the key stays only in your session.",
-        "radio_unavailable": "🔇 Audio output not available (headless server). Radio task only works locally.",
-        "radio_channel": "📻 Channel",
-        "radio_info": "Streaming core in `src/tasks/radio.py`. Transcription is on the roadmap.",
         "quiz_new_btn": "🎲 New quiz",
         "quiz_evaluate_btn": "✅ Evaluate",
         "quiz_score": "🎯 Score",
@@ -250,9 +242,6 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "num_sentences": "Anzahl Sätze",
         "error_no_key": "🔑 Kein API-Key. Gib deinen OpenRouter-Key in der Sidebar ein.",
         "error_no_key_hint": "💡 Hol einen auf https://openrouter.ai/keys — der Key bleibt nur in deiner Session.",
-        "radio_unavailable": "🔇 Audio-Output nicht verfügbar (headless-Server). Radio-Task funktioniert nur lokal.",
-        "radio_channel": "📻 Kanal",
-        "radio_info": "Streaming-Kern in `src/tasks/radio.py`. Transkription folgt (Roadmap).",
         "quiz_new_btn": "🎲 Neues Quiz",
         "quiz_evaluate_btn": "✅ Auswerten",
         "quiz_score": "🎯 Score",
@@ -341,9 +330,6 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "num_sentences": "Nombre de phrases",
         "error_no_key": "🔑 Pas de clé API. Saisis ta clé OpenRouter dans la barre latérale.",
         "error_no_key_hint": "💡 Obtiens-en une sur https://openrouter.ai/keys — la clé reste dans ta session.",
-        "radio_unavailable": "🔇 Sortie audio indisponible (serveur headless). Exercice radio en local uniquement.",
-        "radio_channel": "📻 Chaîne",
-        "radio_info": "Moteur de streaming dans `src/tasks/radio.py`. Transcription à venir (roadmap).",
         "quiz_new_btn": "🎲 Nouveau quiz",
         "quiz_evaluate_btn": "✅ Évaluer",
         "quiz_score": "🎯 Score",
@@ -432,9 +418,6 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "num_sentences": "Número de frases",
         "error_no_key": "🔑 No hay clave API. Introduce tu clave OpenRouter en la barra lateral.",
         "error_no_key_hint": "💡 Consigue una en https://openrouter.ai/keys — la clave solo vive en tu sesión.",
-        "radio_unavailable": "🔇 Salida de audio no disponible (servidor headless). El ejercicio de radio solo funciona en local.",
-        "radio_channel": "📻 Canal",
-        "radio_info": "Motor de streaming en `src/tasks/radio.py`. Transcripción próximamente (roadmap).",
         "quiz_new_btn": "🎲 Nuevo quiz",
         "quiz_evaluate_btn": "✅ Evaluar",
         "quiz_score": "🎯 Puntuación",

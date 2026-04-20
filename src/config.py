@@ -89,7 +89,10 @@ MODEL_TIERS: dict[str, str] = {
 MODELS: list[str] = list(MODEL_TIERS.values())
 
 # Default picked by learning-language — cyrillic languages need UK-safe model.
-DEFAULT_MODEL: str = "google/gemini-2.5-flash-lite"
+# Default model tier: Claude Haiku 4.5 (Balanced) — best quality/cost across all
+# 5 learning languages including Ukrainian. Budget tier still one click away in
+# the sidebar for cost-conscious users.
+DEFAULT_MODEL: str = "anthropic/claude-haiku-4.5"
 DEFAULT_MODEL_UK: str = "anthropic/claude-haiku-4.5"
 
 DEFAULT_LANGUAGE: str = "französisch"
@@ -104,25 +107,5 @@ def default_model_for_language(language: str) -> str:
     if language.lower().startswith("ukrain"):
         return DEFAULT_MODEL_UK
     return DEFAULT_MODEL
-
-RADIO_CHANNELS: dict[str, str] = {
-    "France Info": "http://icecast.radiofrance.fr/franceinfo-midfi.mp3",
-    "France Inter": "http://icecast.radiofrance.fr/franceinter-midfi.mp3",
-    "France Culture": "http://icecast.radiofrance.fr/franceculture-midfi.mp3",
-    "BFM Radio": "https://audio.bfmtv.com/bfmradio_128.mp3",
-}
-
-TASK_LIST: list[str] = [
-    "",
-    "Schreiben eines Textes und danach Korrektur",
-    "Ausfüllen eines Lückentextes in Fremdsprache",
-    "Vorgabe von deutschen Sätzen zum Übersetzen",
-    "Vokabel-Quiz",
-    "Satzbauübung",
-    "Fehler im Text finden und korrigieren",
-    "Synonyme und Antonyme finden",
-    "Verbkonjugation üben",
-    "Radio hören und aufnehmen",
-]
 
 NO_ANSWERS_HINT: str = " Nenne nicht die Antworten. "
