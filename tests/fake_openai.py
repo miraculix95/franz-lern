@@ -38,7 +38,7 @@ class _Response:
 
 @dataclass
 class _CompletionsAPI:
-    parent: "FakeOpenAIClient"
+    parent: FakeOpenAIClient
 
     def create(self, **kwargs: Any) -> _Response:
         self.parent.calls.append(kwargs)
