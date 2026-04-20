@@ -1,0 +1,5 @@
+# Optional: only needed for the "Radio hören" task (local-only).
+# Requires portaudio system library:
+#   sudo apt-get install portaudio19-dev  (Debian/Ubuntu)
+#   brew install portaudio                (macOS)
+pyaudio>=0.2.14

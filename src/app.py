@@ -54,6 +54,103 @@ from src.vocab import (  # noqa: E402
 log = get_logger(__name__)
 
 
+_DARK_CSS = """
+<style>
+    /* Outer containers */
+    [data-testid="stAppViewContainer"],
+    [data-testid="stHeader"],
+    [data-testid="stApp"] {
+        background-color: #0F172A !important;
+        color: #E5E7EB !important;
+    }
+    [data-testid="stSidebar"],
+    [data-testid="stSidebarContent"],
+    [data-testid="stSidebarHeader"] {
+        background-color: #1E293B !important;
+    }
+
+    /* Text everywhere */
+    [data-testid="stSidebar"] *,
+    [data-testid="stAppViewContainer"] * {
+        color: #E5E7EB !important;
+    }
+    [data-testid="stMetricValue"],
+    [data-testid="stMetricLabel"] {
+        color: #E5E7EB !important;
+    }
+
+    /* Form controls — Streamlit's BaseWeb needs nested-div overrides */
+    [data-baseweb="select"] > div,
+    [data-baseweb="input"] > div,
+    [data-baseweb="textarea"] > div,
+    [data-baseweb="base-input"],
+    [data-testid="stTextInput"] input,
+    [data-testid="stTextArea"] textarea,
+    [data-testid="stNumberInput"] input {
+        background-color: #1E293B !important;
+        color: #E5E7EB !important;
+        border-color: #334155 !important;
+    }
+    /* Select dropdown menu */
+    [data-baseweb="popover"],
+    [data-baseweb="menu"],
+    [data-baseweb="list"] {
+        background-color: #1E293B !important;
+    }
+    [data-baseweb="list"] li {
+        color: #E5E7EB !important;
+    }
+    [data-baseweb="list"] li:hover {
+        background-color: #334155 !important;
+    }
+
+    /* Chat message + expander + status + alerts */
+    [data-testid="stChatMessage"] {
+        background-color: #1E293B !important;
+    }
+    [data-testid="stExpander"] {
+        background-color: #1E293B !important;
+        border: 1px solid #334155 !important;
+    }
+    [data-testid="stStatusWidget"],
+    [data-testid="stAlert"],
+    [data-testid="stNotification"] {
+        background-color: #1E293B !important;
+        color: #E5E7EB !important;
+    }
+
+    /* File uploader drop zone */
+    [data-testid="stFileUploaderDropzone"] {
+        background-color: #1E293B !important;
+        border: 1px dashed #334155 !important;
+    }
+
+    /* Buttons */
+    button[kind="primary"], button[kind="primaryFormSubmit"] {
+        background-color: #4F46E5 !important;
+        border-color: #4F46E5 !important;
+        color: #FFFFFF !important;
+    }
+    button[kind="secondary"], button:not([kind]) {
+        background-color: #334155 !important;
+        color: #E5E7EB !important;
+        border: 1px solid #475569 !important;
+    }
+
+    /* Misc */
+    hr { border-color: #334155 !important; }
+    code { background-color: #0F172A !important; color: #FCD34D !important; }
+    [data-testid="stToggle"] label { color: #E5E7EB !important; }
+</style>
+"""
+
+
+def _apply_theme() -> None:
+    """Inject dark-mode CSS if user toggled it."""
+    if st.session_state.get("dark_mode", False):
+        st.markdown(_DARK_CSS, unsafe_allow_html=True)
+
+
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="franz-lern Streamlit app")
     parser.add_argument("--language", default=DEFAULT_LANGUAGE)
@@ -111,6 +208,8 @@ def _render_sidebar(language: str) -> tuple[str, str, str, str]:
 
     with st.sidebar:
         st.markdown(f"### 🇫🇷 {language.capitalize()} lernen")
+
+        st.toggle("🌙 Dark Mode", value=st.session_state.get("dark_mode", False), key="dark_mode")
 
         with st.expander("👤 Coach & Stil", expanded=True):
             mentor = st.selectbox("Coach", MENTORS, index=0, key="mentor")
@@ -334,6 +433,7 @@ def main() -> None:
             setattr(state, attr, default)
 
     mentor, level, niveau, model = _render_sidebar(language)
+    _apply_theme()
     _render_header(language, mentor)
 
     key, source = _resolve_api_key()

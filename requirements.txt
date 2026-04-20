@@ -5,9 +5,13 @@ newspaper3k>=0.2.8
 lxml_html_clean>=0.1
 requests>=2.31
 prompt_toolkit>=3.0
-# Radio/Audio (local-only, optional)
-pyaudio>=0.2.14
+# Audio playback for the radio task (optional — requires portaudio system lib):
+#   Linux:  apt-get install portaudio19-dev
+#   macOS:  brew install portaudio
+#   pip:    see requirements-audio.txt
 pydub>=0.25
+# Python 3.13 removed stdlib `audioop` — pydub still imports it; this backport restores it:
+audioop-lts>=0.2; python_version >= "3.13"
 mutagen>=1.47
 # Dev/test
 pytest>=8.0

@@ -1,10 +1,13 @@
+# Default theme (light). User can toggle Light/Dark via the toolbar menu
+# (hamburger → Settings → Theme) or via the Sidebar toggle.
 [theme]
 primaryColor = "#4F46E5"
 backgroundColor = "#FFFFFF"
 secondaryBackgroundColor = "#F5F5F5"
 textColor = "#1F2937"
 font = "sans serif"
-base = "light"
 
 [client]
-toolbarMode = "minimal"
+# "viewer" shows the toolbar Settings menu (needed for native theme switch);
+# "minimal" hides it, "developer" shows dev-mode tools too.
+toolbarMode = "viewer"
