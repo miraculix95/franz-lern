@@ -18,12 +18,12 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.config import (  # noqa: E402
     DEFAULT_LANGUAGE,
-    DEFAULT_MODEL,
     LANGUAGES,
     LEVELS,
     MODELS,
     NIVEAU_LEVELS,
     THEMES,
+    default_model_for_language,
 )
 from src.correction import correct_text, extract_comments  # noqa: E402
 from src.tasks import cloze, translation, writing  # noqa: E402
@@ -37,7 +37,7 @@ def _parse_args() -> argparse.Namespace:
     p.add_argument("--level", default="B1")
     p.add_argument("--niveau", default="Standardsprache")
     p.add_argument("--mentor", default="Netter Lehrer")
-    p.add_argument("--model", default=DEFAULT_MODEL)
+    p.add_argument("--model", default=None, help="OpenRouter model-id; default picked by language")
     p.add_argument(
         "--task",
         default="writing",
@@ -50,18 +50,25 @@ def _parse_args() -> argparse.Namespace:
         p.error(f"--level must be one of {LEVELS}")
     if args.niveau not in NIVEAU_LEVELS:
         p.error(f"--niveau must be one of {NIVEAU_LEVELS}")
-    if args.model not in MODELS:
-        p.error(f"--model must be one of {MODELS}")
+    if args.model is None:
+        args.model = default_model_for_language(args.language)
+    elif args.model not in MODELS:
+        print(f"Warning: --model {args.model} not in preset tiers {MODELS} — using as-is (must be a valid OpenRouter id).")
     return args
 
 
 def main() -> None:
     args = _parse_args()
     load_dotenv(find_dotenv(usecwd=True))
-    api_key = os.environ.get("OPENAI_API_KEY")
-    if not api_key:
-        sys.exit("OPENAI_API_KEY fehlt. `.env` aus `.env.example` erstellen.")
-    client = openai.OpenAI(api_key=api_key)
+    or_key = os.environ.get("OPENROUTER_API_KEY")
+    oa_key = os.environ.get("OPENAI_API_KEY")
+    if or_key:
+        client = openai.OpenAI(api_key=or_key, base_url="https://openrouter.ai/api/v1")
+    elif oa_key:
+        print("Warning: no OPENROUTER_API_KEY — falling back to direct OpenAI. Set OPENROUTER_API_KEY for tier dropdown.")
+        client = openai.OpenAI(api_key=oa_key)
+    else:
+        sys.exit("Neither OPENROUTER_API_KEY nor OPENAI_API_KEY found in .env")
 
     vocab = load_vocabulary(args.vocab_file)
     print(f"Loaded {len(vocab)} vocabulary items from {args.vocab_file}")

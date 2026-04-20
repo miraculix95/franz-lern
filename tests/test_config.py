@@ -1,13 +1,16 @@
 from src.config import (
     DEFAULT_LANGUAGE,
     DEFAULT_MODEL,
+    DEFAULT_MODEL_UK,
     LANGUAGES,
     LEVELS,
     MENTORS,
+    MODEL_TIERS,
     MODELS,
     NIVEAU_LEVELS,
     RADIO_CHANNELS,
     THEMES,
+    default_model_for_language,
 )
 
 
@@ -49,3 +52,20 @@ def test_themes_list_not_empty():
 def test_no_deprecated_models():
     # gpt-4-0613 was retired; anything hardcoded to it would break silently.
     assert "gpt-4-0613" not in MODELS
+
+
+def test_model_tiers_point_to_valid_openrouter_ids():
+    # OpenRouter IDs always have provider/model shape
+    for tier, model_id in MODEL_TIERS.items():
+        assert "/" in model_id, f"{tier}: {model_id} missing provider prefix"
+
+
+def test_default_model_uk_differs_from_default():
+    # Ukrainian needs a bigger model — defaults must differ.
+    assert DEFAULT_MODEL != DEFAULT_MODEL_UK
+
+
+def test_default_model_for_language_swaps_on_ukrainian():
+    assert default_model_for_language("französisch") == DEFAULT_MODEL
+    assert default_model_for_language("ukrainisch") == DEFAULT_MODEL_UK
+    assert default_model_for_language("englisch") == DEFAULT_MODEL

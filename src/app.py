@@ -20,14 +20,14 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.config import (  # noqa: E402
     DEFAULT_LANGUAGE,
-    DEFAULT_MODEL,
     LANGUAGES,
     LEVELS,
     MENTORS,
-    MODELS,
+    MODEL_TIERS,
     NIVEAU_LEVELS,
     TASK_LIST,
     THEMES,
+    default_model_for_language,
 )
 from src.correction import answer_comment, correct_text, extract_comments  # noqa: E402
 from src.logging_setup import get_logger  # noqa: E402
@@ -57,45 +57,68 @@ def _parse_args() -> argparse.Namespace:
     and crashed as soon as Streamlit forwarded its own ``--server.*`` flags.
     """
     parser = argparse.ArgumentParser(description="franz-lern Streamlit app")
-    parser.add_argument("--model", default=DEFAULT_MODEL, help="OpenAI model to use")
     parser.add_argument("--language", default=DEFAULT_LANGUAGE, help="Language to learn")
     args, _unknown = parser.parse_known_args()
-    if args.model not in MODELS:
-        args.model = DEFAULT_MODEL
     if args.language not in LANGUAGES:
         args.language = DEFAULT_LANGUAGE
     return args
 
 
-def _ensure_openai_client() -> openai.OpenAI:
+def _ensure_openrouter_client() -> openai.OpenAI:
+    """OpenRouter client (OpenAI-SDK-compatible).
+
+    Falls back to OPENAI_API_KEY + OpenAI endpoint if no OPENROUTER_API_KEY
+    is set — so legacy setups keep working.
+    """
     load_dotenv(find_dotenv(usecwd=True))
-    api_key = os.environ.get("OPENAI_API_KEY")
-    if not api_key:
-        st.error("Kein OPENAI_API_KEY gefunden. Bitte `.env` aus `.env.example` erstellen.")
-        st.stop()
-    return openai.OpenAI(api_key=api_key)
+    or_key = os.environ.get("OPENROUTER_API_KEY")
+    if or_key:
+        return openai.OpenAI(api_key=or_key, base_url="https://openrouter.ai/api/v1")
+    oa_key = os.environ.get("OPENAI_API_KEY")
+    if oa_key:
+        st.warning(
+            "Kein OPENROUTER_API_KEY — falle auf direktes OpenAI zurück. "
+            "Modell-Dropdown zeigt aber OpenRouter-IDs; bitte OPENROUTER_API_KEY in `.env` "
+            "setzen für die volle Modell-Auswahl."
+        )
+        return openai.OpenAI(api_key=oa_key)
+    st.error(
+        "Kein API-Key gefunden. Setze `OPENROUTER_API_KEY` in `.env` "
+        "(empfohlen, holst du auf https://openrouter.ai/keys) oder `OPENAI_API_KEY` (legacy)."
+    )
+    st.stop()
 
 
 def main() -> None:
     args = _parse_args()
-    model = args.model
     language = args.language
 
     init_session_state(st.session_state)
     state = st.session_state["state"]
 
-    log.info("Run %s — model=%s language=%s", state.num_runs, model, language)
-
     st.title(f"{language.capitalize()} — Lernprogramm")
     st.caption("Out-game-Kommentare bitte in <> packen — werden separat beantwortet.")
 
-    client = _ensure_openai_client()
+    client = _ensure_openrouter_client()
 
     # --- Sidebar ------------------------------------------------------------
     st.sidebar.title("Einstellungen")
     mentor = st.sidebar.selectbox("Coach:", MENTORS, index=0, key="mentor")
     level = st.sidebar.selectbox("Sprachniveau:", LEVELS, index=2, key="level")
     niveau = st.sidebar.selectbox("Sprachregister:", NIVEAU_LEVELS, index=3, key="niveau")
+
+    # Model-Tier-Dropdown — sprach-abhängiger Default (UK → Haiku)
+    _default_model_id = default_model_for_language(language)
+    _tier_labels = list(MODEL_TIERS.keys())
+    _default_tier_idx = next(
+        (i for i, label in enumerate(_tier_labels) if MODEL_TIERS[label] == _default_model_id),
+        0,
+    )
+    tier_label = st.sidebar.selectbox("Modell-Tier:", _tier_labels, index=_default_tier_idx, key="tier")
+    model = MODEL_TIERS[tier_label]
+    st.sidebar.caption(f"OpenRouter-ID: `{model}`")
+
+    log.info("Run %s — model=%s language=%s", state.num_runs, model, language)
     st.sidebar.divider()
     st.sidebar.markdown("## Vokabelliste")
 
