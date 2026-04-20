@@ -51,7 +51,10 @@ def test_cloze_function_spec_has_answers_separate():
 
 def test_translation_prompt_includes_sentences_count():
     p = build_translation_prompt(
-        language="französisch",
+        learning_language="French",
+        ui_language_name="German",
+        source_language_name="German",
+        target_language_name="French",
         level="B1",
         niveau="Standardsprache",
         selected_vocab=["manger"],
@@ -59,6 +62,23 @@ def test_translation_prompt_includes_sentences_count():
     )
     assert "3" in p
     assert "manger" in p
+    assert "German" in p and "French" in p
+
+
+def test_translation_prompt_supports_reverse_direction():
+    p = build_translation_prompt(
+        learning_language="French",
+        ui_language_name="German",
+        source_language_name="French",   # reverse direction
+        target_language_name="German",
+        level="B1",
+        niveau="Standardsprache",
+        selected_vocab=["manger"],
+        number_sentences=2,
+    )
+    # Source must be French when reversed — verifies direction parameterization.
+    assert "sentences IN French" in p or "IN French" in p
+    assert "INTO German" in p
 
 
 def test_sentence_building_prompt_contains_words():

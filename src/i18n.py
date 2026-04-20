@@ -170,6 +170,9 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "sentence_task_prompt": "Build a sentence using these words:",
         "synant_task_prompt": "Find synonyms and antonyms for:",
         "conjugation_task_prompt": "Conjugate the verb '{verb}' for the person '{person}' in the following tenses: present, past, future, perfect, present subjunctive, near future, present continuous.",
+        "translation_direction": "Direction",
+        "dir_to_learning": "→ into {learning} (produce)",
+        "dir_to_native": "→ into {native} (understand)",
     },
     "de": {
         "app_title": "{language} — Lernprogramm",
@@ -241,6 +244,9 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "sentence_task_prompt": "Baue einen Satz mit diesen Wörtern:",
         "synant_task_prompt": "Finde Synonyme und Antonyme zu:",
         "conjugation_task_prompt": "Konjugiere das Verb '{verb}' für die Person '{person}' in den folgenden Zeiten: Präsens, Imparfait, Futur, Perfekt, Subjonctif présent, Futur proche und Présent continu.",
+        "translation_direction": "Richtung",
+        "dir_to_learning": "→ ins {learning} (produzieren)",
+        "dir_to_native": "→ ins {native} (verstehen)",
     },
     "fr": {
         "app_title": "{language} — Tuteur de langue",
@@ -312,6 +318,9 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "sentence_task_prompt": "Construis une phrase avec ces mots :",
         "synant_task_prompt": "Trouve les synonymes et antonymes de :",
         "conjugation_task_prompt": "Conjugue le verbe « {verb} » à la personne « {person} » aux temps suivants : présent, imparfait, futur, passé composé, subjonctif présent, futur proche, présent continu.",
+        "translation_direction": "Direction",
+        "dir_to_learning": "→ vers {learning} (produire)",
+        "dir_to_native": "→ vers {native} (comprendre)",
     },
     "es": {
         "app_title": "{language} — Tutor de idiomas",
@@ -383,6 +392,9 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "sentence_task_prompt": "Construye una frase con estas palabras:",
         "synant_task_prompt": "Encuentra sinónimos y antónimos de:",
         "conjugation_task_prompt": "Conjuga el verbo «{verb}» para la persona «{person}» en los siguientes tiempos: presente, pretérito imperfecto, futuro, pretérito perfecto, subjuntivo presente, futuro próximo, presente continuo.",
+        "translation_direction": "Dirección",
+        "dir_to_learning": "→ a {learning} (producir)",
+        "dir_to_native": "→ a {native} (comprender)",
     },
 }
 

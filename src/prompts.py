@@ -119,9 +119,19 @@ def build_cloze_messages(
                 f"Exactly {number_trous} blanks marked as '___'. "
                 f"Each vocab exactly once, in the proper grammatical form (conjugation, "
                 f"plural, etc.). The text should form a small coherent story or context "
-                f"and have a fitting title. "
-                f"'vocab_hints': short meaning-explanation for each vocab, written IN {ui_language_name}. "
-                f"'answers': the actual words placed in the blanks, in the order blanks appear in body."
+                f"and have a fitting title.\n\n"
+                f"CRITICAL SHUFFLE RULE: The order in which vocabs appear in the blanks "
+                f"MUST NOT be alphabetical, and MUST NOT match the order in which I listed "
+                f"them above. Pick the blank positions randomly — e.g. if I gave you "
+                f"[apple, banana, cherry, date], the blanks could fill as "
+                f"[cherry, apple, date, banana] or any non-trivial permutation. A learner "
+                f"must not be able to guess answers just from the vocab list order.\n\n"
+                f"LANGUAGE RULE: 'vocab_hints' MUST be written in {ui_language_name} — "
+                f"never English unless {ui_language_name} IS English. Each hint is a short "
+                f"meaning explanation in {ui_language_name} (can be a translation or a "
+                f"paraphrase, whichever is clearer).\n\n"
+                f"'answers': the actual words placed in the blanks, in the order blanks "
+                f"appear in body (same randomized permutation as above)."
             ),
         },
     ]
@@ -129,21 +139,36 @@ def build_cloze_messages(
 
 def build_translation_prompt(
     *,
-    language: str,
+    learning_language: str,
+    ui_language_name: str,
+    source_language_name: str,
+    target_language_name: str,
     level: str,
     niveau: str,
     selected_vocab: list[str],
     number_sentences: int,
-    ui_language_name: str = "English",
 ) -> str:
+    """Generate a translation exercise in a chosen direction.
+
+    Two directions:
+    - source=UI-lang, target=learning-lang  → active production
+    - source=learning-lang, target=UI-lang  → passive comprehension
+    """
     joined = ", ".join(selected_vocab)
     return (
-        f"First, translate these {language} vocabs into {ui_language_name}: {joined}. "
-        f"Then, create {number_sentences} sentences IN {ui_language_name} for the learner "
-        f"to translate into {language}. Register: {niveau}. CEFR level: {level}. "
-        f"Do NOT provide the {language} translations.{NO_ANSWERS_HINT}\n\n"
-        f"Output format:\nSentences to translate: numbered list.\n---\n"
-        f"Vocabs used ({language} → {ui_language_name}): bullet list."
+        f"First, show the learner the {learning_language} vocabs with their "
+        f"{ui_language_name} meanings (glossary): {joined}.\n\n"
+        f"Then create {number_sentences} sentences IN {source_language_name} for the "
+        f"learner to translate INTO {target_language_name}. Register: {niveau}. "
+        f"CEFR level: {level}. The sentences must naturally use the vocabs above. "
+        f"Do NOT provide the {target_language_name} translations — the learner produces "
+        f"them.{NO_ANSWERS_HINT}\n\n"
+        f"Output format (write everything in {ui_language_name} EXCEPT the {source_language_name} "
+        f"sentences themselves):\n"
+        f"Glossary ({learning_language} → {ui_language_name}): bullet list.\n"
+        f"---\n"
+        f"Translate these {source_language_name} sentences into {target_language_name}: "
+        f"numbered list of {number_sentences} sentences in {source_language_name}."
     )
 
 

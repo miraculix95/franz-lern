@@ -249,7 +249,10 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str]:
     state = st.session_state["state"]
 
     with st.sidebar:
-        # Interface-language first — everything below respects it on rerun.
+        # Dark mode first — users can switch theme before any other widget loads.
+        st.toggle(t("dark_mode", ui_lang), value=st.session_state.get("dark_mode", False), key="dark_mode")
+
+        # Interface-language — everything below respects it on rerun.
         lang_labels = list(UI_LANGS.keys())
         current_label = UI_LANG_NAMES.get(ui_lang, "English")
         st.selectbox(
@@ -261,8 +264,6 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str]:
 
         language_localized = language_display(language, ui_lang)
         st.markdown(f"### {t('sidebar_title', ui_lang, language=language_localized)}")
-
-        st.toggle(t("dark_mode", ui_lang), value=st.session_state.get("dark_mode", False), key="dark_mode")
 
         with st.expander(t("coach_and_style", ui_lang), expanded=True):
             # Mentor: show translated label, store original key internally
@@ -421,6 +422,7 @@ def _generate_task(
                 client, vocab_list=state.vocab_list, language=lang_en, level=level,
                 niveau=niveau, number_sentences=state.number_sentences, model=model,
                 ui_language_name=ui_lang_name,
+                direction=getattr(state, "translation_direction", "to_learning"),
             )
         elif task_key == "sentence":
             instr = sent_task.build(
@@ -507,6 +509,7 @@ def main() -> None:
         ("num_corrections", 0),
         ("number_trous", 4),
         ("number_sentences", 1),
+        ("translation_direction", "to_learning"),
         ("file_path_extract_trigger", None),
         ("uploaded_vocab_file_trigger", None),
         ("url_extract_trigger", ""),
@@ -572,9 +575,25 @@ def main() -> None:
             t("num_blanks", ui_lang), min_value=3, max_value=20, value=state.number_trous,
         )
     elif task_key == "translation":
-        state.number_sentences = st.number_input(
+        col_n, col_dir = st.columns([1, 2])
+        state.number_sentences = col_n.number_input(
             t("num_sentences", ui_lang), min_value=1, max_value=20, value=state.number_sentences,
         )
+        ui_lang_name = UI_LANG_NAMES.get(ui_lang, "English")
+        learning_localized = language_display(language, ui_lang)
+        dir_labels = {
+            "to_learning": t("dir_to_learning", ui_lang, learning=learning_localized),
+            "to_native": t("dir_to_native", ui_lang, native=ui_lang_name),
+        }
+        pick = col_dir.radio(
+            t("translation_direction", ui_lang),
+            list(dir_labels.values()),
+            index=0,
+            horizontal=True,
+            key="translation_direction",
+        )
+        # Map picked label back to internal key:
+        state.translation_direction = next(k for k, v in dir_labels.items() if v == pick)
 
     if task_key == "quiz":
         _render_quiz(client, lang_en, model, ui_lang, display_lang=language_display(language, ui_lang))
