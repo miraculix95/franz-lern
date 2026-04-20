@@ -207,12 +207,9 @@ _MOBILE_CSS = """
         [data-testid="stHorizontalBlock"] > [data-testid="column"] {
             min-width: 0 !important;
         }
-        [data-testid="stMetricValue"] {
-            font-size: 1.35rem !important;
-        }
-        [data-testid="stMetricLabel"] p {
-            font-size: 0.72rem !important;
-            white-space: nowrap !important;
+        /* Hide session-metrics row on mobile — breaks awkwardly and isn't essential */
+        [data-testid="stHorizontalBlock"]:has([data-testid="stMetric"]) {
+            display: none !important;
         }
         /* Main container: tighter padding */
         .block-container {
