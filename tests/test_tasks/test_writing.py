@@ -2,7 +2,8 @@ from src.tasks.writing import build
 
 
 def test_build_returns_task_with_theme():
-    result = build(themes=["Urlaub", "Sport"], previous_theme="Sport")
+    # ui_lang=de keeps "Urlaub" verbatim in both display and internal context.
+    result = build(themes=["Urlaub", "Sport"], previous_theme="Sport", ui_lang="de")
     assert "Urlaub" in result.displayed_to_user
     assert result.internal_context["theme"] == "Urlaub"
 

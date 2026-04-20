@@ -7,10 +7,11 @@ def test_build_picks_verb_and_person():
     result = build(
         fake,
         vocab_list=["maison", "aller"],
-        language="französisch",
+        language="French",
         level="B1",
         niveau="Standardsprache",
-        model="gpt-4o-mini",
+        model="google/gemini-2.5-flash-lite",
+        ui_lang="de",
     )
     assert "aller" in result.displayed_to_user
     assert result.internal_context["person"] in PERSONS

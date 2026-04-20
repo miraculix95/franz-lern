@@ -7,10 +7,11 @@ def test_build_prefixes_with_task_label():
     result = build(
         fake,
         vocab_list=["aller", "avoir", "être"],
-        language="französisch",
+        language="French",
         level="B1",
         niveau="Standardsprache",
-        model="gpt-4o-mini",
+        model="google/gemini-2.5-flash-lite",
+        ui_lang="en",
     )
     d = result.displayed_to_user
-    assert "Fehler" in d or "korrigiere" in d
+    assert "Find" in d or "fix" in d or "errors" in d

@@ -38,8 +38,14 @@ from src.i18n import (  # noqa: E402
     UI_LANG_NAMES,
     UI_LANGS,
     detect_ui_language,
+    language_display,
+    language_to_english,
+    mentor_display,
+    niveau_display,
+    quote_for,
     t,
     task_names_for,
+    tier_display,
 )
 from src.correction import answer_comment, correct_text, extract_comments  # noqa: E402
 from src.logging_setup import get_logger  # noqa: E402
@@ -253,14 +259,24 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str]:
             key="ui_lang_label",
         )
 
-        st.markdown(f"### {t('sidebar_title', ui_lang, language=language.capitalize())}")
+        language_localized = language_display(language, ui_lang)
+        st.markdown(f"### {t('sidebar_title', ui_lang, language=language_localized)}")
 
         st.toggle(t("dark_mode", ui_lang), value=st.session_state.get("dark_mode", False), key="dark_mode")
 
         with st.expander(t("coach_and_style", ui_lang), expanded=True):
-            mentor = st.selectbox(t("coach", ui_lang), MENTORS, index=0, key="mentor")
+            # Mentor: show translated label, store original key internally
+            mentor_displays = [mentor_display(m, ui_lang) for m in MENTORS]
+            mentor_pick = st.selectbox(t("coach", ui_lang), mentor_displays, index=0, key="mentor_display")
+            mentor = MENTORS[mentor_displays.index(mentor_pick)]
+
             level = st.selectbox(t("level", ui_lang), LEVELS, index=2, key="level")
-            niveau = st.selectbox(t("register", ui_lang), NIVEAU_LEVELS, index=3, key="niveau")
+
+            niveau_displays = [niveau_display(n, ui_lang) for n in NIVEAU_LEVELS]
+            niveau_pick = st.selectbox(
+                t("register", ui_lang), niveau_displays, index=3, key="niveau_display",
+            )
+            niveau = NIVEAU_LEVELS[niveau_displays.index(niveau_pick)]
 
         with st.expander(t("vocab_source", ui_lang), expanded=True):
             extract_files = st.file_uploader(
@@ -288,12 +304,16 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str]:
                 st.session_state["byok_key"] = api_key_input
 
             _default_model = default_model_for_language(language)
-            tier_labels = list(MODEL_TIERS.keys())
+            tier_keys = list(MODEL_TIERS.keys())
+            tier_displays = [tier_display(k, ui_lang) for k in tier_keys]
             default_idx = next(
-                (i for i, lb in enumerate(tier_labels) if MODEL_TIERS[lb] == _default_model), 0,
+                (i for i, k in enumerate(tier_keys) if MODEL_TIERS[k] == _default_model), 0,
             )
-            tier = st.selectbox(t("model_tier", ui_lang), tier_labels, index=default_idx, key="tier")
-            model = MODEL_TIERS[tier]
+            tier_pick = st.selectbox(
+                t("model_tier", ui_lang), tier_displays, index=default_idx, key="tier_display",
+            )
+            tier_key = tier_keys[tier_displays.index(tier_pick)]
+            model = MODEL_TIERS[tier_key]
             st.caption(f"`{model}`")
 
         _, source = _resolve_api_key()
@@ -323,11 +343,12 @@ def _handle_vocab_sources(
     uploaded_vocab = state.uploaded_vocab_file_trigger
     number = state.number_of_words
 
+    lang_en = language_to_english(language)
     if extract_files and extract_files != state.file_path_extract:
         all_text = "\n".join(f.read().decode("utf-8") for f in extract_files)
         with st.status(t("status_extract_file", ui_lang), expanded=False) as status:
             state.vocab_list = _cached_extract_from_text(
-                all_text, language, level, number, model,
+                all_text, lang_en, level, number, model,
             )
             status.update(label=t("status_extracted_ok", ui_lang, n=len(state.vocab_list)), state="complete")
         st.sidebar.write(sorted(state.vocab_list))
@@ -337,7 +358,7 @@ def _handle_vocab_sources(
             article = fetch_article_text(url_extract)
             status.update(label=t("status_extract_web", ui_lang))
             state.vocab_list = _cached_extract_from_text(
-                article, language, level, number, model,
+                article, lang_en, level, number, model,
             )
             status.update(
                 label=t("status_extract_web_ok", ui_lang, n=len(state.vocab_list)),
@@ -356,12 +377,15 @@ def _render_header(language: str, mentor: str, ui_lang: str) -> None:
     """Title + session metrics + mentor quote."""
     state = st.session_state["state"]
 
-    st.markdown(f"# {t('app_title', ui_lang, language=language.capitalize())}")
+    language_localized = language_display(language, ui_lang)
+    # French doesn't capitalize language names, but it looks cleaner in a title.
+    st.markdown(f"# {t('app_title', ui_lang, language=language_localized[:1].upper() + language_localized[1:])}")
 
-    quote = MENTOR_QUOTES.get(mentor, "")
+    quote = quote_for(mentor, ui_lang) or MENTOR_QUOTES.get(mentor, "")
     avatar = MENTOR_AVATARS.get(mentor, "🎓")
+    mentor_localized = mentor_display(mentor, ui_lang)
     if quote:
-        st.caption(f'{avatar} *{mentor}:* „{quote}"')
+        st.caption(f'{avatar} *{mentor_localized}:* „{quote}"')
 
     col1, col2, col3 = st.columns(3)
     col1.metric(t("metric_tasks", ui_lang), getattr(state, "num_tasks_generated", 0))
@@ -377,37 +401,43 @@ def _generate_task(
 ) -> None:
     """Build a task into state.task. Dispatches on language-independent task key."""
     state = st.session_state["state"]
+    lang_en = language_to_english(language)
+    ui_lang_name = UI_LANG_NAMES.get(ui_lang, "English")
 
     with st.status(t("status_generating_task", ui_lang, task=task_label), expanded=False) as status:
         if task_key == "writing":
-            instr = write_task.build(themes=THEMES, previous_theme=state.theme)
+            instr = write_task.build(
+                themes=THEMES, previous_theme=state.theme, ui_lang=ui_lang,
+            )
             state.theme = instr.internal_context["theme"]
         elif task_key == "cloze":
             instr = cloze_task.build(
-                client, vocab_list=state.vocab_list, language=language, level=level,
+                client, vocab_list=state.vocab_list, language=lang_en, level=level,
                 niveau=niveau, number_trous=state.number_trous, model=model,
+                ui_lang=ui_lang, ui_language_name=ui_lang_name,
             )
         elif task_key == "translation":
             instr = trans_task.build(
-                client, vocab_list=state.vocab_list, language=language, level=level,
+                client, vocab_list=state.vocab_list, language=lang_en, level=level,
                 niveau=niveau, number_sentences=state.number_sentences, model=model,
+                ui_language_name=ui_lang_name,
             )
         elif task_key == "sentence":
             instr = sent_task.build(
-                client, vocab_list=state.vocab_list, language=language, level=level,
-                niveau=niveau, model=model,
+                client, vocab_list=state.vocab_list, language=lang_en, level=level,
+                niveau=niveau, model=model, ui_lang=ui_lang,
             )
         elif task_key == "error":
             instr = err_task.build(
-                client, vocab_list=state.vocab_list, language=language, level=level,
-                niveau=niveau, model=model,
+                client, vocab_list=state.vocab_list, language=lang_en, level=level,
+                niveau=niveau, model=model, ui_lang=ui_lang,
             )
         elif task_key == "synonym":
-            instr = syn_task.build(vocab_list=state.vocab_list)
+            instr = syn_task.build(vocab_list=state.vocab_list, ui_lang=ui_lang)
         elif task_key == "conjugation":
             instr = conj_task.build(
-                client, vocab_list=state.vocab_list, language=language, level=level,
-                niveau=niveau, model=model,
+                client, vocab_list=state.vocab_list, language=lang_en, level=level,
+                niveau=niveau, model=model, ui_lang=ui_lang,
             )
         else:
             status.update(label="—", state="error")
@@ -441,11 +471,13 @@ def _correction_panel(
     if st.button(t("correct_btn", ui_lang), type="primary", use_container_width=True):
         state.user_text = user_text
         ui_lang_name = UI_LANG_NAMES.get(ui_lang, "English")
-        with st.status(t("status_coach_reading", ui_lang, mentor=mentor), expanded=False) as status:
+        lang_en = language_to_english(language)
+        mentor_loc = mentor_display(mentor, ui_lang)
+        with st.status(t("status_coach_reading", ui_lang, mentor=mentor_loc), expanded=False) as status:
             cleaned, comments = extract_comments(user_text)
             corrected = correct_text(
-                client, task=state.task, user_text=cleaned, language=language,
-                niveau=niveau, mentor=mentor, model=model, ui_language_name=ui_lang_name,
+                client, task=state.task, user_text=cleaned, language=lang_en,
+                niveau=niveau, mentor=mentor_loc, model=model, ui_language_name=ui_lang_name,
             )
             comment_answers = [
                 (c, answer_comment(client, comment=c, model=model)) for c in comments
@@ -454,7 +486,7 @@ def _correction_panel(
             status.update(label=t("status_feedback_ready", ui_lang), state="complete")
 
         avatar = MENTOR_AVATARS.get(mentor, "🎓")
-        with st.chat_message(name=mentor, avatar=avatar):
+        with st.chat_message(name=mentor_loc, avatar=avatar):
             st.markdown(corrected)
             if comment_answers:
                 st.divider()
@@ -508,6 +540,7 @@ def main() -> None:
     log.info("Run %s — model=%s language=%s ui=%s source=%s",
              state.num_runs, model, language, ui_lang, source)
 
+    lang_en = language_to_english(language)
     _handle_vocab_sources(client, language, level, model, ui_lang)
 
     st.divider()
@@ -523,7 +556,7 @@ def main() -> None:
         if st.button(t("autogen_vocab_btn", ui_lang), type="primary"):
             with st.status(t("status_generating_vocab", ui_lang), expanded=False) as status:
                 state.vocab_list = generate_vocabulary_via_function_call(
-                    client, language=language, level=level, niveau=niveau, model=model,
+                    client, language=lang_en, level=level, niveau=niveau, model=model,
                 )
                 state.auto_gen_vocabs = True
                 status.update(
@@ -544,7 +577,7 @@ def main() -> None:
         )
 
     if task_key == "quiz":
-        _render_quiz(client, language, model, ui_lang)
+        _render_quiz(client, lang_en, model, ui_lang, display_lang=language_display(language, ui_lang))
     elif task_key == "radio":
         _render_radio(ui_lang)
     elif task_key:
@@ -554,12 +587,15 @@ def main() -> None:
         _correction_panel(client, language, niveau, mentor, model, ui_lang)
 
 
-def _render_quiz(client: openai.OpenAI, language: str, model: str, ui_lang: str) -> None:
+def _render_quiz(
+    client: openai.OpenAI, language: str, model: str, ui_lang: str, display_lang: str,
+) -> None:
     state = st.session_state["state"]
     if st.button(t("quiz_new_btn", ui_lang), type="primary") or "current_quiz" not in st.session_state:
         with st.status(t("status_generating_quiz", ui_lang), expanded=False) as status:
             st.session_state["current_quiz"] = quiz_task.build_quiz(
                 client, vocab_list=state.vocab_list, language=language, count=5, model=model,
+                ui_language_name=UI_LANG_NAMES.get(ui_lang, "English"),
             )
             st.session_state["quiz_answers"] = {}
             state.num_tasks_generated = getattr(state, "num_tasks_generated", 0) + 1
@@ -567,7 +603,7 @@ def _render_quiz(client: openai.OpenAI, language: str, model: str, ui_lang: str)
     quiz = st.session_state.get("current_quiz", {})
     for fw, trans in quiz.items():
         st.session_state["quiz_answers"][fw] = st.text_input(
-            t("quiz_prompt_format", ui_lang, language=language, trans=trans),
+            t("quiz_prompt_format", ui_lang, language=display_lang, trans=trans),
             key=f"quiz_{fw}",
         )
     if quiz and st.button(t("quiz_evaluate_btn", ui_lang), type="primary"):

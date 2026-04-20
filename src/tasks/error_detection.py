@@ -3,6 +3,7 @@ from __future__ import annotations
 import random
 from typing import Any
 
+from src.i18n import t
 from src.prompts import build_error_detection_prompt
 from src.tasks.base import TaskInstruction
 
@@ -15,6 +16,7 @@ def build(
     level: str,
     niveau: str,
     model: str,
+    ui_lang: str = "en",
 ) -> TaskInstruction:
     selected = random.sample(vocab_list, min(len(vocab_list), 5))
     prompt = build_error_detection_prompt(
@@ -29,6 +31,6 @@ def build(
     )
     body = response.choices[0].message.content.strip()
     return TaskInstruction(
-        displayed_to_user=f"Finde und korrigiere die Fehler im folgenden Text:\n\n{body}",
+        displayed_to_user=f"{t('error_task_prompt', ui_lang)}\n\n{body}",
         internal_context={"selected_vocab": selected, "body": body},
     )

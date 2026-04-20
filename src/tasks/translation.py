@@ -16,6 +16,7 @@ def build(
     niveau: str,
     number_sentences: int,
     model: str,
+    ui_language_name: str = "English",
 ) -> TaskInstruction:
     selected = random.sample(vocab_list, min(len(vocab_list), 3))
     prompt = build_translation_prompt(
@@ -24,6 +25,7 @@ def build(
         niveau=niveau,
         selected_vocab=selected,
         number_sentences=number_sentences,
+        ui_language_name=ui_language_name,
     )
     response = client.chat.completions.create(
         model=model,

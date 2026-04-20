@@ -68,21 +68,20 @@ CLOZE_FUNCTION_SPEC: dict = {
 
 def build_vocab_extract_prompt(*, language: str, level: str, number: int) -> str:
     return (
-        f"Du bist ein Sprachlehrer. Extrahiere genau {number} {language}e Vokabeln "
-        f"oder Redewendungen passend zum Mindest-Sprachniveau {level} aus dem folgenden "
-        f"Text. Erstelle dabei eine gute Mischung aus Verben, komplexen Ausdrücken, "
-        f"Adjektiven und Nomen. Vermeide Eigennamen und geographische Namen. "
-        f"Gib die Vokabeln als durch Kommas getrennte Liste ohne Nummerierung zurück. "
-        f"Gib das Ergebnis ohne Einleitung und Kommentar an."
+        f"You are a language teacher. Extract exactly {number} {language} vocabulary items "
+        f"or expressions matching a minimum CEFR level of {level} from the following text. "
+        f"Provide a good mix of verbs, complex expressions, adjectives, and nouns. "
+        f"Avoid proper names and geographic names. "
+        f"Return the vocabulary as a comma-separated list without numbering. "
+        f"No introduction, no commentary."
     )
 
 
 def build_vocab_autogen_prompt(*, language: str, level: str, niveau: str) -> str:
     return (
-        f"Erstelle in Python-Format eine Liste von 20 {language}n Vokabeln inklusive "
-        f"Verben. Die Sprache ist {language}. Die Wörter sollen passend zum Mindest-"
-        f"Sprachniveau {level} sein, das folgende Sprachregister treffen: {niveau}. "
-        f"Wähle thematisch zueinander passende Wörter aus."
+        f"Create a list of 20 {language} vocabulary items including verbs. "
+        f"Target CEFR level: {level}. Register: {niveau}. "
+        f"Pick thematically coherent words."
     )
 
 
@@ -93,36 +92,36 @@ def build_cloze_messages(
     niveau: str,
     selected_vocab: list[str],
     number_trous: int,
+    ui_language_name: str = "English",
 ) -> list[dict]:
-    """Messages für strukturierte Cloze-Generierung via ``emit_cloze`` tool.
+    """Messages for structured cloze generation via the ``emit_cloze`` tool.
 
-    Die Lösungen landen über das Tool-Schema in einem separaten Feld —
-    der ``body``-String enthält ausschließlich ``___``-Platzhalter.
+    Answers land in a separate JSON field — the ``body`` string has only
+    ``___`` placeholders, never the solution words.
+    ``vocab_hints`` are explanations in the user's UI language.
     """
     joined = ", ".join(selected_vocab)
     return [
         {
             "role": "system",
             "content": (
-                f"Du bist ein Sprachlehrer für {language}. Erstelle Lückentexte für "
-                f"Sprachlerner. WICHTIG: nutze das emit_cloze-Tool für strukturierte "
-                f"Ausgabe — Lösungen kommen AUSSCHLIESSLICH ins 'answers'-Feld. "
-                f"Der 'body' enthält nur '___' für Lücken, KEINE Lösungs-Hinweise."
+                f"You are a {language} language teacher creating cloze exercises for learners. "
+                f"IMPORTANT: use the emit_cloze tool for structured output. Solutions go "
+                f"EXCLUSIVELY into the 'answers' field. The 'body' contains only '___' for "
+                f"blanks — never reveal which word goes where inside the body or title."
             ),
         },
         {
             "role": "user",
             "content": (
-                f"Erstelle einen {language}en Lückentext mit folgenden Vokabeln: "
-                f"{joined}. Sprachlevel: {level}. Sprachregister: {niveau}. "
-                f"Genau {number_trous} Lücken, jede Lücke als '___' markiert. "
-                f"Jede Vokabel genau einmal, in passender grammatischer Form "
-                f"(Konjugation, Plural, etc.). "
-                f"Der Text soll logisch Sinn machen und eine kleine Geschichte oder "
-                f"einen Kontext bilden. Gib dazu einen passenden Titel aus. "
-                f"'vocab_hints': eine kurze deutsche Bedeutungs-Erklärung je Vokabel. "
-                f"'answers': die tatsächlich eingesetzten Wörter in der Reihenfolge "
-                f"der Lücken im Body."
+                f"Create a {language} cloze text using these vocabs: {joined}. "
+                f"CEFR level: {level}. Register: {niveau}. "
+                f"Exactly {number_trous} blanks marked as '___'. "
+                f"Each vocab exactly once, in the proper grammatical form (conjugation, "
+                f"plural, etc.). The text should form a small coherent story or context "
+                f"and have a fitting title. "
+                f"'vocab_hints': short meaning-explanation for each vocab, written IN {ui_language_name}. "
+                f"'answers': the actual words placed in the blanks, in the order blanks appear in body."
             ),
         },
     ]
@@ -135,15 +134,16 @@ def build_translation_prompt(
     niveau: str,
     selected_vocab: list[str],
     number_sentences: int,
+    ui_language_name: str = "English",
 ) -> str:
     joined = ", ".join(selected_vocab)
     return (
-        f"Übersetze die folgenden {language}en Vokabeln ins Deutsche: {joined}. "
-        f"Erstelle dann {number_sentences} deutsche Sätze zum Übersetzen ins "
-        f"{language}e für das Sprachregister {niveau} und das Sprachlevel {level}. "
-        f"Gib die Lösung (die {language}en Sätze) nicht an.{NO_ANSWERS_HINT}"
-        f"\n\nAusgabeformat:\nÜbersetze die Sätze: nummeriert.\n---\n"
-        f"Benutze die folgenden Vokabeln ({language} - deutsch): als Bulletpoints."
+        f"First, translate these {language} vocabs into {ui_language_name}: {joined}. "
+        f"Then, create {number_sentences} sentences IN {ui_language_name} for the learner "
+        f"to translate into {language}. Register: {niveau}. CEFR level: {level}. "
+        f"Do NOT provide the {language} translations.{NO_ANSWERS_HINT}\n\n"
+        f"Output format:\nSentences to translate: numbered list.\n---\n"
+        f"Vocabs used ({language} → {ui_language_name}): bullet list."
     )
 
 
@@ -156,9 +156,8 @@ def build_sentence_building_prompt(
 ) -> str:
     words = ", ".join(selected_vocab)
     return (
-        f"Erstelle einen {language}en Satz mit den folgenden Wörtern: {words}. "
-        f"Benutze dabei das folgende Sprachregister: {niveau} und das folgende "
-        f"Sprachlevel: {level}.{NO_ANSWERS_HINT}"
+        f"Create a single {language} sentence using these words: {words}. "
+        f"Register: {niveau}. CEFR level: {level}.{NO_ANSWERS_HINT}"
     )
 
 
@@ -171,10 +170,9 @@ def build_error_detection_prompt(
 ) -> str:
     joined = ", ".join(selected_vocab)
     return (
-        f"Erstelle 3 grammatikalisch und orthografisch stark fehlerhafte {language}e "
-        f"Sätze mit dem folgenden Sprachregister: {niveau} mit den folgenden Vokabeln, "
-        f"die für einen Lernenden des Sprachlevels {level} verständlich sind. "
-        f"Gib die korrekten Sätze nicht an: {joined}."
+        f"Create 3 grammatically and orthographically flawed {language} sentences with "
+        f"register: {niveau}, using these vocabs (understandable at CEFR {level}): "
+        f"{joined}. Do NOT provide the corrected sentences."
     )
 
 
@@ -183,14 +181,14 @@ def build_conjugation_prompt(*, language: str, level: str, vocab_list: list[str]
     return [
         {
             "role": "system",
-            "content": "Gib einwortige Antworten wann immer möglich, ohne Nummerierung, ohne Punkt.",
+            "content": "Give single-word answers whenever possible — no numbering, no period.",
         },
         {
             "role": "user",
             "content": (
-                f"Wähle passend zum Sprachlevel {level} entweder a) zufällig ein Verb "
-                f"aus der angehängten Vokabelliste aus: {joined}, oder b) ein beliebiges "
-                f"unregelmäßiges Verb. Es muss ein Verb (Tunwort) sein."
+                f"Pick, matching CEFR level {level}, either (a) a random verb from this "
+                f"vocabulary list: {joined}, or (b) any irregular {language} verb. "
+                f"It MUST be a verb (action word)."
             ),
         },
     ]

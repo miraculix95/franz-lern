@@ -27,6 +27,7 @@ def build_quiz(
     language: str,
     count: int,
     model: str,
+    ui_language_name: str = "English",
 ) -> dict[str, str]:
     selected = random.sample(vocab_list, min(len(vocab_list), count))
     quiz: dict[str, str] = {}
@@ -37,8 +38,9 @@ def build_quiz(
                 {
                     "role": "system",
                     "content": (
-                        f"Übersetze das {language}e Wort '{word}' ins Deutsche. "
-                        "Antworte nur mit dem deutschen Wort, ohne Artikel, ohne Erklärung."
+                        f"Translate the {language} word '{word}' into {ui_language_name}. "
+                        f"Reply with ONLY the {ui_language_name} word — no article, "
+                        f"no explanation."
                     ),
                 }
             ],

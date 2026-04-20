@@ -3,6 +3,7 @@ from __future__ import annotations
 import random
 from typing import Any
 
+from src.i18n import t
 from src.prompts import build_conjugation_prompt
 from src.tasks.base import TaskInstruction
 
@@ -17,16 +18,13 @@ def build(
     level: str,
     niveau: str,
     model: str,
+    ui_lang: str = "en",
 ) -> TaskInstruction:
     messages = build_conjugation_prompt(language=language, level=level, vocab_list=vocab_list)
     response = client.chat.completions.create(model=model, messages=messages)
     verb = response.choices[0].message.content.strip().lower()
     person = random.choice(PERSONS)
-    text = (
-        f"Konjugiere das Verb '{verb}' für die Person '{person}' in den folgenden Zeiten: "
-        f"Präsens, Imparfait, Futur, Perfekt, Subjonctive présent, Futur proche "
-        f"und Présent continu."
-    )
+    text = t("conjugation_task_prompt", ui_lang, verb=verb, person=person)
     return TaskInstruction(
         displayed_to_user=text,
         internal_context={"verb": verb, "person": person},

@@ -162,6 +162,14 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "quiz_score": "🎯 Score",
         "quiz_prompt_format": "What is the {language} word for '{trans}'?",
         "side_questions": "**Side questions:**",
+        "writing_task_prompt": "Write a text about the topic: {theme}",
+        "cloze_vocab_heading": "Vocabulary (alphabetical):",
+        "cloze_use_these": "Use these",
+        "cloze_text_heading": "Cloze text:",
+        "error_task_prompt": "Find and fix the errors in the following text:",
+        "sentence_task_prompt": "Build a sentence using these words:",
+        "synant_task_prompt": "Find synonyms and antonyms for:",
+        "conjugation_task_prompt": "Conjugate the verb '{verb}' for the person '{person}' in the following tenses: present, past, future, perfect, present subjunctive, near future, present continuous.",
     },
     "de": {
         "app_title": "{language} — Lernprogramm",
@@ -225,6 +233,14 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "quiz_score": "🎯 Score",
         "quiz_prompt_format": "Was ist das {language}e Wort für '{trans}'?",
         "side_questions": "**Nebenfragen:**",
+        "writing_task_prompt": "Schreibe einen Text zum Thema: {theme}",
+        "cloze_vocab_heading": "Vokabeln (alphabetisch):",
+        "cloze_use_these": "Zu benutzen",
+        "cloze_text_heading": "Lückentext:",
+        "error_task_prompt": "Finde und korrigiere die Fehler im folgenden Text:",
+        "sentence_task_prompt": "Baue einen Satz mit diesen Wörtern:",
+        "synant_task_prompt": "Finde Synonyme und Antonyme zu:",
+        "conjugation_task_prompt": "Konjugiere das Verb '{verb}' für die Person '{person}' in den folgenden Zeiten: Präsens, Imparfait, Futur, Perfekt, Subjonctif présent, Futur proche und Présent continu.",
     },
     "fr": {
         "app_title": "{language} — Tuteur de langue",
@@ -288,6 +304,14 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "quiz_score": "🎯 Score",
         "quiz_prompt_format": "Quel est le mot en {language} pour « {trans} » ?",
         "side_questions": "**Questions méta :**",
+        "writing_task_prompt": "Rédige un texte sur le thème : {theme}",
+        "cloze_vocab_heading": "Vocabulaire (alphabétique) :",
+        "cloze_use_these": "À utiliser",
+        "cloze_text_heading": "Texte à trous :",
+        "error_task_prompt": "Trouve et corrige les erreurs dans le texte suivant :",
+        "sentence_task_prompt": "Construis une phrase avec ces mots :",
+        "synant_task_prompt": "Trouve les synonymes et antonymes de :",
+        "conjugation_task_prompt": "Conjugue le verbe « {verb} » à la personne « {person} » aux temps suivants : présent, imparfait, futur, passé composé, subjonctif présent, futur proche, présent continu.",
     },
     "es": {
         "app_title": "{language} — Tutor de idiomas",
@@ -351,6 +375,14 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "quiz_score": "🎯 Puntuación",
         "quiz_prompt_format": "¿Cuál es la palabra en {language} para «{trans}»?",
         "side_questions": "**Preguntas laterales:**",
+        "writing_task_prompt": "Escribe un texto sobre el tema: {theme}",
+        "cloze_vocab_heading": "Vocabulario (alfabético):",
+        "cloze_use_these": "A utilizar",
+        "cloze_text_heading": "Texto con huecos:",
+        "error_task_prompt": "Encuentra y corrige los errores en el siguiente texto:",
+        "sentence_task_prompt": "Construye una frase con estas palabras:",
+        "synant_task_prompt": "Encuentra sinónimos y antónimos de:",
+        "conjugation_task_prompt": "Conjuga el verbo «{verb}» para la persona «{person}» en los siguientes tiempos: presente, pretérito imperfecto, futuro, pretérito perfecto, subjuntivo presente, futuro próximo, presente continuo.",
     },
 }
 
@@ -412,6 +444,241 @@ def detect_ui_language(
         if hit:
             return hit
     return DEFAULT_UI_LANG
+
+
+# -- Domain-label translations ------------------------------------------------
+# Internal keys stay in the original (German) form from src/config.py so the
+# rest of the code doesn't change — these dicts map them to per-UI-lang labels.
+
+# Learning-language names (keys from src.config.LANGUAGES).
+LANGUAGE_DISPLAY: dict[str, dict[str, str]] = {
+    "en": {
+        "französisch": "French", "englisch": "English", "spanisch": "Spanish",
+        "ukrainisch": "Ukrainian", "deutsch": "German",
+    },
+    "de": {
+        "französisch": "Französisch", "englisch": "Englisch", "spanisch": "Spanisch",
+        "ukrainisch": "Ukrainisch", "deutsch": "Deutsch",
+    },
+    "fr": {
+        "französisch": "français", "englisch": "anglais", "spanisch": "espagnol",
+        "ukrainisch": "ukrainien", "deutsch": "allemand",
+    },
+    "es": {
+        "französisch": "francés", "englisch": "inglés", "spanisch": "español",
+        "ukrainisch": "ucraniano", "deutsch": "alemán",
+    },
+}
+
+# The English form for use in LLM prompts (prompts are in English).
+LANGUAGE_IN_ENGLISH: dict[str, str] = LANGUAGE_DISPLAY["en"]
+
+
+# Sprachregister (7 levels from src.config.NIVEAU_LEVELS).
+NIVEAU_DISPLAY: dict[str, dict[str, str]] = {
+    "en": {
+        "Gossensprache/Kriminelle Sprache": "Criminal slang",
+        "Argot/Vulgär": "Vulgar slang",
+        "Umgangssprache": "Colloquial",
+        "Standardsprache": "Standard",
+        "Gehoben/Vornehm": "Formal / Elevated",
+        "Hohe Literatur": "Literary",
+        "Technisch": "Technical",
+    },
+    "de": {
+        "Gossensprache/Kriminelle Sprache": "Gossensprache/Kriminelle Sprache",
+        "Argot/Vulgär": "Argot/Vulgär",
+        "Umgangssprache": "Umgangssprache",
+        "Standardsprache": "Standardsprache",
+        "Gehoben/Vornehm": "Gehoben/Vornehm",
+        "Hohe Literatur": "Hohe Literatur",
+        "Technisch": "Technisch",
+    },
+    "fr": {
+        "Gossensprache/Kriminelle Sprache": "Argot criminel",
+        "Argot/Vulgär": "Argot / Vulgaire",
+        "Umgangssprache": "Familier",
+        "Standardsprache": "Standard",
+        "Gehoben/Vornehm": "Soutenu / Élevé",
+        "Hohe Literatur": "Littéraire",
+        "Technisch": "Technique",
+    },
+    "es": {
+        "Gossensprache/Kriminelle Sprache": "Argot criminal",
+        "Argot/Vulgär": "Argot / Vulgar",
+        "Umgangssprache": "Coloquial",
+        "Standardsprache": "Estándar",
+        "Gehoben/Vornehm": "Culto / Formal",
+        "Hohe Literatur": "Literario",
+        "Technisch": "Técnico",
+    },
+}
+
+
+# Themes (9 writing topics from src.config.THEMES).
+THEME_DISPLAY: dict[str, dict[str, str]] = {
+    "en": {
+        "Urlaub": "Vacation", "Schule": "School", "Essen": "Food", "Sport": "Sports",
+        "Kultur": "Culture", "Medien": "Media", "Raumfahrt": "Space travel",
+        "Business": "Business", "Politik": "Politics",
+    },
+    "de": {
+        "Urlaub": "Urlaub", "Schule": "Schule", "Essen": "Essen", "Sport": "Sport",
+        "Kultur": "Kultur", "Medien": "Medien", "Raumfahrt": "Raumfahrt",
+        "Business": "Business", "Politik": "Politik",
+    },
+    "fr": {
+        "Urlaub": "Vacances", "Schule": "École", "Essen": "Cuisine", "Sport": "Sport",
+        "Kultur": "Culture", "Medien": "Médias", "Raumfahrt": "Voyage spatial",
+        "Business": "Affaires", "Politik": "Politique",
+    },
+    "es": {
+        "Urlaub": "Vacaciones", "Schule": "Escuela", "Essen": "Comida", "Sport": "Deporte",
+        "Kultur": "Cultura", "Medien": "Medios", "Raumfahrt": "Viaje espacial",
+        "Business": "Negocios", "Politik": "Política",
+    },
+}
+
+
+# Mentor names (only the two generic ones translate — the rest are proper nouns).
+MENTOR_DISPLAY: dict[str, dict[str, str]] = {
+    "en": {
+        "Netter Lehrer": "Kind Teacher",
+        "Strenger Lehrer": "Strict Teacher",
+    },
+    "de": {
+        "Netter Lehrer": "Netter Lehrer",
+        "Strenger Lehrer": "Strenger Lehrer",
+    },
+    "fr": {
+        "Netter Lehrer": "Professeur sympathique",
+        "Strenger Lehrer": "Professeur sévère",
+    },
+    "es": {
+        "Netter Lehrer": "Profesor amable",
+        "Strenger Lehrer": "Profesor estricto",
+    },
+}
+
+
+# Mentor quotes per UI-lang. Proper nouns' famous quotes kept in their
+# canonical English form across all UI-langs (that's how they're best known).
+_EN_QUOTES = {
+    "Netter Lehrer": "Every mistake is a step forward.",
+    "Strenger Lehrer": "Precision is the courtesy of kings.",
+    "Dalai Lama": "Be kind whenever possible. It is always possible.",
+    "Vitalik Buterin": "Decentralization of power; centralization of knowledge.",
+    "Elon Musk": "When something is important enough, you do it even if the odds are not in your favor.",
+    "Jesus Christus": "The letter kills, the spirit gives life.",
+    "Chairman Mao": "A journey of a thousand miles begins with a single step.",
+    "Homer": "Even in sleep, sorrow descends upon our souls.",
+    "Konfuzius": "Learning without thought is labor lost; thought without learning is perilous.",
+    "Machiavelli": "Fortune favors the bold.",
+}
+
+QUOTE_DISPLAY: dict[str, dict[str, str]] = {
+    "en": _EN_QUOTES,
+    "de": {
+        "Netter Lehrer": "Jeder Fehler ist ein Schritt nach vorne.",
+        "Strenger Lehrer": "Präzision ist die Höflichkeit der Könige.",
+        "Dalai Lama": "Sei freundlich, wann immer es möglich ist. Es ist immer möglich.",
+        "Vitalik Buterin": "Dezentralisierung der Macht; Zentralisierung des Wissens.",
+        "Elon Musk": "Wenn etwas wichtig genug ist, tust du es auch gegen die Umstände.",
+        "Jesus Christus": "Der Buchstabe tötet, der Geist macht lebendig.",
+        "Chairman Mao": "Eine Reise von tausend Meilen beginnt mit dem ersten Schritt.",
+        "Homer": "Selbst im Schlaf fällt Trauer auf unsere Seele.",
+        "Konfuzius": "Lernen ohne Nachdenken ist vergeblich; Nachdenken ohne Lernen ist gefährlich.",
+        "Machiavelli": "Das Glück begünstigt die Wagemutigen.",
+    },
+    "fr": {
+        "Netter Lehrer": "Chaque erreur est un pas en avant.",
+        "Strenger Lehrer": "La précision est la politesse des rois.",
+        "Dalai Lama": "Sois bienveillant chaque fois que c'est possible. C'est toujours possible.",
+        "Vitalik Buterin": "Décentralisation du pouvoir ; centralisation du savoir.",
+        "Elon Musk": "Quand quelque chose est assez important, on le fait même si les chances sont contre nous.",
+        "Jesus Christus": "La lettre tue, l'esprit donne la vie.",
+        "Chairman Mao": "Un voyage de mille lieues commence par un premier pas.",
+        "Homer": "Même dans le sommeil, le chagrin descend sur nos âmes.",
+        "Konfuzius": "Apprendre sans réfléchir est vain ; réfléchir sans apprendre est dangereux.",
+        "Machiavelli": "La fortune sourit aux audacieux.",
+    },
+    "es": {
+        "Netter Lehrer": "Cada error es un paso adelante.",
+        "Strenger Lehrer": "La precisión es la cortesía de los reyes.",
+        "Dalai Lama": "Sé amable siempre que sea posible. Siempre lo es.",
+        "Vitalik Buterin": "Descentralización del poder; centralización del conocimiento.",
+        "Elon Musk": "Cuando algo es lo bastante importante, lo haces aunque las probabilidades estén en contra.",
+        "Jesus Christus": "La letra mata, el espíritu da vida.",
+        "Chairman Mao": "Un viaje de mil millas comienza con el primer paso.",
+        "Homer": "Incluso en el sueño, la tristeza desciende sobre nuestras almas.",
+        "Konfuzius": "Aprender sin reflexionar es vano; reflexionar sin aprender es peligroso.",
+        "Machiavelli": "La fortuna favorece a los audaces.",
+    },
+}
+
+
+# Model-tier labels (keys from src.config.MODEL_TIERS).
+TIER_DISPLAY: dict[str, dict[str, str]] = {
+    "en": {
+        "💰 Budget (Gemini Flash Lite)": "💰 Budget (Gemini Flash Lite)",
+        "⚖️ Balanced (Claude Haiku 4.5)": "⚖️ Balanced (Claude Haiku 4.5)",
+        "🚀 Premium (Mistral Large 3)": "🚀 Premium (Mistral Large 3)",
+        "👑 Best (Claude Sonnet 4.6)": "👑 Best (Claude Sonnet 4.6)",
+    },
+    "de": {
+        "💰 Budget (Gemini Flash Lite)": "💰 Günstig (Gemini Flash Lite)",
+        "⚖️ Balanced (Claude Haiku 4.5)": "⚖️ Ausgewogen (Claude Haiku 4.5)",
+        "🚀 Premium (Mistral Large 3)": "🚀 Premium (Mistral Large 3)",
+        "👑 Best (Claude Sonnet 4.6)": "👑 Bestes (Claude Sonnet 4.6)",
+    },
+    "fr": {
+        "💰 Budget (Gemini Flash Lite)": "💰 Économique (Gemini Flash Lite)",
+        "⚖️ Balanced (Claude Haiku 4.5)": "⚖️ Équilibré (Claude Haiku 4.5)",
+        "🚀 Premium (Mistral Large 3)": "🚀 Premium (Mistral Large 3)",
+        "👑 Best (Claude Sonnet 4.6)": "👑 Meilleur (Claude Sonnet 4.6)",
+    },
+    "es": {
+        "💰 Budget (Gemini Flash Lite)": "💰 Económico (Gemini Flash Lite)",
+        "⚖️ Balanced (Claude Haiku 4.5)": "⚖️ Equilibrado (Claude Haiku 4.5)",
+        "🚀 Premium (Mistral Large 3)": "🚀 Premium (Mistral Large 3)",
+        "👑 Best (Claude Sonnet 4.6)": "👑 Mejor (Claude Sonnet 4.6)",
+    },
+}
+
+
+def _lookup(table: dict[str, dict[str, str]], key: str, lang: str, fallback: str) -> str:
+    """Two-level lookup with safe fallback to fallback string."""
+    table_for_lang = table.get(lang) or table.get(DEFAULT_UI_LANG, {})
+    return table_for_lang.get(key, fallback)
+
+
+def language_display(key: str, lang: str) -> str:
+    return _lookup(LANGUAGE_DISPLAY, key, lang, key)
+
+
+def language_to_english(key: str) -> str:
+    return LANGUAGE_IN_ENGLISH.get(key, key.capitalize())
+
+
+def niveau_display(key: str, lang: str) -> str:
+    return _lookup(NIVEAU_DISPLAY, key, lang, key)
+
+
+def theme_display(key: str, lang: str) -> str:
+    return _lookup(THEME_DISPLAY, key, lang, key)
+
+
+def mentor_display(key: str, lang: str) -> str:
+    """Proper-noun mentors pass through; only 'Netter Lehrer' / 'Strenger Lehrer' translate."""
+    return _lookup(MENTOR_DISPLAY, key, lang, key)
+
+
+def quote_for(mentor_key: str, lang: str) -> str:
+    return _lookup(QUOTE_DISPLAY, mentor_key, lang, "")
+
+
+def tier_display(key: str, lang: str) -> str:
+    return _lookup(TIER_DISPLAY, key, lang, key)
 
 
 def t(key: str, lang: str = DEFAULT_UI_LANG, **fmt: object) -> str:
