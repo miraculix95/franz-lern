@@ -669,6 +669,51 @@ def _render_quiz(
             st.write(f"- {word}: {'✅' if ok else '❌'}")
 
 
+_PUNCT_DIFF_RE = None  # lazy-init in _tokenize
+
+
+def _tokenize_for_diff(s: str) -> list[str]:
+    """Split on whitespace but keep punctuation attached so 'Paris.' stays one token."""
+    return [tok for tok in s.strip().split() if tok]
+
+
+def _render_dictation_diff(original: str, user: str) -> None:
+    """Render a word-by-word diff: green for correct, red for wrong/extra, strikethrough for missing."""
+    import difflib
+    orig_tokens = _tokenize_for_diff(original)
+    user_tokens = _tokenize_for_diff(user)
+
+    matcher = difflib.SequenceMatcher(
+        None,
+        [t.lower().strip(".,;:!?\"'") for t in orig_tokens],
+        [t.lower().strip(".,;:!?\"'") for t in user_tokens],
+    )
+
+    rendered: list[str] = []
+    correct = 0
+    for tag, i1, i2, j1, j2 in matcher.get_opcodes():
+        if tag == "equal":
+            for tok in user_tokens[j1:j2]:
+                rendered.append(f":green[{tok}]")
+                correct += 1
+        elif tag == "replace":
+            for tok in user_tokens[j1:j2]:
+                rendered.append(f":red[{tok}]")
+            for tok in orig_tokens[i1:i2]:
+                rendered.append(f":orange[(→ {tok})]")
+        elif tag == "delete":
+            for tok in orig_tokens[i1:i2]:
+                rendered.append(f":gray[~~{tok}~~]")
+        elif tag == "insert":
+            for tok in user_tokens[j1:j2]:
+                rendered.append(f":red[+{tok}]")
+
+    total = len(orig_tokens)
+    pct = (correct / total * 100) if total else 0
+    st.markdown(f"**{correct} / {total} words correct — {pct:.0f}%**")
+    st.markdown(" ".join(rendered))
+
+
 def _render_dictation(
     client: openai.OpenAI, language_en: str, level: str, niveau: str,
     model: str, ui_lang: str,
@@ -737,11 +782,8 @@ def _render_dictation(
         st.markdown(f"**{t('dict_original', ui_lang)}**")
         st.info(st.session_state["dictation_text"])
         if transcript.strip():
-            # Quick char-diff count so learner sees how close they got.
             orig = st.session_state["dictation_text"].strip()
-            import difflib
-            ratio = difflib.SequenceMatcher(None, orig.lower(), transcript.strip().lower()).ratio()
-            st.metric("🎯", f"{ratio * 100:.1f}%")
+            _render_dictation_diff(orig, transcript.strip())
 
 
 def _render_radio(ui_lang: str) -> None:

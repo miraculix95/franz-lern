@@ -48,3 +48,26 @@ def test_score_answers_tolerates_missing_answer():
     result = score_answers(quiz, {})
     assert result.correct == 0
     assert result.per_word == {"maison": False}
+
+
+def test_score_accepts_trailing_punctuation():
+    quiz = {"maison": "Haus"}
+    assert score_answers(quiz, {"maison": "Haus."}).per_word["maison"] is True
+    assert score_answers(quiz, {"maison": "Haus!"}).per_word["maison"] is True
+
+
+def test_score_accepts_leading_article():
+    quiz = {"maison": "Haus"}
+    assert score_answers(quiz, {"maison": "das Haus"}).per_word["maison"] is True
+    assert score_answers(quiz, {"maison": "the house"}).per_word["maison"] is False  # wrong word
+
+
+def test_score_tolerates_single_typo():
+    quiz = {"voiture": "Auto"}
+    # "Autoo" — one extra char, ratio > 0.9
+    assert score_answers(quiz, {"voiture": "Autoo"}).per_word["voiture"] is True
+
+
+def test_score_rejects_unrelated_word():
+    quiz = {"voiture": "Auto"}
+    assert score_answers(quiz, {"voiture": "Hund"}).per_word["voiture"] is False

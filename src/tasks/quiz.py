@@ -12,10 +12,48 @@ from ~10s to ~1-2s.
 """
 from __future__ import annotations
 
+import difflib
 import json
 import random
+import re
 from dataclasses import dataclass
 from typing import Any
+
+_ARTICLES = {
+    # German
+    "der", "die", "das", "den", "dem", "des", "ein", "eine", "einen", "einem", "einer",
+    # English
+    "a", "an", "the",
+    # French
+    "le", "la", "les", "un", "une", "des", "l'", "du", "de",
+    # Spanish
+    "el", "los", "las", "una", "unos", "unas",
+    # Ukrainian: no articles (skip)
+}
+
+_PUNCT_RE = re.compile(r"[^\w\s'-]", re.UNICODE)
+
+_FUZZY_THRESHOLD = 0.85  # 0.9 was too strict for short words (Autoo vs Auto = 0.888)
+
+
+def _normalize(s: str) -> str:
+    """Lowercase, strip punctuation, drop leading articles."""
+    s = _PUNCT_RE.sub(" ", s.lower()).strip()
+    tokens = s.split()
+    if tokens and tokens[0] in _ARTICLES:
+        tokens = tokens[1:]
+    return " ".join(tokens).strip()
+
+
+def _is_match(user: str, expected: str, threshold: float = _FUZZY_THRESHOLD) -> bool:
+    """Fuzzy match: exact after normalization OR SequenceMatcher ratio ≥ threshold."""
+    u = _normalize(user)
+    e = _normalize(expected)
+    if not u:
+        return False
+    if u == e:
+        return True
+    return difflib.SequenceMatcher(None, u, e).ratio() >= threshold
 
 
 @dataclass
@@ -86,8 +124,14 @@ def build_quiz(
 
 
 def score_answers(quiz: dict[str, str], user_answers: dict[str, str]) -> QuizResult:
+    """Score a quiz tolerantly.
+
+    Accepts:
+    - exact match after normalization (case, punctuation, leading articles)
+    - fuzzy match with difflib ratio ≥ 0.9 (one typo OK, unrelated word NOT)
+    """
     per_word = {
-        word: user_answers.get(word, "").strip().lower() == translation.strip().lower()
+        word: _is_match(user_answers.get(word, ""), translation)
         for word, translation in quiz.items()
     }
     return QuizResult(
