@@ -1,0 +1,14 @@
+streamlit>=1.30
+openai>=1.10
+python-dotenv>=1.0
+newspaper3k>=0.2.8
+lxml_html_clean>=0.1
+requests>=2.31
+prompt_toolkit>=3.0
+# Radio/Audio (local-only, optional)
+pyaudio>=0.2.14
+pydub>=0.25
+mutagen>=1.47
+# Dev/test
+pytest>=8.0
+ruff>=0.3
