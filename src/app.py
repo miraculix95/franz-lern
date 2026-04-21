@@ -1,4 +1,4 @@
-"""Streamlit entrypoint for franz-lern.
+"""Streamlit entrypoint for lingua-app.
 
 Start::
 
@@ -56,6 +56,7 @@ from src.tasks import conjugation as conj_task  # noqa: E402
 from src.tasks import dictation as dict_task  # noqa: E402
 from src.tasks import error_detection as err_task  # noqa: E402
 from src.tasks import quiz as quiz_task  # noqa: E402
+from src.tasks import reading as reading_task  # noqa: E402
 from src.tasks import sentence_building as sent_task  # noqa: E402
 from src.tasks import synonym_antonym as syn_task  # noqa: E402
 from src.tasks import translation as trans_task  # noqa: E402
@@ -173,6 +174,36 @@ _DARK_CSS = """
 """
 
 
+_LIGHT_CSS = """
+<style>
+    /* Light-mode palette: Streamlit's default white is too glaring.
+       Main area = neutral-100 (#F3F4F6), sidebar = neutral-200 (#E5E7EB),
+       cards/inputs stay white for subtle contrast. */
+    [data-testid="stAppViewContainer"],
+    [data-testid="stApp"],
+    [data-testid="stHeader"] {
+        background-color: #F3F4F6 !important;
+    }
+    [data-testid="stSidebar"],
+    [data-testid="stSidebarContent"],
+    [data-testid="stSidebarHeader"] {
+        background-color: #E5E7EB !important;
+    }
+    .block-container {
+        background-color: #F3F4F6 !important;
+    }
+    /* Expanders / chat bubbles / alerts stay white so they pop against the grey bg. */
+    [data-testid="stExpander"],
+    [data-testid="stChatMessage"],
+    [data-testid="stAlert"],
+    [data-testid="stNotification"] {
+        background-color: #FFFFFF !important;
+        border: 1px solid #E5E7EB !important;
+    }
+</style>
+"""
+
+
 _MOBILE_CSS = """
 <style>
     /* ≤ 640px: shrink hero + metrics so first viewport isn't 80% headline */
@@ -270,6 +301,9 @@ def _apply_theme(learning_language: str = "", ui_lang: str = "en") -> None:
     # Default True — matches the sidebar toggle's initial value on main page.
     if st.session_state.get("dark_mode", True):
         st.markdown(_DARK_CSS, unsafe_allow_html=True)
+    else:
+        # Dial down Streamlit's stock white — users have complained it's glaring.
+        st.markdown(_LIGHT_CSS, unsafe_allow_html=True)
     if ui_lang == "he":
         st.markdown(_UI_RTL_CSS, unsafe_allow_html=True)
     elif learning_language in RTL_LANGUAGES:
@@ -277,7 +311,7 @@ def _apply_theme(learning_language: str = "", ui_lang: str = "en") -> None:
 
 
 def _parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="franz-lern Streamlit app")
+    parser = argparse.ArgumentParser(description="lingua-app Streamlit app")
     parser.add_argument("--language", default=DEFAULT_LANGUAGE)
     args, _unknown = parser.parse_known_args()
     if args.language not in LANGUAGES:
@@ -362,6 +396,9 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str, st
     state = st.session_state["state"]
 
     with st.sidebar:
+        # Clear panel label — users don't always realise the left strip is the settings panel.
+        st.markdown(f"## {t('sidebar_heading', ui_lang)}")
+
         # Dark mode first — users can switch theme before any other widget loads.
         # Default ON (Bastian's pref); toggle persists once touched.
         st.toggle(t("dark_mode", ui_lang), value=st.session_state.get("dark_mode", True), key="dark_mode")
@@ -374,6 +411,7 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str, st
             lang_labels,
             index=lang_labels.index(current_label),
             key="ui_lang_label",
+            help=t("help_ui_language", ui_lang),
         )
 
         # Learning language — user can switch the target without restarting.
@@ -384,6 +422,7 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str, st
             learn_displays,
             index=current_learn_idx,
             key="learning_lang_display",
+            help=t("help_learning_language", ui_lang),
         )
         # Resolve picked display back to internal key and persist.
         picked_learn_key = LANGUAGES[learn_displays.index(picked_learn_display)]
@@ -393,6 +432,15 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str, st
             state.vocab_list = []
             state.task = ""
             state.auto_gen_vocabs = False
+            # Also bust task-specific caches: their payload (audio, quiz, passage) is
+            # baked in the previous learning language and must not leak across a switch.
+            for cache_key in (
+                "dictation_bytes", "dictation_text", "dictation_revealed", "dictation_history",
+                "current_quiz", "quiz_answers",
+                "reading_passage", "reading_questions", "reading_mc_choices",
+                "reading_open_answers", "reading_results", "reading_reveal",
+            ):
+                st.session_state.pop(cache_key, None)
             st.rerun()
 
         language_localized = language_display(picked_learn_key, ui_lang)
@@ -404,14 +452,21 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str, st
         with st.expander(t("coach_and_style", ui_lang), expanded=True):
             # Mentor: show translated label, store original key internally
             mentor_displays = [mentor_display(m, ui_lang) for m in MENTORS]
-            mentor_pick = st.selectbox(t("coach", ui_lang), mentor_displays, index=0, key="mentor_display")
+            mentor_pick = st.selectbox(
+                t("coach", ui_lang), mentor_displays, index=0, key="mentor_display",
+                help=t("help_coach", ui_lang),
+            )
             mentor = MENTORS[mentor_displays.index(mentor_pick)]
 
-            level = st.selectbox(t("level", ui_lang), LEVELS, index=2, key="level")
+            level = st.selectbox(
+                t("level", ui_lang), LEVELS, index=2, key="level",
+                help=t("help_level", ui_lang),
+            )
 
             niveau_displays = [niveau_display(n, ui_lang) for n in NIVEAU_LEVELS]
             niveau_pick = st.selectbox(
                 t("register", ui_lang), niveau_displays, index=3, key="niveau_display",
+                help=t("help_register", ui_lang),
             )
             niveau = NIVEAU_LEVELS[niveau_displays.index(niveau_pick)]
 
@@ -425,9 +480,16 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str, st
             number_of_words = st.number_input(
                 t("num_vocab", ui_lang), min_value=1, max_value=200, value=state.number_of_words,
                 key="number_of_words",
+                help=t("help_num_vocab", ui_lang),
             )
-            url_extract = st.text_input(t("webpage_url", ui_lang), placeholder="https://...")
-            uploaded_vocab = st.file_uploader(t("ready_vocab_file", ui_lang), type=["txt"])
+            url_extract = st.text_input(
+                t("webpage_url", ui_lang), placeholder="https://...",
+                help=t("help_url", ui_lang),
+            )
+            uploaded_vocab = st.file_uploader(
+                t("ready_vocab_file", ui_lang), type=["txt"],
+                help=t("help_ready_vocab", ui_lang),
+            )
 
         with st.expander(t("model_api", ui_lang), expanded=False):
             api_key_input = st.text_input(
@@ -459,6 +521,7 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str, st
             )
             tier_pick = st.selectbox(
                 t("model_tier", ui_lang), tier_displays, index=default_idx, key="tier_display",
+                help=t("help_model_tier", ui_lang),
             )
             tier_key = tier_keys[tier_displays.index(tier_pick)]
             model = MODEL_TIERS[tier_key]
@@ -486,6 +549,23 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str, st
     state.uploaded_vocab_file_trigger = uploaded_vocab
     state.url_extract_trigger = url_extract
     state.number_of_words = number_of_words
+
+    # Secondary cache-bust: any of (level, niveau, mentor) changed since last render →
+    # nuke task-render caches (dictation audio, quiz, reading passage/questions, current
+    # task text). Vocab stays — user may want the same words at a new level/register.
+    # Language change is handled earlier with its own vocab-reset + st.rerun().
+    current_secondary = (level, niveau, mentor)
+    last_secondary = st.session_state.get("_last_secondary_params")
+    if last_secondary is not None and last_secondary != current_secondary:
+        for cache_key in (
+            "dictation_bytes", "dictation_text", "dictation_revealed", "dictation_history",
+            "current_quiz", "quiz_answers",
+            "reading_passage", "reading_questions", "reading_mc_choices",
+            "reading_open_answers", "reading_results", "reading_reveal",
+        ):
+            st.session_state.pop(cache_key, None)
+        state.task = ""
+    st.session_state["_last_secondary_params"] = current_secondary
 
     return mentor, level, niveau, model, picked_learn_key
 
@@ -618,7 +698,10 @@ def _correction_panel(
         placeholder=t("your_answer_placeholder", ui_lang, language=language.capitalize()),
     )
 
-    if st.button(t("correct_btn", ui_lang), type="primary", use_container_width=True):
+    if st.button(
+        t("correct_btn", ui_lang), type="primary", use_container_width=True,
+        help=t("help_correct", ui_lang),
+    ):
         state.user_text = user_text
         ui_lang_name = UI_LANG_NAMES.get(ui_lang, "English")
         lang_en = language_to_english(language)
@@ -745,14 +828,19 @@ def _render_main_page() -> None:
     lang_en = language_to_english(language)
     _handle_vocab_sources(client, language, level, model, ui_lang)
 
+    st.info(t("how_it_works", ui_lang), icon="🎓")
     st.divider()
+    st.markdown(f"## {t('main_heading', ui_lang)}")
     task_names = task_names_for(ui_lang)
-    task_label = st.selectbox(t("choose_exercise", ui_lang), task_names, key="task_type_sel")
+    task_label = st.selectbox(
+        t("choose_exercise", ui_lang), task_names, key="task_type_sel",
+        help=t("help_choose_exercise", ui_lang),
+    )
     task_idx = task_names.index(task_label) if task_label in task_names else 0
     task_key = TASK_KEYS[task_idx]
 
     vocab_missing = not state.vocab_list
-    needs_vocab = task_key not in ("", "writing")
+    needs_vocab = task_key not in ("", "writing", "reading")
     if vocab_missing and needs_vocab:
         st.info(t("no_vocab_info", ui_lang))
         if st.button(t("autogen_vocab_btn", ui_lang), type="primary"):
@@ -772,12 +860,14 @@ def _render_main_page() -> None:
     if task_key == "cloze":
         state.number_trous = st.number_input(
             t("num_blanks", ui_lang), min_value=3, max_value=20, value=state.number_trous,
+            help=t("help_num_blanks", ui_lang),
         )
         st.caption(t("cloze_freeform_hint", ui_lang))
     elif task_key == "translation":
         col_n, col_dir = st.columns([1, 2])
         state.number_sentences = col_n.number_input(
             t("num_sentences", ui_lang), min_value=1, max_value=20, value=state.number_sentences,
+            help=t("help_num_sentences", ui_lang),
         )
         ui_lang_name = UI_LANG_NAMES.get(ui_lang, "English")
         learning_localized = language_display(language, ui_lang)
@@ -799,8 +889,13 @@ def _render_main_page() -> None:
         _render_quiz(client, lang_en, model, ui_lang, display_lang=language_display(language, ui_lang))
     elif task_key == "dictation":
         _render_dictation(client, lang_en, level, niveau, model, ui_lang)
+    elif task_key == "reading":
+        _render_reading(client, lang_en, level, niveau, model, ui_lang)
     elif task_key:
-        if st.button(t("new_task_btn", ui_lang), type="primary", use_container_width=True) or not state.task:
+        if st.button(
+            t("new_task_btn", ui_lang), type="primary", use_container_width=True,
+            help=t("help_new_task", ui_lang),
+        ) or not state.task:
             _generate_task(task_key, task_label, client, language, level, niveau, model, ui_lang)
 
         _correction_panel(client, language, niveau, mentor, model, ui_lang)
@@ -896,7 +991,9 @@ def _render_dictation(
     else:
         st.caption(t("el_source_env", ui_lang))
 
-    if st.button(t("dict_generate", ui_lang), type="primary") or "dictation_bytes" not in st.session_state:
+    if st.button(
+        t("dict_generate", ui_lang), type="primary", help=t("help_dict_generate", ui_lang),
+    ) or "dictation_bytes" not in st.session_state:
         try:
             with st.status(t("dict_status_text", ui_lang), expanded=False) as status:
                 recent = st.session_state.get("dictation_history", [])
@@ -925,6 +1022,7 @@ def _render_dictation(
     # Speed slider + HTML5 audio (native st.audio has no playbackRate).
     speed = st.select_slider(
         t("dict_speed", ui_lang), options=[0.5, 0.75, 1.0, 1.25, 1.5], value=1.0, key="dict_speed",
+        help=t("help_dict_speed", ui_lang),
     )
     audio_b64 = base64.b64encode(audio_bytes).decode("ascii")
     player_html = f"""
@@ -951,6 +1049,209 @@ def _render_dictation(
         if transcript.strip():
             orig = st.session_state["dictation_text"].strip()
             _render_dictation_diff(orig, transcript.strip())
+
+
+def _render_reading(
+    client: openai.OpenAI, language_en: str, level: str, niveau: str,
+    model: str, ui_lang: str,
+) -> None:
+    """Reading-comprehension exercise: source a text, then MC + open questions."""
+    state = st.session_state["state"]
+    ui_lang_name = UI_LANG_NAMES.get(ui_lang, "English")
+
+    source_labels = {
+        "ai": t("read_source_ai", ui_lang),
+        "url": t("read_source_url", ui_lang),
+        "paste": t("read_source_paste", ui_lang),
+        "file": t("read_source_file", ui_lang),
+    }
+    source_pick = st.radio(
+        t("read_source", ui_lang),
+        list(source_labels.values()),
+        horizontal=True,
+        key="read_source_pick",
+        help=t("help_read_source", ui_lang),
+    )
+    source_key = next(k for k, v in source_labels.items() if v == source_pick)
+
+    passage_text: str | None = None
+
+    if source_key == "ai":
+        length_labels = {
+            "short": t("read_length_short", ui_lang),
+            "medium": t("read_length_medium", ui_lang),
+            "long": t("read_length_long", ui_lang),
+        }
+        length_pick = st.select_slider(
+            t("read_length", ui_lang), options=list(length_labels.values()),
+            value=length_labels["medium"], key="read_length_pick",
+            help=t("help_read_length", ui_lang),
+        )
+        length_key = next(k for k, v in length_labels.items() if v == length_pick)
+        theme_input = st.text_input(
+            t("read_theme", ui_lang),
+            value=st.session_state.get("read_theme_input", ""),
+            placeholder="e.g. climate, philosophy, everyday life",
+            key="read_theme_input",
+            help=t("help_read_theme", ui_lang),
+        )
+        theme = theme_input.strip() or "everyday life"
+    elif source_key == "url":
+        st.text_input(
+            "URL", placeholder=t("read_url_placeholder", ui_lang),
+            key="read_url_input",
+        )
+    elif source_key == "paste":
+        st.text_area(
+            t("read_source_paste", ui_lang),
+            placeholder=t("read_paste_placeholder", ui_lang),
+            height=200, key="read_paste_input",
+        )
+    else:  # file
+        st.file_uploader(
+            t("read_source_file", ui_lang), type=["txt"], key="read_file_input",
+        )
+
+    if st.button(
+        t("read_generate", ui_lang), type="primary", use_container_width=True,
+        help=t("help_read_generate", ui_lang),
+    ):
+        # Source the passage
+        try:
+            if source_key == "ai":
+                with st.status(t("read_status_text", ui_lang), expanded=False) as status:
+                    passage_text = reading_task.generate_text(
+                        client, language=language_en, level=level, niveau=niveau,
+                        theme=theme, length=length_key, model=model,
+                    )
+                    status.update(label=t("read_status_ready", ui_lang), state="complete")
+            elif source_key == "url":
+                url_val = (st.session_state.get("read_url_input") or "").strip()
+                if not url_val:
+                    st.warning(t("read_need_passage", ui_lang))
+                    return
+                with st.status(t("read_status_fetch", ui_lang), expanded=False) as status:
+                    from src.vocab import fetch_article_text
+                    try:
+                        passage_text = fetch_article_text(url_val)
+                    except Exception as exc:  # noqa: BLE001 - surface any fetch error
+                        status.update(label="❌", state="error")
+                        st.error(t("read_url_failed", ui_lang, err=str(exc)))
+                        return
+                    status.update(label=t("read_status_ready", ui_lang), state="complete")
+            elif source_key == "paste":
+                paste_val = (st.session_state.get("read_paste_input") or "").strip()
+                if not paste_val:
+                    st.warning(t("read_need_passage", ui_lang))
+                    return
+                passage_text = paste_val
+            else:
+                upload = st.session_state.get("read_file_input")
+                if not upload:
+                    st.warning(t("read_need_passage", ui_lang))
+                    return
+                passage_text = upload.read().decode("utf-8").strip()
+        except Exception as exc:  # noqa: BLE001
+            st.error(str(exc))
+            return
+
+        # Draft the questions
+        with st.status(t("read_status_questions", ui_lang), expanded=False) as status:
+            questions = reading_task.generate_questions(
+                client, text=passage_text, language=language_en, model=model,
+                ui_language_name=ui_lang_name,
+            )
+            status.update(label=t("read_status_ready", ui_lang), state="complete")
+
+        st.session_state["reading_passage"] = passage_text
+        st.session_state["reading_questions"] = questions
+        st.session_state["reading_mc_choices"] = [None] * len(questions.multiple_choice)
+        st.session_state["reading_open_answers"] = [""] * len(questions.open_questions)
+        st.session_state.pop("reading_results", None)
+        st.session_state.pop("reading_reveal", None)
+        state.num_tasks_generated = getattr(state, "num_tasks_generated", 0) + 1
+
+    passage = st.session_state.get("reading_passage")
+    if not passage:
+        return
+    questions: reading_task.ReadingQuestions | None = st.session_state.get("reading_questions")
+    if questions is None:
+        return
+
+    st.markdown(f"### {t('read_passage_heading', ui_lang)}")
+    st.markdown(passage)
+
+    # Multiple choice
+    st.markdown(f"### {t('read_mc_heading', ui_lang)}")
+    mc_choices: list[int | None] = list(st.session_state.get("reading_mc_choices", []))
+    for i, q in enumerate(questions.multiple_choice):
+        options = q.get("options", [])
+        kind = q.get("kind", "")
+        label = f"**{i + 1}.** {q.get('question', '')}  _(`{kind}`)_"
+        # Use a placeholder-None via a non-selectable sentinel so the user has to pick.
+        picked = st.radio(
+            label, options=options, index=None,
+            key=f"read_mc_{i}", horizontal=False,
+        )
+        mc_choices[i] = options.index(picked) if picked in options else None
+    st.session_state["reading_mc_choices"] = mc_choices
+
+    # Open questions
+    st.markdown(f"### {t('read_open_heading', ui_lang)}")
+    open_answers: list[str] = list(st.session_state.get("reading_open_answers", []))
+    for i, q in enumerate(questions.open_questions):
+        kind = q.get("kind", "")
+        label = f"**{i + 1}.** {q.get('question', '')}  _(`{kind}`)_"
+        open_answers[i] = st.text_area(
+            label, value=open_answers[i] if i < len(open_answers) else "",
+            height=100, key=f"read_open_{i}",
+        )
+    st.session_state["reading_open_answers"] = open_answers
+
+    if st.button(t("read_submit", ui_lang), type="primary", help=t("help_read_submit", ui_lang)):
+        mc_result = reading_task.score_mc(questions.multiple_choice, mc_choices)
+        open_evals: list[reading_task.OpenEvaluation] = []
+        with st.status(t("read_status_questions", ui_lang), expanded=False) as status:
+            for q, answer in zip(questions.open_questions, open_answers, strict=False):
+                open_evals.append(
+                    reading_task.evaluate_open(
+                        client, text=passage,
+                        question=q.get("question", ""),
+                        reference_answer=q.get("reference_answer", ""),
+                        user_answer=answer, language=language_en, model=model,
+                        ui_language_name=ui_lang_name,
+                    )
+                )
+            status.update(label=t("status_feedback_ready", ui_lang), state="complete")
+        st.session_state["reading_results"] = {
+            "mc": mc_result,
+            "open": open_evals,
+        }
+        state.num_corrections = getattr(state, "num_corrections", 0) + 1
+
+    results = st.session_state.get("reading_results")
+    if results:
+        mc: reading_task.MCResult = results["mc"]
+        st.metric(t("read_score", ui_lang), f"{mc.correct} / {mc.total}")
+        for i, (q, ok) in enumerate(zip(questions.multiple_choice, mc.per_question, strict=False)):
+            mark = "✅" if ok else "❌"
+            correct_opt = q.get("options", [])[q.get("correct_index", 0)]
+            rationale = q.get("rationale", "")
+            if ok:
+                st.markdown(f"{mark} **{i + 1}.** {q.get('question', '')}")
+            else:
+                st.markdown(
+                    f"{mark} **{i + 1}.** {q.get('question', '')}  \n"
+                    f"→ **{correct_opt}** — *{rationale}*"
+                )
+        st.markdown(f"### {t('read_open_feedback', ui_lang)}")
+        for i, (q, ev) in enumerate(zip(questions.open_questions, results["open"], strict=False)):
+            verdict_label = t(f"read_verdict_{ev.verdict}", ui_lang)
+            st.markdown(f"**{i + 1}.** {q.get('question', '')}  \n{verdict_label}")
+            if ev.feedback:
+                st.markdown(f"> {ev.feedback}")
+            with st.expander(t("read_reference_answer", ui_lang)):
+                st.markdown(q.get("reference_answer", ""))
 
 
 if __name__ == "__main__":

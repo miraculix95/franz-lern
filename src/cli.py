@@ -1,4 +1,4 @@
-"""Command-line variant of franz-lern.
+"""Command-line variant of lingua-app.
 
 Subset of the Streamlit app — text-based loop with multi-line input via
 prompt_toolkit. Shares the same prompts, vocab, correction and task modules.

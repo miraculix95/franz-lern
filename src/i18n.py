@@ -46,6 +46,7 @@ TASK_KEYS: list[str] = [
     "synonym",
     "conjugation",
     "dictation",
+    "reading",
 ]
 
 
@@ -61,6 +62,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Synonyms and antonyms",
         "Verb conjugation",
         "Dictation (audio)",
+        "Reading comprehension",
     ],
     "de": [
         "",
@@ -73,6 +75,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Synonyme und Antonyme",
         "Verb konjugieren",
         "Diktat (Audio)",
+        "Leseverstehen",
     ],
     "fr": [
         "",
@@ -85,6 +88,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Synonymes et antonymes",
         "Conjugaison des verbes",
         "Dictée (audio)",
+        "Compréhension écrite",
     ],
     "es": [
         "",
@@ -97,6 +101,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Sinónimos y antónimos",
         "Conjugación de verbos",
         "Dictado (audio)",
+        "Comprensión lectora",
     ],
     "uk": [
         "",
@@ -109,6 +114,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Синоніми та антоніми",
         "Дієвідмінювання",
         "Диктант (аудіо)",
+        "Читання з розумінням",
     ],
     "pl": [
         "",
@@ -121,6 +127,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Synonimy i antonimy",
         "Koniugacja czasowników",
         "Dyktando (audio)",
+        "Czytanie ze zrozumieniem",
     ],
     "he": [
         "",
@@ -133,6 +140,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "מילים נרדפות ומנוגדות",
         "הטיית פעלים",
         "הכתבה (אודיו)",
+        "הבנת הנקרא",
     ],
 }
 
@@ -160,7 +168,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "webpage_url": "Webpage URL",
         "ready_vocab_file": "Ready vocab file",
         "api_key": "🔑 OpenRouter API key",
-        "api_key_help": "Your key. Stays in session, never stored. Get one at openrouter.ai/keys.",
+        "api_key_help": "🧪 Beta tester? Leave empty — the server key will be used. Otherwise: your key, stays in session, never stored. Get one at openrouter.ai/keys.",
         "model_tier": "Model tier",
         "key_source_byok": "✅ Your key (BYOK)",
         "key_source_or": "🔑 Server .env (OpenRouter)",
@@ -248,16 +256,17 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **Seven learning languages** — French, English, Spanish, Ukrainian, German, Polish, Hebrew.\n"
             "- **Four UI languages** — English, German, French, Spanish, with IP-based auto-detection.\n\n"
             "### Author\n"
-            "Built by **Bastian** ([GitHub: miraculix95](https://github.com/miraculix95)), "
+            "Built by **Bastian** ([GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)), "
             "a Munich-based freelance AI/Python developer. Originally written in early 2025 as a "
             "personal tool for French C1 practice; refactored in 2026 into this modular, tested, "
             "multilingual release.\n\n"
             "### Source code\n"
-            "Open source under MIT on GitHub. Issues, PRs, and feedback welcome."
+            "[lingua-app on GitHub](https://github.com/miraculix95/lingua-app) — open source under MIT. Issues, PRs, and feedback welcome."
         ),
         "setup_guide_title": "🚀 First time here? Setup in 2 min",
         "setup_guide_body": (
-            "**1. Get an OpenRouter API key** (required)\n\n"
+            "> 🧪 **Beta tester? No key required.** Skip step 1 — the app uses a shared server key. Jump to step 4.\n\n"
+            "**1. Get an OpenRouter API key** (only for non-beta users)\n\n"
             "- Go to [openrouter.ai/keys](https://openrouter.ai/keys) and sign in (Google, GitHub, or email)\n"
             "- Click **Create Key**, copy it (starts with `sk-or-...`)\n"
             "- Add $5 credit under **Settings → Credits** — lasts for hundreds of exercises\n"
@@ -271,6 +280,61 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "el_source_byok": "🎙️ Voice: your ElevenLabs key (BYOK)",
         "el_source_env": "🎙️ Voice: server .env ElevenLabs",
+        "sidebar_heading": "⚙️ Configuration",
+        "main_heading": "🎯 Practice area",
+        "how_it_works": "👈 **Step 1 — Sidebar:** set your coach, level, register, vocabulary source and API key. **Step 2 — here:** pick an exercise below and click **New task**.",
+        "help_ui_language": "Language of buttons, labels and feedback.",
+        "help_learning_language": "The language you want to practise. Switch any time — vocabulary resets on change.",
+        "help_coach": "The persona writing your correction. Style only — grammar rules stay the same.",
+        "help_level": "Your CEFR level (A1 beginner → C2 near-native). Texts and questions scale to it.",
+        "help_register": "Which social register the LLM should use and correct against, from street slang to technical prose.",
+        "help_num_vocab": "How many vocab items to extract / generate from the source.",
+        "help_url": "Paste a news/article URL — the app extracts vocabulary from it.",
+        "help_ready_vocab": "Upload a plain-text file with one vocabulary item per line.",
+        "help_model_tier": "Budget is the cheapest; Best is most accurate. Non-English languages auto-use a stronger default.",
+        "help_choose_exercise": "Each exercise uses the same vocabulary and settings from the sidebar.",
+        "help_new_task": "Re-roll a fresh task with the current settings.",
+        "help_correct": "Send your answer to the coach for correction.",
+        "help_num_blanks": "How many cloze blanks to produce.",
+        "help_num_sentences": "How many translation sentences to produce.",
+        "help_dict_generate": "The LLM writes a short text, ElevenLabs speaks it. You transcribe, the app diffs.",
+        "help_dict_speed": "Slow down or speed up the voice without changing pitch.",
+        "help_read_source": "Where the passage comes from: AI-generated, a webpage, pasted text, or an uploaded .txt.",
+        "help_read_length": "Rough word count for the AI-generated passage.",
+        "help_read_theme": "Optional topic seed — e.g. 'climate', 'urbanism', 'childhood'.",
+        "help_read_generate": "Pulls the text and drafts multiple-choice + open questions.",
+        "help_read_submit": "Evaluate: MC is scored locally, open answers are graded by the LLM against a reference.",
+        "read_source": "📖 Text source",
+        "read_source_ai": "Generate with AI",
+        "read_source_url": "Fetch from URL",
+        "read_source_paste": "Paste text",
+        "read_source_file": "Upload .txt",
+        "read_length": "📏 Length",
+        "read_length_short": "Short (~150 words)",
+        "read_length_medium": "Medium (~350 words)",
+        "read_length_long": "Long (~600 words)",
+        "read_theme": "🎯 Theme",
+        "read_url_placeholder": "https://…",
+        "read_paste_placeholder": "Paste the text to read here…",
+        "read_generate": "📖 Get passage & questions",
+        "read_status_text": "🧠 Writing the passage…",
+        "read_status_fetch": "🌐 Fetching the page…",
+        "read_status_questions": "🧠 Drafting questions…",
+        "read_status_ready": "✅ Passage and questions ready",
+        "read_passage_heading": "Passage",
+        "read_mc_heading": "Multiple choice",
+        "read_open_heading": "Open-ended",
+        "read_submit": "✅ Evaluate",
+        "read_score": "🎯 MC score",
+        "read_open_feedback": "Open answers",
+        "read_need_passage": "No passage yet. Generate or load one first.",
+        "read_url_failed": "❌ Could not fetch that URL: {err}",
+        "read_verdict_CORRECT": "✅ Correct",
+        "read_verdict_PARTIAL": "🟡 Partially correct",
+        "read_verdict_INCORRECT": "❌ Incorrect",
+        "read_verdict_ERROR": "⚠️ Could not grade",
+        "read_reveal_answers": "🔍 Show correct MC answers",
+        "read_reference_answer": "Reference answer",
     },
     "de": {
         "app_title": "{language} — Lernprogramm",
@@ -290,7 +354,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "webpage_url": "Webseite-URL",
         "ready_vocab_file": "Fertige Vokabel-Datei",
         "api_key": "🔑 OpenRouter API-Key",
-        "api_key_help": "Dein Key. Bleibt in Session, wird nie gespeichert. Hol einen auf openrouter.ai/keys.",
+        "api_key_help": "🧪 Beta-Tester? Leer lassen — der Server-Key wird genutzt. Sonst: dein Key, bleibt in Session, wird nie gespeichert. Hol einen auf openrouter.ai/keys.",
         "model_tier": "Modell-Tier",
         "key_source_byok": "✅ Dein Key (BYOK)",
         "key_source_or": "🔑 Server .env (OpenRouter)",
@@ -378,16 +442,17 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **Sieben Lernsprachen** — Französisch, Englisch, Spanisch, Ukrainisch, Deutsch, Polnisch, Hebräisch.\n"
             "- **Vier UI-Sprachen** — Englisch, Deutsch, Französisch, Spanisch, mit IP-basierter Auto-Erkennung.\n\n"
             "### Autor\n"
-            "Gebaut von **Bastian** ([GitHub: miraculix95](https://github.com/miraculix95)), "
+            "Gebaut von **Bastian** ([GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)), "
             "freiberuflicher KI/Python-Entwickler in München. Urspünglich Anfang 2025 als "
             "persönliches Tool für Französisch-C1 geschrieben; 2026 als modulares, getestetes, "
             "mehrsprachiges Release refactored.\n\n"
             "### Quellcode\n"
-            "Open Source unter MIT-Lizenz auf GitHub. Issues, PRs und Feedback willkommen."
+            "[lingua-app auf GitHub](https://github.com/miraculix95/lingua-app) — Open Source unter MIT-Lizenz. Issues, PRs und Feedback willkommen."
         ),
         "setup_guide_title": "🚀 Zum ersten Mal hier? Setup in 2 Minuten",
         "setup_guide_body": (
-            "**1. OpenRouter-API-Key holen** (Pflicht)\n\n"
+            "> 🧪 **Beta-Tester? Kein Key nötig.** Schritt 1 überspringen — die App nutzt einen gemeinsamen Server-Key. Direkt zu Schritt 4.\n\n"
+            "**1. OpenRouter-API-Key holen** (nur für Nicht-Beta-User)\n\n"
             "- Auf [openrouter.ai/keys](https://openrouter.ai/keys) gehen und einloggen (Google, GitHub oder Email)\n"
             "- **Create Key** klicken, Key kopieren (beginnt mit `sk-or-...`)\n"
             "- Unter **Settings → Credits** $5 Guthaben einzahlen — reicht für hunderte Aufgaben\n"
@@ -401,6 +466,61 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "el_source_byok": "🎙️ Stimme: dein ElevenLabs-Key (BYOK)",
         "el_source_env": "🎙️ Stimme: Server .env ElevenLabs",
+        "sidebar_heading": "⚙️ Konfiguration",
+        "main_heading": "🎯 Übungsbereich",
+        "how_it_works": "👈 **Schritt 1 — Sidebar:** Coach, Niveau, Register, Vokabelquelle und API-Key einstellen. **Schritt 2 — hier:** Übung auswählen und **Neue Aufgabe** klicken.",
+        "help_ui_language": "Sprache der Buttons, Labels und Korrekturen.",
+        "help_learning_language": "Die Sprache, die du üben willst. Jederzeit umschaltbar — Vokabeln werden beim Wechsel geleert.",
+        "help_coach": "Die Persona, die deine Korrektur schreibt. Reiner Stil — die Grammatikregeln bleiben.",
+        "help_level": "Dein CEFR-Niveau (A1 Anfänger → C2 nahe Muttersprache). Texte und Fragen skalieren damit.",
+        "help_register": "Welches Sprachregister das LLM nutzt und gegen das es korrigiert — von Gossensprache bis Fachsprache.",
+        "help_num_vocab": "Wie viele Vokabeln aus der Quelle extrahiert/generiert werden.",
+        "help_url": "Füge eine Artikel-URL ein — die App extrahiert daraus Vokabeln.",
+        "help_ready_vocab": "Textdatei mit einer Vokabel pro Zeile hochladen.",
+        "help_model_tier": "Budget ist am günstigsten, Best am genauesten. Für nicht-englische Sprachen ist der Default stärker voreingestellt.",
+        "help_choose_exercise": "Alle Übungen nutzen dieselbe Vokabelliste und Sidebar-Einstellungen.",
+        "help_new_task": "Eine neue Aufgabe mit den aktuellen Einstellungen würfeln.",
+        "help_correct": "Antwort an den Coach zur Korrektur schicken.",
+        "help_num_blanks": "Wie viele Lücken der Text haben soll.",
+        "help_num_sentences": "Wie viele Sätze zum Übersetzen erzeugt werden.",
+        "help_dict_generate": "Das LLM schreibt einen kurzen Text, ElevenLabs spricht ihn. Du schreibst mit, die App vergleicht.",
+        "help_dict_speed": "Stimme verlangsamen oder beschleunigen, ohne die Tonhöhe zu ändern.",
+        "help_read_source": "Woher der Text kommt: KI-generiert, Webseite, eingefügter Text oder hochgeladene .txt.",
+        "help_read_length": "Ungefähre Wortzahl für den KI-generierten Text.",
+        "help_read_theme": "Optionales Thema — z.B. 'Klima', 'Städtebau', 'Kindheit'.",
+        "help_read_generate": "Holt den Text und erzeugt Multiple-Choice- und offene Fragen.",
+        "help_read_submit": "Auswerten: MC wird lokal gezählt, offene Antworten bewertet das LLM gegen eine Referenz.",
+        "read_source": "📖 Textquelle",
+        "read_source_ai": "KI generieren lassen",
+        "read_source_url": "Von URL laden",
+        "read_source_paste": "Text einfügen",
+        "read_source_file": ".txt hochladen",
+        "read_length": "📏 Länge",
+        "read_length_short": "Kurz (~150 Wörter)",
+        "read_length_medium": "Mittel (~350 Wörter)",
+        "read_length_long": "Lang (~600 Wörter)",
+        "read_theme": "🎯 Thema",
+        "read_url_placeholder": "https://…",
+        "read_paste_placeholder": "Text zum Lesen hier einfügen…",
+        "read_generate": "📖 Text & Fragen erzeugen",
+        "read_status_text": "🧠 Text wird geschrieben…",
+        "read_status_fetch": "🌐 Seite wird geladen…",
+        "read_status_questions": "🧠 Fragen werden erstellt…",
+        "read_status_ready": "✅ Text und Fragen bereit",
+        "read_passage_heading": "Text",
+        "read_mc_heading": "Multiple Choice",
+        "read_open_heading": "Offene Fragen",
+        "read_submit": "✅ Auswerten",
+        "read_score": "🎯 MC-Ergebnis",
+        "read_open_feedback": "Offene Antworten",
+        "read_need_passage": "Noch kein Text. Erst generieren oder laden.",
+        "read_url_failed": "❌ URL konnte nicht geladen werden: {err}",
+        "read_verdict_CORRECT": "✅ Richtig",
+        "read_verdict_PARTIAL": "🟡 Teilweise richtig",
+        "read_verdict_INCORRECT": "❌ Falsch",
+        "read_verdict_ERROR": "⚠️ Konnte nicht bewertet werden",
+        "read_reveal_answers": "🔍 Richtige MC-Antworten zeigen",
+        "read_reference_answer": "Musterantwort",
     },
     "fr": {
         "app_title": "{language} — Tuteur de langue",
@@ -420,7 +540,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "webpage_url": "URL de la page",
         "ready_vocab_file": "Fichier de vocabulaire",
         "api_key": "🔑 Clé API OpenRouter",
-        "api_key_help": "Ta clé. Reste en session, jamais stockée. Obtiens-en une sur openrouter.ai/keys.",
+        "api_key_help": "🧪 Beta-testeur ? Laisse vide — la clé du serveur sera utilisée. Sinon : ta clé, reste en session, jamais stockée. Obtiens-en une sur openrouter.ai/keys.",
         "model_tier": "Palier du modèle",
         "key_source_byok": "✅ Ta clé (BYOK)",
         "key_source_or": "🔑 Serveur .env (OpenRouter)",
@@ -513,11 +633,12 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "outil personnel pour s'entraîner en français C1 ; refactoré en 2026 en une version "
             "modulaire, testée et multilingue.\n\n"
             "### Code source\n"
-            "Open source sous licence MIT sur GitHub. Issues, PRs et retours bienvenus."
+            "[lingua-app sur GitHub](https://github.com/miraculix95/lingua-app) — open source sous licence MIT. Issues, PRs et retours bienvenus."
         ),
         "setup_guide_title": "🚀 Première visite ? Configuration en 2 min",
         "setup_guide_body": (
-            "**1. Obtiens une clé API OpenRouter** (obligatoire)\n\n"
+            "> 🧪 **Beta-testeur ? Pas besoin de clé.** Saute l'étape 1 — l'app utilise une clé serveur partagée. Va directement à l'étape 4.\n\n"
+            "**1. Obtiens une clé API OpenRouter** (uniquement pour non-beta)\n\n"
             "- Va sur [openrouter.ai/keys](https://openrouter.ai/keys) et connecte-toi (Google, GitHub ou email)\n"
             "- Clique **Create Key**, copie la clé (commence par `sk-or-...`)\n"
             "- Ajoute 5 $ de crédit sous **Settings → Credits** — suffit pour des centaines d'exercices\n"
@@ -531,6 +652,61 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "el_source_byok": "🎙️ Voix : ta clé ElevenLabs (BYOK)",
         "el_source_env": "🎙️ Voix : .env serveur ElevenLabs",
+        "sidebar_heading": "⚙️ Configuration",
+        "main_heading": "🎯 Espace d'exercices",
+        "how_it_works": "👈 **Étape 1 — barre latérale :** choisis coach, niveau, registre, source de vocabulaire et clé API. **Étape 2 — ici :** choisis un exercice ci-dessous et clique sur **Nouvelle tâche**.",
+        "help_ui_language": "Langue des boutons, libellés et corrections.",
+        "help_learning_language": "La langue que tu veux pratiquer. Modifiable à tout moment — le vocabulaire est réinitialisé.",
+        "help_coach": "La persona qui écrit ta correction. Style uniquement — les règles de grammaire ne changent pas.",
+        "help_level": "Ton niveau CECR (A1 débutant → C2 quasi-natif). Textes et questions s'adaptent.",
+        "help_register": "Le registre visé par le modèle — de l'argot à la prose technique.",
+        "help_num_vocab": "Combien de mots extraire/générer depuis la source.",
+        "help_url": "Colle une URL d'article — l'app en extrait le vocabulaire.",
+        "help_ready_vocab": "Un fichier texte, un mot par ligne.",
+        "help_model_tier": "Budget = le moins cher ; Best = le plus précis. Pour les langues non-anglaises, un modèle plus fort est sélectionné par défaut.",
+        "help_choose_exercise": "Chaque exercice utilise le même vocabulaire et les réglages de la barre latérale.",
+        "help_new_task": "Regénérer une tâche avec les réglages actuels.",
+        "help_correct": "Envoyer ta réponse au coach pour correction.",
+        "help_num_blanks": "Combien de trous dans le texte.",
+        "help_num_sentences": "Combien de phrases à traduire.",
+        "help_dict_generate": "Le LLM écrit un court texte, ElevenLabs le prononce. Tu transcris, l'app compare.",
+        "help_dict_speed": "Ralentir ou accélérer la voix sans changer le ton.",
+        "help_read_source": "D'où vient le texte : généré par IA, page web, texte collé, ou .txt importé.",
+        "help_read_length": "Nombre approximatif de mots pour le texte généré par IA.",
+        "help_read_theme": "Thème optionnel — ex. « climat », « urbanisme », « enfance ».",
+        "help_read_generate": "Récupère le texte et rédige les questions (QCM + ouvertes).",
+        "help_read_submit": "Évaluer : QCM compté localement, réponses ouvertes notées par le LLM contre une référence.",
+        "read_source": "📖 Source du texte",
+        "read_source_ai": "Générer avec l'IA",
+        "read_source_url": "Charger depuis une URL",
+        "read_source_paste": "Coller un texte",
+        "read_source_file": "Importer un .txt",
+        "read_length": "📏 Longueur",
+        "read_length_short": "Court (~150 mots)",
+        "read_length_medium": "Moyen (~350 mots)",
+        "read_length_long": "Long (~600 mots)",
+        "read_theme": "🎯 Thème",
+        "read_url_placeholder": "https://…",
+        "read_paste_placeholder": "Colle ici le texte à lire…",
+        "read_generate": "📖 Générer texte & questions",
+        "read_status_text": "🧠 Rédaction du texte…",
+        "read_status_fetch": "🌐 Chargement de la page…",
+        "read_status_questions": "🧠 Rédaction des questions…",
+        "read_status_ready": "✅ Texte et questions prêts",
+        "read_passage_heading": "Texte",
+        "read_mc_heading": "QCM",
+        "read_open_heading": "Questions ouvertes",
+        "read_submit": "✅ Évaluer",
+        "read_score": "🎯 Score QCM",
+        "read_open_feedback": "Réponses ouvertes",
+        "read_need_passage": "Pas encore de texte. Génère-en un ou charges-en un d'abord.",
+        "read_url_failed": "❌ URL impossible à charger : {err}",
+        "read_verdict_CORRECT": "✅ Correct",
+        "read_verdict_PARTIAL": "🟡 Partiellement correct",
+        "read_verdict_INCORRECT": "❌ Incorrect",
+        "read_verdict_ERROR": "⚠️ Impossible à noter",
+        "read_reveal_answers": "🔍 Afficher les bonnes réponses QCM",
+        "read_reference_answer": "Réponse de référence",
     },
     "es": {
         "app_title": "{language} — Tutor de idiomas",
@@ -550,7 +726,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "webpage_url": "URL de la página",
         "ready_vocab_file": "Archivo de vocabulario",
         "api_key": "🔑 Clave API de OpenRouter",
-        "api_key_help": "Tu clave. Solo en la sesión, nunca se guarda. Consigue una en openrouter.ai/keys.",
+        "api_key_help": "🧪 ¿Beta-tester? Déjalo vacío — se usa la clave del servidor. Si no: tu clave, solo en la sesión, nunca se guarda. Consigue una en openrouter.ai/keys.",
         "model_tier": "Nivel del modelo",
         "key_source_byok": "✅ Tu clave (BYOK)",
         "key_source_or": "🔑 Servidor .env (OpenRouter)",
@@ -638,16 +814,17 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **Siete idiomas a aprender** — francés, inglés, español, ucraniano, alemán, polaco, hebreo.\n"
             "- **Cuatro idiomas de interfaz** — inglés, alemán, francés, español, con detección automática por IP.\n\n"
             "### Autor\n"
-            "Creado por **Bastian** ([GitHub: miraculix95](https://github.com/miraculix95)), "
+            "Creado por **Bastian** ([GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)), "
             "desarrollador IA/Python independiente en Múnich. Escrito originalmente a principios de "
             "2025 como herramienta personal para practicar francés C1; refactorizado en 2026 en "
             "esta versión modular, testada y multilingüe.\n\n"
             "### Código fuente\n"
-            "Open source bajo licencia MIT en GitHub. Issues, PRs y feedback son bienvenidos."
+            "[lingua-app en GitHub](https://github.com/miraculix95/lingua-app) — open source bajo licencia MIT. Issues, PRs y feedback son bienvenidos."
         ),
         "setup_guide_title": "🚀 ¿Primera vez aquí? Configuración en 2 min",
         "setup_guide_body": (
-            "**1. Consigue una clave API de OpenRouter** (obligatorio)\n\n"
+            "> 🧪 **¿Beta-tester? No hace falta clave.** Salta el paso 1 — la app usa una clave del servidor compartida. Pasa directamente al paso 4.\n\n"
+            "**1. Consigue una clave API de OpenRouter** (solo para no-beta)\n\n"
             "- Ve a [openrouter.ai/keys](https://openrouter.ai/keys) e inicia sesión (Google, GitHub o email)\n"
             "- Haz clic en **Create Key**, copia la clave (empieza por `sk-or-...`)\n"
             "- Añade 5 $ de crédito en **Settings → Credits** — alcanza para cientos de ejercicios\n"
@@ -661,6 +838,61 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         ),
         "el_source_byok": "🎙️ Voz: tu clave ElevenLabs (BYOK)",
         "el_source_env": "🎙️ Voz: .env servidor ElevenLabs",
+        "sidebar_heading": "⚙️ Configuración",
+        "main_heading": "🎯 Área de práctica",
+        "how_it_works": "👈 **Paso 1 — barra lateral:** configura coach, nivel, registro, fuente de vocabulario y clave API. **Paso 2 — aquí:** elige un ejercicio abajo y pulsa **Nueva tarea**.",
+        "help_ui_language": "Idioma de botones, etiquetas y correcciones.",
+        "help_learning_language": "El idioma que quieres practicar. Cambiable en cualquier momento — el vocabulario se reinicia.",
+        "help_coach": "La persona que escribe tu corrección. Solo estilo — la gramática no cambia.",
+        "help_level": "Tu nivel MCER (A1 principiante → C2 casi nativo). Textos y preguntas se ajustan.",
+        "help_register": "Registro social que el LLM usa y corrige — de la jerga callejera a la prosa técnica.",
+        "help_num_vocab": "Cuántas palabras extraer/generar de la fuente.",
+        "help_url": "Pega la URL de un artículo — la app extrae vocabulario de ahí.",
+        "help_ready_vocab": "Archivo de texto, una palabra por línea.",
+        "help_model_tier": "Budget es el más barato; Best el más preciso. Para idiomas no-ingleses se usa un modelo más fuerte por defecto.",
+        "help_choose_exercise": "Todos los ejercicios usan el mismo vocabulario y ajustes de la barra lateral.",
+        "help_new_task": "Regenerar una tarea con los ajustes actuales.",
+        "help_correct": "Enviar tu respuesta al coach para corregir.",
+        "help_num_blanks": "Cuántos huecos tendrá el texto.",
+        "help_num_sentences": "Cuántas frases para traducir.",
+        "help_dict_generate": "El LLM escribe un texto corto, ElevenLabs lo pronuncia. Tú transcribes, la app compara.",
+        "help_dict_speed": "Ralentizar o acelerar la voz sin cambiar el tono.",
+        "help_read_source": "De dónde viene el texto: generado por IA, página web, texto pegado, o .txt subido.",
+        "help_read_length": "Número aproximado de palabras para el texto generado por IA.",
+        "help_read_theme": "Tema opcional — p. ej. «clima», «urbanismo», «infancia».",
+        "help_read_generate": "Obtiene el texto y redacta preguntas (MC + abiertas).",
+        "help_read_submit": "Evaluar: MC se cuenta localmente, las respuestas abiertas las califica el LLM contra una referencia.",
+        "read_source": "📖 Fuente del texto",
+        "read_source_ai": "Generar con IA",
+        "read_source_url": "Cargar desde URL",
+        "read_source_paste": "Pegar texto",
+        "read_source_file": "Subir .txt",
+        "read_length": "📏 Longitud",
+        "read_length_short": "Corto (~150 palabras)",
+        "read_length_medium": "Medio (~350 palabras)",
+        "read_length_long": "Largo (~600 palabras)",
+        "read_theme": "🎯 Tema",
+        "read_url_placeholder": "https://…",
+        "read_paste_placeholder": "Pega aquí el texto para leer…",
+        "read_generate": "📖 Generar texto y preguntas",
+        "read_status_text": "🧠 Redactando el texto…",
+        "read_status_fetch": "🌐 Cargando la página…",
+        "read_status_questions": "🧠 Redactando preguntas…",
+        "read_status_ready": "✅ Texto y preguntas listos",
+        "read_passage_heading": "Texto",
+        "read_mc_heading": "Opción múltiple",
+        "read_open_heading": "Preguntas abiertas",
+        "read_submit": "✅ Evaluar",
+        "read_score": "🎯 Puntuación MC",
+        "read_open_feedback": "Respuestas abiertas",
+        "read_need_passage": "Aún no hay texto. Genera o carga uno primero.",
+        "read_url_failed": "❌ No se pudo cargar la URL: {err}",
+        "read_verdict_CORRECT": "✅ Correcto",
+        "read_verdict_PARTIAL": "🟡 Parcialmente correcto",
+        "read_verdict_INCORRECT": "❌ Incorrecto",
+        "read_verdict_ERROR": "⚠️ No se pudo evaluar",
+        "read_reveal_answers": "🔍 Mostrar respuestas MC correctas",
+        "read_reference_answer": "Respuesta de referencia",
     },
     "uk": {
         "app_title": "{language} — Мовний тренер",
@@ -680,7 +912,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "webpage_url": "URL сторінки",
         "ready_vocab_file": "Готовий файл словника",
         "api_key": "🔑 API-ключ OpenRouter",
-        "api_key_help": "Твій ключ. Тільки в сесії, ніколи не зберігається. Отримай на openrouter.ai/keys.",
+        "api_key_help": "🧪 Бета-тестер? Залиш порожнім — використається ключ сервера. Інакше: твій ключ, тільки в сесії, ніколи не зберігається. Отримай на openrouter.ai/keys.",
         "model_tier": "Рівень моделі",
         "key_source_byok": "✅ Твій ключ (BYOK)",
         "key_source_or": "🔑 Сервер .env (OpenRouter)",
@@ -770,14 +1002,15 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **Сім мов для вивчення** — французька, англійська, іспанська, українська, німецька, польська, іврит.\n"
             "- **Чотири мови інтерфейсу** (плюс українська, польська, іврит) з авто-визначенням за IP.\n\n"
             "### Автор\n"
-            "Створено **Бастіаном** ([GitHub: miraculix95](https://github.com/miraculix95)), "
+            "Створено **Бастіаном** ([GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)), "
             "фріланс-розробником AI/Python з Мюнхена.\n\n"
             "### Сирцевий код\n"
-            "Open source під ліцензією MIT на GitHub. Issues, PR та фідбек вітаються."
+            "[lingua-app на GitHub](https://github.com/miraculix95/lingua-app) — open source під ліцензією MIT. Issues, PR та фідбек вітаються."
         ),
         "setup_guide_title": "🚀 Вперше тут? Налаштування за 2 хвилини",
         "setup_guide_body": (
-            "**1. Отримай API-ключ OpenRouter** (обов'язково)\n\n"
+            "> 🧪 **Бета-тестер? Ключ не потрібен.** Пропусти крок 1 — застосунок використовує спільний ключ сервера. Переходь одразу до кроку 4.\n\n"
+            "**1. Отримай API-ключ OpenRouter** (лише для не-бета користувачів)\n\n"
             "- Перейди на [openrouter.ai/keys](https://openrouter.ai/keys) і увійди (Google, GitHub або email)\n"
             "- Натисни **Create Key**, скопіюй ключ (починається з `sk-or-...`)\n"
             "- Додай $5 кредиту в **Settings → Credits** — вистачить на сотні вправ\n"
@@ -789,6 +1022,61 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "**3. Ключі залишаються тільки в твоїй сесії браузера** — нічого не зберігається і не логується на сервері.\n\n"
             "**4. Вибери мову вивчення, рівень і тип вправи.** Словник генерується автоматично, якщо не завантажиш свій."
         ),
+        "sidebar_heading": "⚙️ Налаштування",
+        "main_heading": "🎯 Зона вправ",
+        "how_it_works": "👈 **Крок 1 — бічна панель:** налаштуй коуча, рівень, регістр, джерело словника та API-ключ. **Крок 2 — тут:** обери вправу нижче та натисни **Нове завдання**.",
+        "help_ui_language": "Мова кнопок, підписів і відгуків.",
+        "help_learning_language": "Мова, яку ти хочеш практикувати. Змінюй коли завгодно — словник обнуляється.",
+        "help_coach": "Персона, що пише твою корекцію. Лише стиль — правила граматики ті самі.",
+        "help_level": "Твій рівень CEFR (A1 початківець → C2 майже носій). Тексти й питання підлаштовуються.",
+        "help_register": "Соціальний регістр, який використовує LLM — від вуличного сленгу до технічної прози.",
+        "help_num_vocab": "Скільки слів витягнути/згенерувати з джерела.",
+        "help_url": "Встав URL статті — застосунок витягне словник.",
+        "help_ready_vocab": "Текстовий файл, одне слово на рядок.",
+        "help_model_tier": "Budget — найдешевший, Best — найточніший. Для неанглійських мов за замовчуванням сильніша модель.",
+        "help_choose_exercise": "Усі вправи використовують той самий словник і налаштування бічної панелі.",
+        "help_new_task": "Згенерувати нове завдання з поточними налаштуваннями.",
+        "help_correct": "Надіслати відповідь коучу на корекцію.",
+        "help_num_blanks": "Скільки пропусків у тексті.",
+        "help_num_sentences": "Скільки речень для перекладу.",
+        "help_dict_generate": "LLM пише короткий текст, ElevenLabs озвучує. Ти транскрибуєш, застосунок порівнює.",
+        "help_dict_speed": "Сповільнити чи прискорити голос без зміни тону.",
+        "help_read_source": "Звідки текст: згенерований ШІ, веб-сторінка, вставлений текст або .txt.",
+        "help_read_length": "Приблизна кількість слів для згенерованого ШІ тексту.",
+        "help_read_theme": "Необов'язкова тема — напр. «клімат», «містобудування», «дитинство».",
+        "help_read_generate": "Отримує текст і складає питання (тест + відкриті).",
+        "help_read_submit": "Оцінити: тест рахується локально, відкриті відповіді оцінює LLM за еталоном.",
+        "read_source": "📖 Джерело тексту",
+        "read_source_ai": "Згенерувати ШІ",
+        "read_source_url": "Завантажити з URL",
+        "read_source_paste": "Вставити текст",
+        "read_source_file": "Завантажити .txt",
+        "read_length": "📏 Довжина",
+        "read_length_short": "Короткий (~150 слів)",
+        "read_length_medium": "Середній (~350 слів)",
+        "read_length_long": "Довгий (~600 слів)",
+        "read_theme": "🎯 Тема",
+        "read_url_placeholder": "https://…",
+        "read_paste_placeholder": "Встав тут текст для читання…",
+        "read_generate": "📖 Згенерувати текст і питання",
+        "read_status_text": "🧠 Пишу текст…",
+        "read_status_fetch": "🌐 Завантажую сторінку…",
+        "read_status_questions": "🧠 Складаю питання…",
+        "read_status_ready": "✅ Текст і питання готові",
+        "read_passage_heading": "Текст",
+        "read_mc_heading": "Множинний вибір",
+        "read_open_heading": "Відкриті питання",
+        "read_submit": "✅ Оцінити",
+        "read_score": "🎯 Бали за тест",
+        "read_open_feedback": "Відкриті відповіді",
+        "read_need_passage": "Тексту ще немає. Згенеруй або завантаж спочатку.",
+        "read_url_failed": "❌ Не вдалося завантажити URL: {err}",
+        "read_verdict_CORRECT": "✅ Правильно",
+        "read_verdict_PARTIAL": "🟡 Частково правильно",
+        "read_verdict_INCORRECT": "❌ Неправильно",
+        "read_verdict_ERROR": "⚠️ Не вдалося оцінити",
+        "read_reveal_answers": "🔍 Показати правильні відповіді",
+        "read_reference_answer": "Еталонна відповідь",
     },
     "pl": {
         "app_title": "{language} — Tutor językowy",
@@ -808,7 +1096,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "webpage_url": "URL strony",
         "ready_vocab_file": "Gotowy plik słownictwa",
         "api_key": "🔑 Klucz API OpenRouter",
-        "api_key_help": "Twój klucz. Tylko w sesji, nigdy nie zapisywany. Pobierz na openrouter.ai/keys.",
+        "api_key_help": "🧪 Beta-tester? Zostaw puste — użyty zostanie klucz serwera. Inaczej: Twój klucz, tylko w sesji, nigdy nie zapisywany. Pobierz na openrouter.ai/keys.",
         "model_tier": "Poziom modelu",
         "key_source_byok": "✅ Twój klucz (BYOK)",
         "key_source_or": "🔑 Serwer .env (OpenRouter)",
@@ -898,14 +1186,15 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **Siedem języków do nauki** — francuski, angielski, hiszpański, ukraiński, niemiecki, polski, hebrajski.\n"
             "- **Siedem języków interfejsu** z automatycznym wykrywaniem po IP.\n\n"
             "### Autor\n"
-            "Stworzony przez **Bastiana** ([GitHub: miraculix95](https://github.com/miraculix95)), "
+            "Stworzony przez **Bastiana** ([GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)), "
             "freelance'owego developera AI/Python z Monachium.\n\n"
             "### Kod źródłowy\n"
-            "Open source na licencji MIT na GitHubie. Issues, PR-y i feedback mile widziane."
+            "[lingua-app na GitHubie](https://github.com/miraculix95/lingua-app) — open source na licencji MIT. Issues, PR-y i feedback mile widziane."
         ),
         "setup_guide_title": "🚀 Pierwszy raz tutaj? Konfiguracja w 2 min",
         "setup_guide_body": (
-            "**1. Zdobądź klucz API OpenRouter** (wymagane)\n\n"
+            "> 🧪 **Beta-tester? Klucz niepotrzebny.** Pomiń krok 1 — aplikacja korzysta ze współdzielonego klucza serwera. Przejdź od razu do kroku 4.\n\n"
+            "**1. Zdobądź klucz API OpenRouter** (tylko dla użytkowników spoza bety)\n\n"
             "- Wejdź na [openrouter.ai/keys](https://openrouter.ai/keys) i zaloguj się (Google, GitHub lub email)\n"
             "- Kliknij **Create Key**, skopiuj go (zaczyna się od `sk-or-...`)\n"
             "- Dodaj 5 $ kredytu w **Settings → Credits** — starczy na setki ćwiczeń\n"
@@ -917,6 +1206,61 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "**3. Klucze zostają tylko w Twojej sesji przeglądarki** — nic nie jest zapisywane ani logowane po stronie serwera.\n\n"
             "**4. Wybierz język nauki, poziom i typ ćwiczenia.** Słownictwo generuje się automatycznie, jeśli nie załadujesz własnego."
         ),
+        "sidebar_heading": "⚙️ Konfiguracja",
+        "main_heading": "🎯 Obszar ćwiczeń",
+        "how_it_works": "👈 **Krok 1 — pasek boczny:** ustaw coacha, poziom, rejestr, źródło słownictwa i klucz API. **Krok 2 — tutaj:** wybierz ćwiczenie poniżej i kliknij **Nowe zadanie**.",
+        "help_ui_language": "Język przycisków, etykiet i korekt.",
+        "help_learning_language": "Język, który chcesz ćwiczyć. Można zmienić w dowolnej chwili — słownictwo jest resetowane.",
+        "help_coach": "Persona pisząca twoją korektę. Tylko styl — reguły gramatyki się nie zmieniają.",
+        "help_level": "Twój poziom CEFR (A1 początkujący → C2 prawie native). Teksty i pytania się dopasowują.",
+        "help_register": "Rejestr społeczny, którego używa LLM — od slangu ulicznego do prozy technicznej.",
+        "help_num_vocab": "Ile słówek wydobyć/wygenerować ze źródła.",
+        "help_url": "Wklej URL artykułu — aplikacja wydobędzie słownictwo.",
+        "help_ready_vocab": "Plik tekstowy, jedno słowo na linię.",
+        "help_model_tier": "Budget jest najtańszy, Best najdokładniejszy. Dla języków innych niż angielski domyślnie mocniejszy model.",
+        "help_choose_exercise": "Wszystkie ćwiczenia korzystają z tej samej listy słówek i ustawień paska bocznego.",
+        "help_new_task": "Wygeneruj nowe zadanie z aktualnymi ustawieniami.",
+        "help_correct": "Wyślij odpowiedź do coacha do korekty.",
+        "help_num_blanks": "Ile luk w tekście.",
+        "help_num_sentences": "Ile zdań do tłumaczenia.",
+        "help_dict_generate": "LLM pisze krótki tekst, ElevenLabs go czyta. Ty transkrybujesz, aplikacja porównuje.",
+        "help_dict_speed": "Zwolnij lub przyspiesz głos bez zmiany tonu.",
+        "help_read_source": "Skąd tekst: wygenerowany przez AI, strona WWW, wklejony tekst lub przesłany .txt.",
+        "help_read_length": "Przybliżona liczba słów w tekście generowanym przez AI.",
+        "help_read_theme": "Opcjonalny temat — np. 'klimat', 'urbanistyka', 'dzieciństwo'.",
+        "help_read_generate": "Pobiera tekst i układa pytania (wielokrotny wybór + otwarte).",
+        "help_read_submit": "Oceń: MC liczone lokalnie, odpowiedzi otwarte ocenia LLM na tle wzorca.",
+        "read_source": "📖 Źródło tekstu",
+        "read_source_ai": "Wygeneruj przez AI",
+        "read_source_url": "Załaduj z URL",
+        "read_source_paste": "Wklej tekst",
+        "read_source_file": "Prześlij .txt",
+        "read_length": "📏 Długość",
+        "read_length_short": "Krótki (~150 słów)",
+        "read_length_medium": "Średni (~350 słów)",
+        "read_length_long": "Długi (~600 słów)",
+        "read_theme": "🎯 Temat",
+        "read_url_placeholder": "https://…",
+        "read_paste_placeholder": "Wklej tu tekst do przeczytania…",
+        "read_generate": "📖 Wygeneruj tekst i pytania",
+        "read_status_text": "🧠 Piszę tekst…",
+        "read_status_fetch": "🌐 Ładuję stronę…",
+        "read_status_questions": "🧠 Układam pytania…",
+        "read_status_ready": "✅ Tekst i pytania gotowe",
+        "read_passage_heading": "Tekst",
+        "read_mc_heading": "Wielokrotny wybór",
+        "read_open_heading": "Pytania otwarte",
+        "read_submit": "✅ Oceń",
+        "read_score": "🎯 Wynik MC",
+        "read_open_feedback": "Odpowiedzi otwarte",
+        "read_need_passage": "Brak tekstu. Najpierw wygeneruj lub załaduj.",
+        "read_url_failed": "❌ Nie udało się wczytać URL: {err}",
+        "read_verdict_CORRECT": "✅ Poprawne",
+        "read_verdict_PARTIAL": "🟡 Częściowo poprawne",
+        "read_verdict_INCORRECT": "❌ Niepoprawne",
+        "read_verdict_ERROR": "⚠️ Nie udało się ocenić",
+        "read_reveal_answers": "🔍 Pokaż poprawne odpowiedzi MC",
+        "read_reference_answer": "Odpowiedź wzorcowa",
     },
     "he": {
         "app_title": "{language} — מורה לשפה",
@@ -936,7 +1280,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "webpage_url": "כתובת URL של דף",
         "ready_vocab_file": "קובץ אוצר מילים מוכן",
         "api_key": "🔑 מפתח API של OpenRouter",
-        "api_key_help": "המפתח שלך. נשאר בסשן בלבד, אף פעם לא נשמר. השג באתר openrouter.ai/keys.",
+        "api_key_help": "🧪 בודק בטא? השאר ריק — ישמש המפתח של השרת. אחרת: המפתח שלך, נשאר בסשן בלבד, אף פעם לא נשמר. השג באתר openrouter.ai/keys.",
         "model_tier": "דרגת מודל",
         "key_source_byok": "✅ המפתח שלך (BYOK)",
         "key_source_or": "🔑 שרת .env (OpenRouter)",
@@ -1022,14 +1366,15 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **שבע שפות ללימוד** — צרפתית, אנגלית, ספרדית, אוקראינית, גרמנית, פולנית, עברית.\n"
             "- **שבע שפות ממשק** עם זיהוי אוטומטי לפי IP.\n\n"
             "### המחבר\n"
-            "נבנה על ידי **בסטיאן** ([GitHub: miraculix95](https://github.com/miraculix95)), "
+            "נבנה על ידי **בסטיאן** ([GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)), "
             "מפתח AI/Python עצמאי ממינכן.\n\n"
             "### קוד מקור\n"
-            "קוד פתוח ברישיון MIT ב-GitHub. Issues, PRs ופידבק יתקבלו בברכה."
+            "[lingua-app ב-GitHub](https://github.com/miraculix95/lingua-app) — קוד פתוח ברישיון MIT. Issues, PRs ופידבק יתקבלו בברכה."
         ),
         "setup_guide_title": "🚀 פעם ראשונה כאן? הגדרה ב-2 דקות",
         "setup_guide_body": (
-            "**1. השג מפתח API של OpenRouter** (חובה)\n\n"
+            "> 🧪 **בודק בטא? לא נחוץ מפתח.** דלג על שלב 1 — האפליקציה משתמשת במפתח שרת משותף. עבור ישר לשלב 4.\n\n"
+            "**1. השג מפתח API של OpenRouter** (רק למשתמשים שאינם בטא)\n\n"
             "- עבור אל [openrouter.ai/keys](https://openrouter.ai/keys) והתחבר (Google, GitHub או מייל)\n"
             "- לחץ על **Create Key**, העתק אותו (מתחיל ב-`sk-or-...`)\n"
             "- הוסף 5$ קרדיט תחת **Settings → Credits** — מספיק למאות תרגילים\n"
@@ -1041,6 +1386,61 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "**3. המפתחות שלך נשארים רק בסשן הדפדפן** — שום דבר לא נשמר ולא נרשם בצד השרת.\n\n"
             "**4. בחר שפה ללימוד, רמה וסוג תרגיל.** אוצר המילים נוצר אוטומטית אם לא תטען משלך."
         ),
+        "sidebar_heading": "⚙️ הגדרות",
+        "main_heading": "🎯 אזור תרגול",
+        "how_it_works": "👈 **שלב 1 — סרגל צד:** הגדר מאמן, רמה, רגיסטר, מקור אוצר מילים ומפתח API. **שלב 2 — כאן:** בחר תרגיל מטה ולחץ **משימה חדשה**.",
+        "help_ui_language": "שפת הכפתורים, התוויות והמשובים.",
+        "help_learning_language": "השפה שאתה רוצה לתרגל. ניתן להחליף בכל עת — אוצר המילים מתאפס.",
+        "help_coach": "הפרסונה שכותבת את התיקון. סגנון בלבד — חוקי הדקדוק נשארים.",
+        "help_level": "רמת ה-CEFR שלך (A1 מתחיל → C2 כמעט שפת אם). טקסטים ושאלות מותאמים.",
+        "help_register": "הרגיסטר החברתי שבו ה-LLM כותב ומתקן — מסלנג רחוב עד פרוזה טכנית.",
+        "help_num_vocab": "כמה מילים לחלץ/לייצר מהמקור.",
+        "help_url": "הדבק URL של מאמר — האפליקציה תחלץ אוצר מילים.",
+        "help_ready_vocab": "קובץ טקסט, מילה אחת בכל שורה.",
+        "help_model_tier": "Budget הוא הזול ביותר; Best המדויק ביותר. לשפות שאינן אנגלית ברירת המחדל היא מודל חזק יותר.",
+        "help_choose_exercise": "כל התרגילים משתמשים באותו אוצר מילים והגדרות הסרגל הצדי.",
+        "help_new_task": "הפק משימה חדשה עם ההגדרות הנוכחיות.",
+        "help_correct": "שלח את התשובה למאמן לתיקון.",
+        "help_num_blanks": "כמה חורים בטקסט.",
+        "help_num_sentences": "כמה משפטים לתרגום.",
+        "help_dict_generate": "ה-LLM כותב טקסט קצר, ElevenLabs מקריא. אתה מתמלל, האפליקציה משווה.",
+        "help_dict_speed": "להאט או להאיץ את הקול בלי לשנות את הגובה.",
+        "help_read_source": "מאיפה הטקסט: שנוצר ע\"י AI, אתר, טקסט מודבק או קובץ .txt.",
+        "help_read_length": "מספר מילים משוער לטקסט שנוצר ע\"י AI.",
+        "help_read_theme": "נושא אופציונלי — למשל 'אקלים', 'עירוניות', 'ילדות'.",
+        "help_read_generate": "מביא את הטקסט ומנסח שאלות (רב-ברירה + פתוחות).",
+        "help_read_submit": "הערכה: רב-ברירה נספר מקומית, תשובות פתוחות מוערכות ע\"י ה-LLM מול תשובה מדגמית.",
+        "read_source": "📖 מקור הטקסט",
+        "read_source_ai": "הפק באמצעות AI",
+        "read_source_url": "טען מ-URL",
+        "read_source_paste": "הדבק טקסט",
+        "read_source_file": "העלה .txt",
+        "read_length": "📏 אורך",
+        "read_length_short": "קצר (~150 מילים)",
+        "read_length_medium": "בינוני (~350 מילים)",
+        "read_length_long": "ארוך (~600 מילים)",
+        "read_theme": "🎯 נושא",
+        "read_url_placeholder": "https://…",
+        "read_paste_placeholder": "הדבק כאן את הטקסט לקריאה…",
+        "read_generate": "📖 הפק טקסט ושאלות",
+        "read_status_text": "🧠 כותב את הטקסט…",
+        "read_status_fetch": "🌐 טוען את הדף…",
+        "read_status_questions": "🧠 מנסח שאלות…",
+        "read_status_ready": "✅ הטקסט והשאלות מוכנים",
+        "read_passage_heading": "טקסט",
+        "read_mc_heading": "רב-ברירה",
+        "read_open_heading": "שאלות פתוחות",
+        "read_submit": "✅ הערך",
+        "read_score": "🎯 ציון רב-ברירה",
+        "read_open_feedback": "תשובות פתוחות",
+        "read_need_passage": "אין עדיין טקסט. הפק או טען אחד קודם.",
+        "read_url_failed": "❌ לא ניתן לטעון את ה-URL: {err}",
+        "read_verdict_CORRECT": "✅ נכון",
+        "read_verdict_PARTIAL": "🟡 נכון חלקית",
+        "read_verdict_INCORRECT": "❌ לא נכון",
+        "read_verdict_ERROR": "⚠️ לא ניתן להעריך",
+        "read_reveal_answers": "🔍 הצג תשובות נכונות",
+        "read_reference_answer": "תשובה מדגמית",
     },
 }
 

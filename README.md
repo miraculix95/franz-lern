@@ -1,4 +1,4 @@
-# franz-lern — AI Language Tutor
+# lingua-app — AI Language Tutor
 
 > A BYOK-first, multilingual AI language tutor built with Streamlit and OpenRouter.
 > Nine exercise types including audio dictation. Mentor personas from Machiavelli to the
@@ -109,8 +109,8 @@ test double — 76 tests run in ~100ms.
 ## Running locally
 
 ```bash
-git clone https://github.com/miraculix95/franz-lern.git
-cd franz-lern
+git clone https://github.com/miraculix95/lingua-app.git
+cd lingua-app
 
 uv venv && source .venv/bin/activate
 uv pip install -r requirements.txt

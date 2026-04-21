@@ -1,7 +1,7 @@
-"""Static configuration constants for franz-lern.
+"""Static configuration constants for lingua-app.
 
-Everything that used to be top-of-file globals in franz-lern-streamlit.py lives
-here. Kept pure (no imports beyond stdlib) so tests stay fast.
+Everything that used to be top-of-file globals in the legacy Streamlit monolith
+lives here. Kept pure (no imports beyond stdlib) so tests stay fast.
 """
 from __future__ import annotations
 

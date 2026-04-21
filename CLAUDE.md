@@ -4,44 +4,60 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Status
 
-Archived 2025 language-learning prototype (see parent path `oldcode/`). No git repo, no tests, no package manifest — standalone Python scripts using the shared `cc-dev/.env` or a local `.env` for `OPENAI_API_KEY`.
+Active project: **lingua-app** — AI language tutor, Streamlit + OpenRouter, BYOK.
+Repo: `miraculix95/lingua-app` (private). 7 learning languages, 4+ UI languages, 10+ exercise types, ~85 pure-function tests.
+The original 2025 prototype (`franz-lern-streamlit.py`, `franz-lern.py`) lives untouched under `archive/legacy/` per the no-delete-archive rule.
 
 ## Run
 
-- Streamlit UI (primary app): `streamlit run franz-lern-streamlit.py -- --language=französisch`
-  - `--language` accepts values from `languages` in the script (französisch, englisch, spanisch, ukrainisch, deutsch).
-- CLI variant: `python franz-lern.py` (uses `prompt_toolkit` for multi-line input).
-- Verb categorizer: `python verben_test/kategorisierung.py` — reads `verben_test/franz-verben.txt`, writes `franz-verben_sortiert.json` via LangChain + `langchain_openai`.
-- MP4→MP3 batch: `python convertmp3mp4.py` (prompts for folder; requires `ffmpeg` on PATH).
+- **Streamlit UI (primary app):** `streamlit run src/app.py -- --language=französisch`
+  - `--language` seeds the target (accepted: französisch, englisch, spanisch, ukrainisch, deutsch, polnisch, hebräisch). Also switchable from the sidebar at runtime.
+- **CLI variant (subset):** `python -m src.cli --vocab-file data/sample_texts/vokabeln.txt --task cloze`
+- **Tests:** `pytest` (~85 tests, ~100ms, `FakeOpenAIClient` — no API calls).
+- **Lint:** `ruff check src/ tests/`.
 
-Dependencies are not pinned. Expect: `streamlit openai python-dotenv prompt_toolkit requests pyaudio pydub mutagen langchain langchain-openai`. Audio work needs system `ffmpeg` and PortAudio (for `pyaudio`).
+Env: `OPENROUTER_API_KEY` (primary; sidebar-BYOK overrides), optional `ELEVENLABS_KEY` for the dictation task. Shared `cc-dev/.env` or local `.env`. Dependencies pinned via `requirements.txt` + `requirements-audio.txt` (optional).
 
 ## Architecture
 
-Two parallel implementations of the same language-tutor concept:
+Modular codebase under `src/`:
 
-- `franz-lern.py` — terminal-loop version. `extract_french_vocabulary()` reads `.txt` files from `txt/` (or a single file), asks GPT-4o for a level-appropriate vocab list, then drives exercises. Older/simpler.
-- `franz-lern-streamlit.py` — full Streamlit app, superset of the CLI. Heavy use of `st.session_state` (vocab_list, task_type, current_task, theme, level, niveau, mentor, …). Central constants at top of file define the task menu:
-  - `task_list` — exercise types (text correction, cloze, translation, sentence building, error-finding, synonyms/antonyms, verb conjugation, radio capture).
-  - `levels` (A1–C2), `niveau_levels` (register: Argot → Technisch), `mentoren` (teacher personas), `themen_liste` (topic seeds).
-  - `radio_kanale` — hardcoded French radio streams (France Info/Inter/Culture, BFM); the "Radio hören und aufnehmen" task streams these via `requests` + `pyaudio`/`pydub`.
-  - `function_spec` — OpenAI function-calling schema `generate_vocabulary_list` for structured vocab output.
+- `app.py` — Streamlit entrypoint, sidebar, task dispatch, dark-mode + mobile + RTL CSS, multipage nav.
+- `cli.py` — minimal CLI variant (writing / cloze / translation).
+- `config.py` — constants (LEVELS, NIVEAU_LEVELS, MENTORS, THEMES, MODEL_TIERS, RTL_LANGUAGES).
+- `i18n.py` — UI translations (7 UI langs) + task-name list + IP-based auto-detect.
+- `prompts.py` — all LLM prompts as pure builder functions + function-call specs (cloze, reading, vocab).
+- `state.py` — single `SessionState` dataclass (replaces 14 scattered `st.session_state` inits from the monolith).
+- `vocab.py` — three vocab sources: file / URL (newspaper3k) / LLM-generated via tool-call.
+- `correction.py` — text correction + inline `<meta-comments>` extraction.
+- `logging_setup.py` — central logging.
+- `tasks/` — one module per exercise type (`base.py` + `writing`, `cloze`, `translation`, `sentence_building`, `error_detection`, `synonym_antonym`, `conjugation`, `quiz`, `dictation`, `reading`).
+- `pages/1_ℹ️_About.py` — secondary Streamlit page.
 
-Input corpus lives in `txt/` (French/Spanish/German mixed topic files — radio transcripts, news, psychology, tennis, strategy, vocab lists). Vocab-extraction tasks glob this directory.
+Flow: Streamlit UI → pure-function prompt builders → `openai.OpenAI(base_url=openrouter)` → chosen model. Session state in one dataclass; prompts unit-tested without API calls.
 
-`verben_test/kategorisierung.py` is a one-shot utility: LangChain `ChatOpenAI` + `StructuredOutputParser` proposes verb categories, then sorts the verbs from `franz-verben.txt` into them. Separate from the main apps.
+## Repository layout
 
-`out/` holds two older `franz-lern-streamlit copy*.py` snapshots — treat as archive, not active code (per `~/.claude/rules/no-delete-archive.md`, don't delete).
+```
+src/                 production code (see above)
+tests/               pure-function + fake-client tests (85 passing)
+data/sample_texts/   corpus of French/Spanish/German texts for vocab extraction
+research/            model/provider analysis, gap analyses
+docs/                PLAN.md + superpowers/plans/…
+experiments/         archived side-experiments with DISCLAIMER.md
+archive/legacy/      the original 2025 monolith (franz-lern-streamlit.py, franz-lern.py)
+```
 
-`archiv_webapp_versuch/` is an abandoned attempt to port the Streamlit app to a web app:
-- `backend/main.py` — FastAPI + async OpenAI, JWT auth (`SECRET_KEY = "supersecret"`, HS256), CORS `*`, `OAuth2PasswordBearer`. `backend/database.py` — sqlite (`users.db`) with `create_user/get_user/update_credits/init_db` (credits model implied).
-- `frontend/` — static `index.html` + `chat.html`, empty `css/` and `js/` dirs.
-- `documentation/instructions` (file, not dir) + `documentation/old/` holding earlier `backend_minimum.py`/`backend_openai.py` and HTML snapshots.
-- `sqlite-dll-win-x64-3490100.zip` + extracted dir: Windows SQLite binaries, leftover from the author's dev environment — not relevant on this Linux server.
-Treat the whole folder as reference/archive; don't revive without a plan. Hardcoded secret and wide-open CORS mean it's not prod-ready.
+## Legacy / archive
+
+The files in `archive/legacy/` are the original 2025 prototype kept for reference (per `~/.claude/rules/no-delete-archive.md`, never delete). Do NOT run them as the primary app — the Streamlit entrypoint is `src/app.py`. They remain useful as the source of the task catalogue (`task_list`, `niveau_levels`, `mentoren`, `radio_kanale`) and the `generate_vocabulary_list` function-call schema that was ported forward.
+
+`archive/legacy/` additionally holds `archiv_webapp_versuch/` — an abandoned FastAPI + sqlite + JWT port with a hardcoded secret and wide-open CORS. Reference-only; don't revive without a fresh security review.
 
 ## Notes
 
-- Models referenced inline: `gpt-4o-2024-05-13`, `gpt-4o-mini-2024-07-18`, `gpt-3.5-turbo-0125`. Likely outdated — verify before assuming behavior.
-- No linter/formatter configured; match existing style (German comments, mixed German/English identifiers).
+- **Models:** live model IDs are in `src/config.py` (`MODEL_TIERS`). Defaults vary per learning-target — e.g. Ukrainian auto-picks Haiku 4.5, everything else auto-picks Gemini Flash Lite. Always verify current model IDs via `ruff`/tests before assuming a model still exists.
+- **Register-aware corrections** are the product's core differentiator — don't refactor the register system away.
+- **BYOK-stateless** is a deliberate architecture choice — no user accounts, no server-side state. Adding persistence (SRS, fehler-journal, portfolio) requires an ADR first (see `~/.claude/rules/adr-discipline.md`).
+- Match existing style (English identifiers, German inline comments where present, terse docstrings).
 - `2025_03_20_wettbewerbsanalyse.xlsx` is a competitive-analysis spreadsheet, not code.
