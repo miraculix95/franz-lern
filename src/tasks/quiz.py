@@ -126,13 +126,19 @@ def build_quiz(
 def score_answers(quiz: dict[str, str], user_answers: dict[str, str]) -> QuizResult:
     """Score a quiz tolerantly.
 
+    The quiz dict is {learning-language word: UI-language translation}. The UI
+    shows the UI-language translation as the prompt ("What is the French word
+    for 'entwickeln'?") and expects the user to type the learning-language
+    word back — so we compare the user's answer against the dict *key*, not
+    the value. The value is prompt-display only.
+
     Accepts:
     - exact match after normalization (case, punctuation, leading articles)
-    - fuzzy match with difflib ratio ≥ 0.9 (one typo OK, unrelated word NOT)
+    - fuzzy match with difflib ratio ≥ 0.85 (one typo OK, unrelated word NOT)
     """
     per_word = {
-        word: _is_match(user_answers.get(word, ""), translation)
-        for word, translation in quiz.items()
+        word: _is_match(user_answers.get(word, ""), word)
+        for word in quiz.keys()
     }
     return QuizResult(
         correct=sum(per_word.values()),

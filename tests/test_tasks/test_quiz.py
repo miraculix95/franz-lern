@@ -35,8 +35,10 @@ def test_build_quiz_caps_at_vocab_size():
 
 
 def test_score_answers_counts_correct_case_insensitive():
+    # Quiz dict: {learning-lang word: UI-lang translation}. UI shows the
+    # translation as the prompt, user types back the learning-lang word.
     quiz = {"maison": "Haus", "voiture": "Auto"}
-    user_answers = {"maison": "haus", "voiture": "falsch"}
+    user_answers = {"maison": "MAISON", "voiture": "faux"}
     result = score_answers(quiz, user_answers)
     assert result.correct == 1
     assert result.total == 2
@@ -52,22 +54,22 @@ def test_score_answers_tolerates_missing_answer():
 
 def test_score_accepts_trailing_punctuation():
     quiz = {"maison": "Haus"}
-    assert score_answers(quiz, {"maison": "Haus."}).per_word["maison"] is True
-    assert score_answers(quiz, {"maison": "Haus!"}).per_word["maison"] is True
+    assert score_answers(quiz, {"maison": "maison."}).per_word["maison"] is True
+    assert score_answers(quiz, {"maison": "Maison!"}).per_word["maison"] is True
 
 
 def test_score_accepts_leading_article():
     quiz = {"maison": "Haus"}
-    assert score_answers(quiz, {"maison": "das Haus"}).per_word["maison"] is True
-    assert score_answers(quiz, {"maison": "the house"}).per_word["maison"] is False  # wrong word
+    assert score_answers(quiz, {"maison": "la maison"}).per_word["maison"] is True
+    assert score_answers(quiz, {"maison": "die Maus"}).per_word["maison"] is False  # wrong word
 
 
 def test_score_tolerates_single_typo():
     quiz = {"voiture": "Auto"}
-    # "Autoo" — one extra char, ratio > 0.9
-    assert score_answers(quiz, {"voiture": "Autoo"}).per_word["voiture"] is True
+    # "voitur" — one missing char, ratio > 0.85
+    assert score_answers(quiz, {"voiture": "voitur"}).per_word["voiture"] is True
 
 
 def test_score_rejects_unrelated_word():
     quiz = {"voiture": "Auto"}
-    assert score_answers(quiz, {"voiture": "Hund"}).per_word["voiture"] is False
+    assert score_answers(quiz, {"voiture": "maison"}).per_word["voiture"] is False
