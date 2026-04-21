@@ -16,7 +16,7 @@ def test_default_lang_is_english():
 
 def test_all_ui_langs_have_names():
     for code in UI_LANG_NAMES.keys():
-        assert code in {"en", "de", "fr", "es"}
+        assert code in {"en", "de", "fr", "es", "uk", "pl", "he"}
 
 
 def test_ui_langs_dict_matches_lang_names():
@@ -38,7 +38,7 @@ def test_t_formats_kwargs():
 
 
 def test_task_names_for_all_langs_have_same_length():
-    lengths = {lang: len(task_names_for(lang)) for lang in ["en", "de", "fr", "es"]}
+    lengths = {lang: len(task_names_for(lang)) for lang in ["en", "de", "fr", "es", "uk", "pl", "he"]}
     assert len(set(lengths.values())) == 1, f"Task-name lists differ in length: {lengths}"
     assert all(v == len(TASK_KEYS) for v in lengths.values())
 

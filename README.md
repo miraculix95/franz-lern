@@ -1,11 +1,9 @@
 # franz-lern — AI Language Tutor
 
 > A BYOK-first, multilingual AI language tutor built with Streamlit and OpenRouter.
-> Ten exercise types including audio dictation. Mentor personas from Machiavelli to the
+> Nine exercise types including audio dictation. Mentor personas from Machiavelli to the
 > Dalai Lama. Register-aware corrections from criminal slang to literary register.
-> Personal project from 2025, refactored 2026 as a portfolio piece.
 
-![status](https://img.shields.io/badge/status-personal%20project-blue)
 ![python](https://img.shields.io/badge/python-3.11%2B-blue)
 ![streamlit](https://img.shields.io/badge/streamlit-1.56%2B-red)
 ![tests](https://img.shields.io/badge/tests-76%20passing-brightgreen)
@@ -13,29 +11,23 @@
 
 ![hero](docs/assets/01-hero-dark.png)
 
-## Why this exists
+## What makes it different
 
-I built the original version in early 2025 to practice French at C1-level with a tutor
-that could switch registers (Argot → Gehoben → Technisch) and imitate mentor personas
-(Machiavelli, Dalai Lama, Elon Musk…). I used it daily for a while.
+Most language apps offer one tone. This one models **seven registers** (criminal slang
+→ vulgar → colloquial → standard → formal → literary → technical) and routes your
+corrections through **ten mentor personas** — the combination gives you a tutor that
+can meet you wherever you're writing, from street-level banter to Sorbonne-polished
+prose. The stylistic contrast between coaches makes errors memorable.
 
-Then I did a [competitive analysis](2025_03_20_wettbewerbsanalyse.xlsx) (100+ competitors),
-looked at Duolingo's $250M/year marketing spend and Speak's $78M funding round, and
-**decided not to productize**. The software works; the market doesn't.
+Built originally to practise French at C1-level, then generalised into a modular,
+tested, seven-language tool.
 
-This repo is the honest artifact of that decision: a working personal tool, cleaned up
-and modernized as a portfolio piece — including the abandoned FastAPI port (see
-[experiments/](experiments/)) as a learning exhibit on what NOT to build.
-
-## What makes it interesting
-
-- **Sprachregister-Switching** — Slang / Vulgar / Colloquial / Standard / Formal /
-  Literary / Technical. No mainstream language app models register; Mistral/Claude do,
-  so this tool forces the correction feedback to match the register the learner is
-  writing in.
+- **Register-aware corrections** — Slang / Vulgar / Colloquial / Standard / Formal /
+  Literary / Technical. Mainstream apps don't model register; the stronger LLMs do,
+  and this tool forces the correction feedback to match the register you're writing in.
 - **Ten mentor personas** — a single dropdown switches the voice of the corrector from
-  Kind Teacher to Machiavelli to Chairman Mao to Elon Musk. It's a gimmick, but the
-  stylistic contrast makes errors memorable. (![personas](docs/assets/02-coach-dropdown-open.png))
+  Kind Teacher to Machiavelli to Chairman Mao to Elon Musk. The stylistic contrast
+  makes errors memorable. (![personas](docs/assets/02-coach-dropdown-open.png))
 - **Nine exercise types** from one shared vocabulary pool:
   writing, cloze, translation (both directions), sentence-building, error-detection,
   synonym/antonym, verb conjugation, vocabulary quiz, and **audio dictation with a
@@ -45,11 +37,11 @@ and modernized as a portfolio piece — including the abandoned FastAPI port (se
   replay at comprehension-pace. 36 scenarios × 6 styles injected so consecutive A1
   dictations don't repeat.
 - **BYOK (Bring Your Own Key)** — users paste their OpenRouter key in the sidebar;
-  keys never touch the server. Portfolio-friendly (no ops cost, no GDPR liability) and
-  the architecture carries cleanly to the planned Next.js V2.
+  keys never touch the server. No ops cost, no GDPR liability, and the architecture
+  carries cleanly to a future Next.js version.
 - **Four UI languages** (English / Deutsch / Français / Español) with IP-based
-  auto-detection at first load, and five learning-target languages (French / English /
-  Spanish / Ukrainian / German).
+  auto-detection at first load, and **seven learning-target languages**: French,
+  English, Spanish, Ukrainian, German, Polish, and Hebrew (with RTL rendering).
 - **Inline `<meta-comments>`** — embed `<what does passé composé mean?>` anywhere in
   your answer; you get a side-answer without derailing the main correction.
 - **Anti-cheat cloze** — structured LLM output (tools API) prevents the LLM from
@@ -128,8 +120,9 @@ cp .env.example .env
 # → edit .env. Primary path: OPENROUTER_API_KEY from https://openrouter.ai/keys
 # → For dictation (TTS): also ELEVENLABS_KEY from https://elevenlabs.io
 
-# Streamlit (primary UI)
+# Streamlit (primary UI) — --language seeds the target, switchable from the sidebar
 streamlit run src/app.py -- --language=französisch
+# Accepted values: französisch, englisch, spanisch, ukrainisch, deutsch, polnisch, hebräisch
 
 # CLI (minimal, for scripting)
 python -m src.cli --vocab-file data/sample_texts/vokabeln.txt --task cloze
@@ -188,29 +181,23 @@ research/                                 (model/provider analysis)
       `pyaudio`-based streaming doesn't work on headless deploys.
 - [ ] **Flutter shell over BYOK API** — stretch
 
-## Lessons Learned
+## Engineering notes
 
-1. **Session-state hell is real.** 14 scattered `st.session_state` initializations in
-   the legacy monolith made behavior unpredictable across reruns. One dataclass, one
-   init call, problem solved.
-2. **Prompts belong in pure functions.** The legacy code had prompts embedded in
-   f-strings inside API-call statements — un-testable, un-reviewable side-by-side. In
-   the refactor every prompt is a pure builder, unit-tested with a `FakeOpenAIClient`
-   that records calls without hitting the real API.
-3. **FastAPI + sqlite + hand-rolled auth was the wrong detour.** See
-   [experiments/webapp-fastapi-abandoned/DISCLAIMER.md](experiments/webapp-fastapi-abandoned/DISCLAIMER.md)
-   for why. If I rebuild the web version, it's Next.js + BYOK + no server-side user
-   state.
-4. **Localize LAST, not first.** Building Dictation + i18n in the same commit blew
-   up the diff. Next time: ship feature monolingual, then i18n in a follow-up commit.
-5. **Market > tech.** The hardest part wasn't building; it was admitting the
-   competitive landscape was hopeless and walking away before sinking another six
-   months into a market that already has Duolingo, Babbel, Speak, Loora, Praktika,
-   Univerbal, and a long tail of funded competitors.
-6. **LLM model choice matters more than prompt engineering for low-resource
-   languages.** GPT-4o-mini hallucinated French grammar regularly (marked
-   `personnes attendent` as an error — 3rd-person-plural indicative, perfectly correct).
-   Switching to Mistral or Claude fixed more than any prompt tweak could.
+1. **One dataclass for session state.** 14 scattered `st.session_state` initializations
+   in the original monolith made behaviour unpredictable across reruns. One dataclass,
+   one init call, problem solved.
+2. **Prompts as pure functions.** Every LLM prompt is a pure builder, unit-tested with
+   a `FakeOpenAIClient` that records calls without hitting the real API. 76 tests run
+   in ~100ms.
+3. **BYOK beats server-side user state.** An earlier attempt at FastAPI + sqlite +
+   hand-rolled auth lives under [experiments/](experiments/) as a reference. The BYOK
+   approach is simpler, cheaper, and ports cleanly to a Next.js rewrite.
+4. **Localize AFTER shipping features, not during.** Dictation + i18n in one commit
+   blew up the diff. Lesson: ship feature monolingual, i18n in a follow-up.
+5. **Model choice matters more than prompt engineering for low-resource languages.**
+   Smaller models hallucinate grammar (one marked `personnes attendent` as an error —
+   3rd-person-plural indicative, perfectly correct). Switching to Mistral or Claude
+   fixed more than any prompt tweak could.
 
 ## License
 
@@ -219,4 +206,3 @@ MIT.
 ## Author
 
 [Bastian](https://github.com/miraculix95) — freelance AI/Python developer, Munich.
-Personal tool; portfolio piece.

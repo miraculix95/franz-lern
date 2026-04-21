@@ -23,7 +23,12 @@ LANGUAGES: list[str] = [
     "spanisch",
     "ukrainisch",
     "deutsch",
+    "polnisch",
+    "hebräisch",
 ]
+
+# Right-to-left learning languages — UI wraps task/feedback output in dir=rtl.
+RTL_LANGUAGES: set[str] = {"hebräisch"}
 
 MENTORS: list[str] = [
     "Netter Lehrer",
@@ -101,10 +106,12 @@ DEFAULT_LANGUAGE: str = "französisch"
 def default_model_for_language(language: str) -> str:
     """Pick a sensible default model based on target language.
 
-    Ukrainian uses Cyrillic + Slavic grammar; smaller models hallucinate
-    there. Haiku is the cheapest option that handles it reliably.
+    Ukrainian (Cyrillic), Polish (Slavic with heavy diacritics) and Hebrew
+    (non-Latin + RTL) all need the stronger Haiku default — smaller models
+    hallucinate morphology.
     """
-    if language.lower().startswith("ukrain"):
+    lang = language.lower()
+    if lang.startswith(("ukrain", "polnisch", "hebrä", "hebra")):
         return DEFAULT_MODEL_UK
     return DEFAULT_MODEL
 

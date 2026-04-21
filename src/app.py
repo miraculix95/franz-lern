@@ -29,6 +29,7 @@ from src.config import (  # noqa: E402
     MENTORS,
     MODEL_TIERS,
     NIVEAU_LEVELS,
+    RTL_LANGUAGES,
     THEMES,
     default_model_for_language,
 )
@@ -66,15 +67,6 @@ from src.vocab import (  # noqa: E402
 )
 
 log = get_logger(__name__)
-
-
-# Must be the first Streamlit call — sets page-level defaults.
-st.set_page_config(
-    page_title="franz-lern",
-    page_icon="🇫🇷",
-    layout="centered",  # fits mobile + desktop without wide-screen stretching
-    initial_sidebar_state="auto",  # collapsed on phones, expanded on desktop
-)
 
 
 _DARK_CSS = """
@@ -206,10 +198,6 @@ _MOBILE_CSS = """
         [data-testid="stHorizontalBlock"] > [data-testid="column"] {
             min-width: 0 !important;
         }
-        /* Hide session-metrics row on mobile — breaks awkwardly and isn't essential */
-        [data-testid="stHorizontalBlock"]:has([data-testid="stMetric"]) {
-            display: none !important;
-        }
         /* Main container: tighter padding */
         .block-container {
             padding-top: 1rem !important;
@@ -225,11 +213,67 @@ _MOBILE_CSS = """
 """
 
 
-def _apply_theme() -> None:
-    """Inject dark-mode + mobile-responsive CSS."""
+_RTL_CSS = """
+<style>
+    /* RTL for main content when target language is Hebrew etc. Sidebar stays LTR. */
+    .block-container [data-testid="stChatMessage"],
+    .block-container [data-testid="stMarkdown"],
+    .block-container [data-testid="stTextArea"] textarea,
+    .block-container [data-testid="stTextInput"] input {
+        direction: rtl;
+        text-align: right;
+    }
+    /* Keep headings, buttons, selectboxes LTR-looking (they're UI, not content) */
+    .block-container h1,
+    .block-container h2,
+    .block-container h3,
+    .block-container [data-testid="stCaptionContainer"],
+    .block-container button,
+    .block-container [data-baseweb="select"] {
+        direction: ltr;
+        text-align: left;
+    }
+</style>
+"""
+
+
+_UI_RTL_CSS = """
+<style>
+    /* UI-level RTL: when the interface language itself is RTL (e.g. Hebrew),
+       flip the whole app including sidebar, headings and widgets. */
+    [data-testid="stAppViewContainer"],
+    [data-testid="stSidebar"],
+    [data-testid="stSidebar"] *,
+    .block-container,
+    .block-container * {
+        direction: rtl;
+        text-align: right;
+    }
+    /* Re-LTR for code + inline monospace and URLs (they must stay LTR regardless). */
+    code, pre, kbd, samp, .stCode, [data-testid="stCodeBlock"] {
+        direction: ltr !important;
+        text-align: left !important;
+        unicode-bidi: embed;
+    }
+</style>
+"""
+
+
+def _apply_theme(learning_language: str = "", ui_lang: str = "en") -> None:
+    """Inject dark-mode + mobile-responsive CSS. Adds RTL CSS for Hebrew etc.
+
+    RTL is applied in two layers:
+    - content RTL when the *learning* language is RTL (Hebrew output in main area)
+    - full UI RTL when the *interface* language itself is RTL
+    """
     st.markdown(_MOBILE_CSS, unsafe_allow_html=True)
-    if st.session_state.get("dark_mode", False):
+    # Default True — matches the sidebar toggle's initial value on main page.
+    if st.session_state.get("dark_mode", True):
         st.markdown(_DARK_CSS, unsafe_allow_html=True)
+    if ui_lang == "he":
+        st.markdown(_UI_RTL_CSS, unsafe_allow_html=True)
+    elif learning_language in RTL_LANGUAGES:
+        st.markdown(_RTL_CSS, unsafe_allow_html=True)
 
 
 def _parse_args() -> argparse.Namespace:
@@ -353,6 +397,9 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str, st
 
         language_localized = language_display(picked_learn_key, ui_lang)
         st.markdown(f"### {t('sidebar_title', ui_lang, language=language_localized)}")
+
+        with st.expander(t("setup_guide_title", ui_lang), expanded=False):
+            st.markdown(t("setup_guide_body", ui_lang))
 
         with st.expander(t("coach_and_style", ui_lang), expanded=True):
             # Mentor: show translated label, store original key internally
@@ -483,9 +530,7 @@ def _handle_vocab_sources(
 
 
 def _render_header(language: str, mentor: str, ui_lang: str) -> None:
-    """Title + session metrics + mentor quote."""
-    state = st.session_state["state"]
-
+    """Title + mentor quote + meta-hint."""
     language_localized = language_display(language, ui_lang)
     # French doesn't capitalize language names, but it looks cleaner in a title.
     st.markdown(f"# {t('app_title', ui_lang, language=language_localized[:1].upper() + language_localized[1:])}")
@@ -495,11 +540,6 @@ def _render_header(language: str, mentor: str, ui_lang: str) -> None:
     mentor_localized = mentor_display(mentor, ui_lang)
     if quote:
         st.caption(f'{avatar} *{mentor_localized}:* „{quote}"')
-
-    col1, col2, col3 = st.columns(3)
-    col1.metric(t("metric_tasks", ui_lang), getattr(state, "num_tasks_generated", 0))
-    col2.metric(t("metric_corrections", ui_lang), getattr(state, "num_corrections", 0))
-    col3.metric(t("metric_runs", ui_lang), state.num_runs)
 
     st.caption(t("meta_hint", ui_lang))
 
@@ -605,7 +645,52 @@ def _correction_panel(
                     st.markdown(f"❓ *{q}*\n\n> {a}")
 
 
+def _resolve_ui_lang_for_nav() -> str:
+    """Best effort UI-lang detection BEFORE the sidebar has rendered.
+
+    Used by main() to build nav labels. On first visit we only have request
+    headers; once the user has picked a language via the sidebar, the choice
+    lives in ``session_state['ui_lang_label']`` and wins on subsequent reruns.
+    """
+    selected_label = st.session_state.get("ui_lang_label")
+    if selected_label and selected_label in UI_LANGS:
+        return UI_LANGS[selected_label]
+    return _detect_initial_ui_lang()
+
+
 def main() -> None:
+    """Streamlit entrypoint — builds the multipage navigation.
+
+    The main-page nav label is localised to "← Back to app" (in the user's UI
+    language) so the entry is self-explanatory when you're on the About page.
+    """
+    st.set_page_config(
+        page_title="lingua",
+        page_icon="🇫🇷",
+        layout="centered",
+        initial_sidebar_state="auto",
+    )
+
+    ui_lang = _resolve_ui_lang_for_nav()
+    pages = [
+        st.Page(
+            _render_main_page,
+            title=t("back_to_app", ui_lang),
+            icon="⬅️",
+            default=True,
+            url_path="",
+        ),
+        st.Page(
+            "pages/1_ℹ️_About.py",
+            title=t("nav_about", ui_lang),
+            icon="ℹ️",
+            url_path="about",
+        ),
+    ]
+    st.navigation(pages).run()
+
+
+def _render_main_page() -> None:
     args = _parse_args()
     language = args.language
 
@@ -644,7 +729,7 @@ def main() -> None:
     # If user just changed the UI-lang dropdown, reflect it immediately.
     ui_lang = UI_LANGS.get(st.session_state.get("ui_lang_label", ""), ui_lang)
 
-    _apply_theme()
+    _apply_theme(language, ui_lang)
     _render_header(language, mentor, ui_lang)
 
     key, source = _resolve_api_key()
@@ -688,6 +773,7 @@ def main() -> None:
         state.number_trous = st.number_input(
             t("num_blanks", ui_lang), min_value=3, max_value=20, value=state.number_trous,
         )
+        st.caption(t("cloze_freeform_hint", ui_lang))
     elif task_key == "translation":
         col_n, col_dir = st.columns([1, 2])
         state.number_sentences = col_n.number_input(
