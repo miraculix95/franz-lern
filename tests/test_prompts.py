@@ -2,6 +2,7 @@ from src.prompts import (
     CLOZE_FUNCTION_SPEC,
     READING_QUESTIONS_FUNCTION_SPEC,
     VOCAB_FUNCTION_SPEC,
+    VOCAB_TRANSLATION_FUNCTION_SPEC,
     build_answer_comment_prompt,
     build_cloze_messages,
     build_conjugation_prompt,
@@ -14,6 +15,7 @@ from src.prompts import (
     build_translation_prompt,
     build_vocab_autogen_prompt,
     build_vocab_extract_prompt,
+    build_vocab_translation_messages,
 )
 
 
@@ -28,6 +30,35 @@ def test_vocab_autogen_prompt_includes_niveau():
     p = build_vocab_autogen_prompt(language="französisch", level="B1", niveau="Technisch")
     assert "B1" in p
     assert "Technisch" in p
+
+
+def test_vocab_autogen_prompt_requests_balanced_pos():
+    p = build_vocab_autogen_prompt(language="französisch", level="B1", niveau="Standardsprache").lower()
+    for pos in ("noun", "verb", "adjective", "adverb"):
+        assert pos in p
+
+
+def test_vocab_function_spec_description_mentions_balanced_word_types():
+    desc = VOCAB_FUNCTION_SPEC["description"].lower()
+    for pos in ("nomen", "verb", "adjektiv", "adverb"):
+        assert pos in desc
+
+
+def test_vocab_translation_messages_contain_words_and_target_lang():
+    msgs = build_vocab_translation_messages(
+        words=["maison", "courir"], learning_language="French", ui_language_name="Deutsch",
+    )
+    joined = " ".join(m["content"] for m in msgs)
+    assert "maison" in joined
+    assert "courir" in joined
+    assert "Deutsch" in joined
+    assert "French" in joined
+
+
+def test_vocab_translation_spec_has_required_keys():
+    assert VOCAB_TRANSLATION_FUNCTION_SPEC["name"] == "translate_vocabulary"
+    item = VOCAB_TRANSLATION_FUNCTION_SPEC["parameters"]["properties"]["translations"]["items"]
+    assert set(item["required"]) == {"word", "translation"}
 
 
 def test_cloze_messages_contain_vocabs_and_trous():

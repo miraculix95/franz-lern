@@ -9,7 +9,10 @@ from src.config import NO_ANSWERS_HINT
 
 VOCAB_FUNCTION_SPEC: dict = {
     "name": "generate_vocabulary_list",
-    "description": "Generiert eine Liste Vokabeln mit Verben.",
+    "description": (
+        "Generiert eine ausgewogene Vokabelliste mit einer Mischung aus Nomen, "
+        "Verben, Adjektiven und Adverbien."
+    ),
     "parameters": {
         "type": "object",
         "properties": {
@@ -79,10 +82,71 @@ def build_vocab_extract_prompt(*, language: str, level: str, number: int) -> str
 
 def build_vocab_autogen_prompt(*, language: str, level: str, niveau: str) -> str:
     return (
-        f"Create a list of 20 {language} vocabulary items including verbs. "
+        f"Create a list of 20 {language} vocabulary items with a balanced mix of "
+        f"parts of speech: roughly equal shares of nouns, verbs, adjectives, and "
+        f"adverbs (not a list dominated by nouns). "
         f"Target CEFR level: {level}. Register: {niveau}. "
         f"Pick thematically coherent words."
     )
+
+
+VOCAB_TRANSLATION_FUNCTION_SPEC: dict = {
+    "name": "translate_vocabulary",
+    "description": "Übersetzt jede Vokabel in die Ziel-UI-Sprache.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "translations": {
+                "type": "array",
+                "description": "One entry per input word, in the same order as given.",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "word": {
+                            "type": "string",
+                            "description": "The original vocabulary item, verbatim.",
+                        },
+                        "translation": {
+                            "type": "string",
+                            "description": "Its meaning in the target UI language.",
+                        },
+                    },
+                    "required": ["word", "translation"],
+                },
+            }
+        },
+        "required": ["translations"],
+    },
+}
+
+
+def build_vocab_translation_messages(
+    *, words: list[str], learning_language: str, ui_language_name: str,
+) -> list[dict]:
+    """Messages to translate a vocabulary list into the UI language via tool-call.
+
+    The original word is kept verbatim in the ``word`` field so the caller can
+    build a reliable ``{word: translation}`` mapping.
+    """
+    joined = ", ".join(words)
+    return [
+        {
+            "role": "system",
+            "content": (
+                f"You translate {learning_language} vocabulary into {ui_language_name}. "
+                f"Use the translate_vocabulary tool. Give one short, natural "
+                f"{ui_language_name} meaning per word (its most common sense). "
+                f"Keep the original word verbatim in the 'word' field."
+            ),
+        },
+        {
+            "role": "user",
+            "content": (
+                f"Translate these {learning_language} vocabulary items into "
+                f"{ui_language_name}: {joined}."
+            ),
+        },
+    ]
 
 
 def build_cloze_messages(

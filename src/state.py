@@ -13,6 +13,7 @@ from typing import Any
 @dataclass
 class SessionState:
     vocab_list: list[str] = field(default_factory=list)
+    vocab_translations: dict = field(default_factory=dict)
     task_type: str | None = None
     current_task: str | None = None
     user_responses: dict = field(default_factory=dict)

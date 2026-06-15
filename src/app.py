@@ -9,7 +9,6 @@ from __future__ import annotations
 import argparse
 import os
 import sys
-from dataclasses import field
 from pathlib import Path
 from typing import Any
 
@@ -33,8 +32,8 @@ from src.config import (  # noqa: E402
     THEMES,
     default_model_for_language,
 )
+from src.correction import answer_comment, correct_text, extract_comments  # noqa: E402
 from src.i18n import (  # noqa: E402
-    DEFAULT_UI_LANG,
     TASK_KEYS,
     UI_LANG_NAMES,
     UI_LANGS,
@@ -48,7 +47,6 @@ from src.i18n import (  # noqa: E402
     task_names_for,
     tier_display,
 )
-from src.correction import answer_comment, correct_text, extract_comments  # noqa: E402
 from src.logging_setup import get_logger  # noqa: E402
 from src.state import init_session_state  # noqa: E402
 from src.tasks import cloze as cloze_task  # noqa: E402
@@ -65,6 +63,7 @@ from src.vocab import (  # noqa: E402
     extract_vocabulary_from_text,
     fetch_article_text,
     generate_vocabulary_via_function_call,
+    translate_vocabulary_via_function_call,
 )
 
 log = get_logger(__name__)
@@ -359,6 +358,45 @@ def _build_client(key: str, source: str) -> openai.OpenAI:
 
 
 @st.cache_data(ttl=3600, show_spinner=False)
+def _cached_translate_vocab(
+    words: tuple[str, ...], learning_language: str, ui_language_name: str, model: str,
+    _cache_version: int = 1,
+) -> dict[str, str]:
+    """Cache-wrapper around LLM vocab translation.
+
+    Keys on the (word tuple, UI language, model) — same vocab in the same UI
+    language → no second LLM call. Client is rebuilt inside (not hashable).
+    """
+    if not words:
+        return {}
+    key, source = _resolve_api_key()
+    if not key:
+        return {}
+    client = _build_client(key, source)
+    return translate_vocabulary_via_function_call(
+        client, words=list(words), learning_language=learning_language,
+        ui_language_name=ui_language_name, model=model,
+    )
+
+
+def _refresh_vocab_translations(language: str, ui_lang: str, model: str) -> None:
+    """(Re)compute UI-language glosses for the current vocab list into state.
+
+    No-op (and clears the dict) when there is no vocabulary loaded.
+    """
+    state = st.session_state["state"]
+    if not state.vocab_list:
+        state.vocab_translations = {}
+        return
+    state.vocab_translations = _cached_translate_vocab(
+        tuple(state.vocab_list),
+        language_to_english(language),
+        UI_LANG_NAMES.get(ui_lang, "English"),
+        model,
+    )
+
+
+@st.cache_data(ttl=3600, show_spinner=False)
 def _cached_extract_from_text(
     text: str, language: str, level: str, number: int, model: str, _cache_version: int = 1
 ) -> list[str]:
@@ -434,6 +472,7 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str, st
             state.learning_language = picked_learn_key
             # Clear vocab/task state when switching — old French vocabs are useless for Spanish.
             state.vocab_list = []
+            state.vocab_translations = {}
             state.task = ""
             state.auto_gen_vocabs = False
             # Also bust task-specific caches: their payload (audio, quiz, passage) is
@@ -547,7 +586,12 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str, st
             if n_vocab == 0:
                 st.markdown(t("no_vocabs_yet", ui_lang))
             else:
-                st.markdown("\n".join(f"- {w}" for w in sorted(state.vocab_list, key=str.lower)))
+                trans = state.vocab_translations
+                lines = []
+                for w in sorted(state.vocab_list, key=str.lower):
+                    gloss = trans.get(w)
+                    lines.append(f"- {w} — _{gloss}_" if gloss else f"- {w}")
+                st.markdown("\n".join(lines))
 
     state.file_path_extract_trigger = extract_files
     state.uploaded_vocab_file_trigger = uploaded_vocab
@@ -585,6 +629,7 @@ def _handle_vocab_sources(
     number = state.number_of_words
 
     lang_en = language_to_english(language)
+    vocab_changed = False
     if extract_files and extract_files != state.file_path_extract:
         all_text = "\n".join(f.read().decode("utf-8") for f in extract_files)
         with st.status(t("status_extract_file", ui_lang), expanded=False) as status:
@@ -594,6 +639,7 @@ def _handle_vocab_sources(
             status.update(label=t("status_extracted_ok", ui_lang, n=len(state.vocab_list)), state="complete")
         # Vocab list rendered by sidebar's "current vocabs" expander — no duplicate here.
         state.file_path_extract = extract_files
+        vocab_changed = True
     elif url_extract and url_extract != state.html_path_extract:
         with st.status(t("status_load_url", ui_lang, url=url_extract), expanded=False) as status:
             article = fetch_article_text(url_extract)
@@ -606,11 +652,20 @@ def _handle_vocab_sources(
                 state="complete",
             )
         state.html_path_extract = url_extract
+        vocab_changed = True
     elif uploaded_vocab and uploaded_vocab != state.uploaded_vocab_file:
         content = uploaded_vocab.read().decode("utf-8")
         state.vocab_list = [line.strip() for line in content.splitlines() if line.strip()]
         st.sidebar.success(t("vocab_loaded_ok", ui_lang, n=len(state.vocab_list)))
         state.uploaded_vocab_file = uploaded_vocab
+        vocab_changed = True
+
+    # UI-language glosses for the sidebar — one extra LLM call when the list changes
+    # (cached on the word tuple + UI lang). Shown next to each word in the expander.
+    if vocab_changed:
+        with st.status(t("status_translating_vocab", ui_lang), expanded=False) as status:
+            _refresh_vocab_translations(language, ui_lang, model)
+            status.update(label=t("status_translating_vocab", ui_lang), state="complete")
 
 
 def _render_header(language: str, mentor: str, ui_lang: str) -> None:
@@ -795,6 +850,7 @@ def _render_main_page() -> None:
     for attr, default in [
         ("num_tasks_generated", 0),
         ("num_corrections", 0),
+        ("vocab_translations", {}),
         ("number_trous", 4),
         ("number_sentences", 1),
         ("translation_direction", "to_learning"),
@@ -883,6 +939,8 @@ def _render_main_page() -> None:
                     client, language=lang_en, level=level, niveau=niveau, model=model,
                 )
                 state.auto_gen_vocabs = True
+                status.update(label=t("status_translating_vocab", ui_lang))
+                _refresh_vocab_translations(language, ui_lang, model)
                 status.update(
                     label=t("status_gen_vocab_ok", ui_lang, n=len(state.vocab_list)),
                     state="complete",

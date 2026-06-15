@@ -37,6 +37,12 @@ def test_t_formats_kwargs():
     assert "French" in result
 
 
+def test_translating_vocab_key_present_in_all_langs():
+    # The sidebar-translation status label must be localized in every UI language.
+    for lang in ["en", "de", "fr", "es", "uk", "pl", "he"]:
+        assert t("status_translating_vocab", lang) != "status_translating_vocab"
+
+
 def test_task_names_for_all_langs_have_same_length():
     lengths = {lang: len(task_names_for(lang)) for lang in ["en", "de", "fr", "es", "uk", "pl", "he"]}
     assert len(set(lengths.values())) == 1, f"Task-name lists differ in length: {lengths}"

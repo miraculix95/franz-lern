@@ -54,9 +54,11 @@ def test_model_tiers_point_to_valid_openrouter_ids():
         assert "/" in model_id, f"{tier}: {model_id} missing provider prefix"
 
 
-def test_default_model_uk_differs_from_default():
-    # Ukrainian needs a bigger model — defaults must differ.
-    assert DEFAULT_MODEL != DEFAULT_MODEL_UK
+def test_default_model_uk_is_haiku():
+    # Ukrainian keeps its own override hook (DEFAULT_MODEL_UK), but currently shares
+    # Claude Haiku 4.5 with the general default. The separate constant lets us bump
+    # UK to a bigger model later without touching the rest.
+    assert DEFAULT_MODEL_UK == "anthropic/claude-haiku-4.5"
 
 
 def test_default_model_for_language_swaps_on_ukrainian():

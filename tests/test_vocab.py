@@ -4,6 +4,7 @@ from src.vocab import (
     extract_vocabulary_from_text,
     generate_vocabulary_via_function_call,
     load_vocabulary,
+    translate_vocabulary_via_function_call,
 )
 from tests.fake_openai import FakeOpenAIClient
 
@@ -60,3 +61,33 @@ def test_generate_vocabulary_via_function_call_parses_json():
     assert "tool_choice" in call
     assert "functions" not in call
     assert "function_call" not in call
+
+
+def test_translate_vocabulary_builds_word_to_translation_mapping():
+    payload = json.dumps({
+        "translations": [
+            {"word": "maison", "translation": "Haus"},
+            {"word": "courir", "translation": "rennen"},
+        ]
+    })
+    fake = FakeOpenAIClient(responses=[{"tool_arguments": payload}])
+    result = translate_vocabulary_via_function_call(
+        fake,
+        words=["maison", "courir"],
+        learning_language="French",
+        ui_language_name="Deutsch",
+        model="google/gemini-2.5-flash-lite",
+    )
+    assert result == {"maison": "Haus", "courir": "rennen"}
+    # Modern tools-API, like the other structured calls.
+    assert "tools" in fake.calls[0]
+    assert "tool_choice" in fake.calls[0]
+
+
+def test_translate_vocabulary_empty_input_makes_no_call():
+    fake = FakeOpenAIClient(responses=[])
+    result = translate_vocabulary_via_function_call(
+        fake, words=[], learning_language="French", ui_language_name="Deutsch", model="m",
+    )
+    assert result == {}
+    assert fake.calls == []

@@ -25,7 +25,7 @@ _ARTICLES = {
     # English
     "a", "an", "the",
     # French
-    "le", "la", "les", "un", "une", "des", "l'", "du", "de",
+    "le", "la", "les", "un", "une", "l'", "du", "de",
     # Spanish
     "el", "los", "las", "una", "unos", "unas",
     # Ukrainian: no articles (skip)

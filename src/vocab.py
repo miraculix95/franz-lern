@@ -14,8 +14,10 @@ from typing import Any
 from src.logging_setup import get_logger
 from src.prompts import (
     VOCAB_FUNCTION_SPEC,
+    VOCAB_TRANSLATION_FUNCTION_SPEC,
     build_vocab_autogen_prompt,
     build_vocab_extract_prompt,
+    build_vocab_translation_messages,
 )
 
 log = get_logger(__name__)
@@ -73,6 +75,35 @@ def generate_vocabulary_via_function_call(
     )
     tool_call = response.choices[0].message.tool_calls[0]
     return json.loads(tool_call.function.arguments)["vocabulary"]
+
+
+def translate_vocabulary_via_function_call(
+    client: Any,
+    *,
+    words: list[str],
+    learning_language: str,
+    ui_language_name: str,
+    model: str,
+) -> dict[str, str]:
+    """Translate each vocabulary item into the UI language via structured tool-calling.
+
+    Returns a ``{word: translation}`` mapping. Empty input → empty dict (no LLM call).
+    Used to show UI-language glosses next to the current vocabulary in the sidebar.
+    """
+    if not words:
+        return {}
+    messages = build_vocab_translation_messages(
+        words=words, learning_language=learning_language, ui_language_name=ui_language_name,
+    )
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        tools=[{"type": "function", "function": VOCAB_TRANSLATION_FUNCTION_SPEC}],
+        tool_choice={"type": "function", "function": {"name": "translate_vocabulary"}},
+    )
+    tool_call = response.choices[0].message.tool_calls[0]
+    entries = json.loads(tool_call.function.arguments)["translations"]
+    return {e["word"]: e["translation"] for e in entries if e.get("word")}
 
 
 def fetch_article_text(url: str) -> str:
