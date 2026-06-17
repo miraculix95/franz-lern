@@ -269,7 +269,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **BYOK (Bring Your Own Key)** — your OpenRouter and ElevenLabs keys stay in your "
             "browser session. Never stored, never logged. Beta testers can leave the field empty — "
             "the server key is used instead.\n"
-            "- **Seven learning languages** — French, English, Spanish, Ukrainian, German, Polish, Hebrew.\n"
+            "- **Eight learning languages** — French, English, Spanish, Ukrainian, German, Polish, Greek, Hebrew.\n"
             "- **Seven UI languages** — English, German, French, Spanish, Ukrainian, Polish, Hebrew, "
             "with IP-based auto-detection on first visit.\n\n"
             "### Author\n"
@@ -476,7 +476,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **BYOK (Bring Your Own Key)** — OpenRouter- und ElevenLabs-Keys bleiben in deiner "
             "Browser-Session. Nichts wird gespeichert oder geloggt. Beta-Tester können das Feld leer "
             "lassen — dann wird der Server-Key genutzt.\n"
-            "- **Sieben Lernsprachen** — Französisch, Englisch, Spanisch, Ukrainisch, Deutsch, Polnisch, Hebräisch.\n"
+            "- **Acht Lernsprachen** — Französisch, Englisch, Spanisch, Ukrainisch, Deutsch, Polnisch, Griechisch, Hebräisch.\n"
             "- **Sieben UI-Sprachen** — Englisch, Deutsch, Französisch, Spanisch, Ukrainisch, Polnisch, "
             "Hebräisch, mit IP-basierter Auto-Erkennung beim ersten Besuch.\n\n"
             "### Autor\n"
@@ -684,7 +684,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **BYOK (Bring Your Own Key)** — tes clés OpenRouter et ElevenLabs restent dans ta "
             "session navigateur. Jamais stockées, jamais journalisées. Les beta-testeurs peuvent "
             "laisser vide — la clé du serveur sera utilisée.\n"
-            "- **Sept langues à apprendre** — français, anglais, espagnol, ukrainien, allemand, polonais, hébreu.\n"
+            "- **Huit langues à apprendre** — français, anglais, espagnol, ukrainien, allemand, polonais, grec, hébreu.\n"
             "- **Sept langues d'interface** — anglais, allemand, français, espagnol, ukrainien, "
             "polonais, hébreu, avec détection automatique par IP à la première visite.\n\n"
             "### Auteur\n"
@@ -892,7 +892,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **BYOK (Bring Your Own Key)** — tus claves de OpenRouter y ElevenLabs se quedan en "
             "tu sesión del navegador. Nunca se guardan ni se registran. Los beta-testers pueden "
             "dejarlo vacío — se usará la clave del servidor.\n"
-            "- **Siete idiomas a aprender** — francés, inglés, español, ucraniano, alemán, polaco, hebreo.\n"
+            "- **Ocho idiomas a aprender** — francés, inglés, español, ucraniano, alemán, polaco, griego, hebreo.\n"
             "- **Siete idiomas de interfaz** — inglés, alemán, francés, español, ucraniano, polaco, "
             "hebreo, con detección automática por IP en la primera visita.\n\n"
             "### Autor\n"
@@ -1102,7 +1102,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **BYOK (Bring Your Own Key)** — твої ключі OpenRouter і ElevenLabs залишаються "
             "в сесії браузера. Ніколи не зберігаються і не логуються. Бета-тестери можуть "
             "залишити порожнім — використається ключ сервера.\n"
-            "- **Сім мов для вивчення** — французька, англійська, іспанська, українська, німецька, польська, іврит.\n"
+            "- **Вісім мов для вивчення** — французька, англійська, іспанська, українська, німецька, польська, грецька, іврит.\n"
             "- **Сім мов інтерфейсу** — англійська, німецька, французька, іспанська, українська, "
             "польська, іврит, з авто-визначенням за IP при першому відвідуванні.\n\n"
             "### Автор\n"
@@ -1311,7 +1311,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **BYOK (Bring Your Own Key)** — Twoje klucze OpenRouter i ElevenLabs pozostają "
             "w sesji przeglądarki. Nigdy nie są zapisywane ani logowane. Beta-testerzy mogą "
             "zostawić puste — użyty zostanie klucz serwera.\n"
-            "- **Siedem języków do nauki** — francuski, angielski, hiszpański, ukraiński, niemiecki, polski, hebrajski.\n"
+            "- **Osiem języków do nauki** — francuski, angielski, hiszpański, ukraiński, niemiecki, polski, grecki, hebrajski.\n"
             "- **Siedem języków interfejsu** — angielski, niemiecki, francuski, hiszpański, "
             "ukraiński, polski, hebrajski, z automatycznym wykrywaniem po IP przy pierwszej wizycie.\n\n"
             "### Autor\n"
@@ -1517,7 +1517,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **BYOK (Bring Your Own Key)** — המפתחות שלך ב-OpenRouter וב-ElevenLabs נשארים "
             "בסשן הדפדפן בלבד. אף פעם לא נשמרים ולא נרשמים. בודקי בטא יכולים להשאיר ריק — "
             "ישמש המפתח של השרת.\n"
-            "- **שבע שפות ללימוד** — צרפתית, אנגלית, ספרדית, אוקראינית, גרמנית, פולנית, עברית.\n"
+            "- **שמונה שפות ללימוד** — צרפתית, אנגלית, ספרדית, אוקראינית, גרמנית, פולנית, יוונית, עברית.\n"
             "- **שבע שפות ממשק** — אנגלית, גרמנית, צרפתית, ספרדית, אוקראינית, פולנית, "
             "עברית, עם זיהוי אוטומטי לפי IP בביקור ראשון.\n\n"
             "### המחבר\n"
@@ -1680,37 +1680,37 @@ LANGUAGE_DISPLAY: dict[str, dict[str, str]] = {
     "en": {
         "französisch": "French", "englisch": "English", "spanisch": "Spanish",
         "ukrainisch": "Ukrainian", "deutsch": "German",
-        "polnisch": "Polish", "hebräisch": "Hebrew",
+        "polnisch": "Polish", "griechisch": "Greek", "hebräisch": "Hebrew",
     },
     "de": {
         "französisch": "Französisch", "englisch": "Englisch", "spanisch": "Spanisch",
         "ukrainisch": "Ukrainisch", "deutsch": "Deutsch",
-        "polnisch": "Polnisch", "hebräisch": "Hebräisch",
+        "polnisch": "Polnisch", "griechisch": "Griechisch", "hebräisch": "Hebräisch",
     },
     "fr": {
         "französisch": "français", "englisch": "anglais", "spanisch": "espagnol",
         "ukrainisch": "ukrainien", "deutsch": "allemand",
-        "polnisch": "polonais", "hebräisch": "hébreu",
+        "polnisch": "polonais", "griechisch": "grec", "hebräisch": "hébreu",
     },
     "es": {
         "französisch": "francés", "englisch": "inglés", "spanisch": "español",
         "ukrainisch": "ucraniano", "deutsch": "alemán",
-        "polnisch": "polaco", "hebräisch": "hebreo",
+        "polnisch": "polaco", "griechisch": "griego", "hebräisch": "hebreo",
     },
     "uk": {
         "französisch": "французька", "englisch": "англійська", "spanisch": "іспанська",
         "ukrainisch": "українська", "deutsch": "німецька",
-        "polnisch": "польська", "hebräisch": "іврит",
+        "polnisch": "польська", "griechisch": "грецька", "hebräisch": "іврит",
     },
     "pl": {
         "französisch": "francuski", "englisch": "angielski", "spanisch": "hiszpański",
         "ukrainisch": "ukraiński", "deutsch": "niemiecki",
-        "polnisch": "polski", "hebräisch": "hebrajski",
+        "polnisch": "polski", "griechisch": "grecki", "hebräisch": "hebrajski",
     },
     "he": {
         "französisch": "צרפתית", "englisch": "אנגלית", "spanisch": "ספרדית",
         "ukrainisch": "אוקראינית", "deutsch": "גרמנית",
-        "polnisch": "פולנית", "hebräisch": "עברית",
+        "polnisch": "פולנית", "griechisch": "יוונית", "hebräisch": "עברית",
     },
 }
 

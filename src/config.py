@@ -24,6 +24,7 @@ LANGUAGES: list[str] = [
     "ukrainisch",
     "deutsch",
     "polnisch",
+    "griechisch",
     "hebräisch",
 ]
 
@@ -106,12 +107,12 @@ DEFAULT_LANGUAGE: str = "französisch"
 def default_model_for_language(language: str) -> str:
     """Pick a sensible default model based on target language.
 
-    Ukrainian (Cyrillic), Polish (Slavic with heavy diacritics) and Hebrew
-    (non-Latin + RTL) all need the stronger Haiku default — smaller models
-    hallucinate morphology.
+    Ukrainian (Cyrillic), Polish (Slavic with heavy diacritics), Greek
+    (non-Latin alphabet + rich case morphology) and Hebrew (non-Latin + RTL)
+    all need the stronger Haiku default — smaller models hallucinate morphology.
     """
     lang = language.lower()
-    if lang.startswith(("ukrain", "polnisch", "hebrä", "hebra")):
+    if lang.startswith(("ukrain", "polnisch", "griech", "hebrä", "hebra")):
         return DEFAULT_MODEL_UK
     return DEFAULT_MODEL
 
