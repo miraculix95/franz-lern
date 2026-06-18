@@ -1,0 +1,3 @@
+# lingua-core API (V2 Phase 0) — adds to V1's requirements (reuses src/ + its deps).
+fastapi>=0.115
+uvicorn[standard]>=0.30

@@ -41,3 +41,6 @@ radio_text.txt
 # Legacy Windows SQLite DLL ZIP (not needed on this server)
 sqlite-dll-win-x64-*.zip
 sqlite-dll-win-x64-*/
+
+# V2 lingua-core API
+api/uvicorn.log
