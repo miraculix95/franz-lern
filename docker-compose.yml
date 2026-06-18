@@ -1,0 +1,30 @@
+# lingua-core (V2) deployment — App-Server (caddy-docker-proxy on the `web` net).
+# Reuses the V1 src/ logic behind FastAPI; managed OpenRouter key + a bearer
+# token (LINGUA_CORE_TOKEN) gate the public route. The V1 Streamlit app is a
+# separate deployment and is unaffected by this file.
+services:
+  lingua-core:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lingua-core
+    restart: unless-stopped
+    environment:
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - LINGUA_CORE_TOKEN=${LINGUA_CORE_TOKEN}
+    expose:
+      - "8080"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8080/health').status==200 else 1)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - web
+    labels:
+      caddy: lingua-core.ai-devhub-247.site
+      caddy.reverse_proxy: "{{upstreams 8080}}"
+
+networks:
+  web:
+    external: true

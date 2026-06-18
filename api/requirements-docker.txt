@@ -1,0 +1,7 @@
+# Minimal runtime deps for the lingua-core container (V2). The API import chain
+# (api.main -> src.{config,correction,i18n,vocab,prompts,tasks.*}) only needs
+# these — no streamlit/prompt_toolkit/requests/newspaper (those are V1-UI only).
+fastapi>=0.115
+uvicorn[standard]>=0.30
+openai>=1.10
+python-dotenv>=1.0

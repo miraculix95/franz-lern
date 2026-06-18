@@ -13,7 +13,9 @@ additions in Phase 2.
 """
 from __future__ import annotations
 
-from fastapi import FastAPI, HTTPException
+import os
+
+from fastapi import Depends, FastAPI, HTTPException, Request
 from pydantic import BaseModel
 
 from api.client import DEFAULT_MODEL, build_client
@@ -26,7 +28,24 @@ from src.tasks import reading as reading_task
 from src.tasks import transformation as transform_task
 from src.vocab import generate_vocabulary_via_function_call
 
-app = FastAPI(title="lingua-core", version="0.1.0")
+# Shared-secret auth. When LINGUA_CORE_TOKEN is set (production / public route),
+# every endpoint except /health requires `Authorization: Bearer <token>`. When
+# unset (local dev, 127.0.0.1-bound) it is open — same operator-gated pattern as
+# the rest of the stack. This protects the managed OpenRouter key behind a public
+# Caddy route (Vercel cannot reach Tailscale, so the API must be public).
+_API_TOKEN = (os.environ.get("LINGUA_CORE_TOKEN") or "").strip()
+
+
+async def require_token(request: Request) -> None:
+    if request.url.path == "/health" or not _API_TOKEN:
+        return
+    if request.headers.get("authorization") != f"Bearer {_API_TOKEN}":
+        raise HTTPException(status_code=401, detail="invalid or missing token")
+
+
+app = FastAPI(
+    title="lingua-core", version="0.1.0", dependencies=[Depends(require_token)],
+)
 
 _client = None
 
