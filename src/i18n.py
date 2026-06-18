@@ -195,7 +195,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
     "en": {
         "app_title": "{language} — Language Tutor",
         "meta_hint": "💡 Wrap out-of-band questions in angle brackets, e.g. `<what does passé composé mean?>` — you get a separate answer.",
-        "sidebar_title": "🇫🇷 Learn {language}",
+        "sidebar_title": "🗣️ Learn {language}",
         "ui_language": "🌍 Interface language",
         "dark_mode": "🌙 Dark mode",
         "coach_and_style": "👤 Coach & Style",
@@ -443,7 +443,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
     "de": {
         "app_title": "{language} — Lernprogramm",
         "meta_hint": "💡 Out-of-band-Fragen in spitzen Klammern einbetten, z.B. `<was heißt passé composé?>` — bekommst separate Antwort.",
-        "sidebar_title": "🇫🇷 {language} lernen",
+        "sidebar_title": "🗣️ {language} lernen",
         "ui_language": "🌍 UI-Sprache",
         "dark_mode": "🌙 Dark Mode",
         "coach_and_style": "👤 Coach & Stil",
@@ -691,7 +691,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
     "fr": {
         "app_title": "{language} — Tuteur de langue",
         "meta_hint": "💡 Entoure tes questions hors-sujet de chevrons, par ex. `<que veut dire passé composé ?>` — tu reçois une réponse à part.",
-        "sidebar_title": "🇫🇷 Apprendre le {language}",
+        "sidebar_title": "🗣️ Apprendre le {language}",
         "ui_language": "🌍 Langue de l'interface",
         "dark_mode": "🌙 Mode sombre",
         "coach_and_style": "👤 Coach & Style",
@@ -940,7 +940,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
     "es": {
         "app_title": "{language} — Tutor de idiomas",
         "meta_hint": "💡 Envuelve tus preguntas meta en corchetes angulares, p.ej. `<¿qué significa passé composé?>` — recibes una respuesta aparte.",
-        "sidebar_title": "🇫🇷 Aprender {language}",
+        "sidebar_title": "🗣️ Aprender {language}",
         "ui_language": "🌍 Idioma de la interfaz",
         "dark_mode": "🌙 Modo oscuro",
         "coach_and_style": "👤 Coach y estilo",
@@ -1189,7 +1189,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
     "uk": {
         "app_title": "{language} — Мовний тренер",
         "meta_hint": "💡 Обертай мета-питання кутовими дужками, напр. `<що означає passé composé?>` — отримаєш окрему відповідь.",
-        "sidebar_title": "🇫🇷 Вивчати {language}",
+        "sidebar_title": "🗣️ Вивчати {language}",
         "ui_language": "🌍 Мова інтерфейсу",
         "dark_mode": "🌙 Темна тема",
         "coach_and_style": "👤 Тренер і стиль",
@@ -1438,7 +1438,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
     "pl": {
         "app_title": "{language} — Tutor językowy",
         "meta_hint": "💡 Owiń pytania meta w nawiasy kątowe, np. `<co znaczy passé composé?>` — otrzymasz osobną odpowiedź.",
-        "sidebar_title": "🇫🇷 Ucz się: {language}",
+        "sidebar_title": "🗣️ Ucz się: {language}",
         "ui_language": "🌍 Język interfejsu",
         "dark_mode": "🌙 Tryb ciemny",
         "coach_and_style": "👤 Trener i styl",
@@ -1688,7 +1688,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
     "he": {
         "app_title": "{language} — מורה לשפה",
         "meta_hint": "💡 עטוף שאלות מטא בסוגריים משולשים, למשל `<מה זה passé composé?>` — תקבל תשובה נפרדת.",
-        "sidebar_title": "🇫🇷 ללמוד {language}",
+        "sidebar_title": "🗣️ ללמוד {language}",
         "ui_language": "🌍 שפת ממשק",
         "dark_mode": "🌙 מצב כהה",
         "coach_and_style": "👤 מאמן וסגנון",
@@ -1935,7 +1935,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
     "ar": {
         "app_title": "{language} — معلّم اللغة",
         "meta_hint": "💡 ضع الأسئلة الجانبية بين قوسين زاويين، مثل `<ما معنى passé composé؟>` — وستحصل على إجابة منفصلة.",
-        "sidebar_title": "🇫🇷 تعلّم {language}",
+        "sidebar_title": "🗣️ تعلّم {language}",
         "ui_language": "🌍 لغة الواجهة",
         "dark_mode": "🌙 الوضع الداكن",
         "coach_and_style": "👤 المدرّب والأسلوب",

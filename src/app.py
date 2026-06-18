@@ -860,7 +860,7 @@ def main() -> None:
     """
     st.set_page_config(
         page_title="lingua",
-        page_icon="🇫🇷",
+        page_icon="🗣️",
         layout="centered",
         initial_sidebar_state="auto",
     )
