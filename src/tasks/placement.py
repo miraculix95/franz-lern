@@ -52,18 +52,18 @@ def build_test(client: Any, *, language: str, model: str) -> list[dict]:
 
 
 def recommend_level(questions: list[dict], answers: list[int | None]) -> str:
-    """Longest correct prefix from A1 upward → that level (min A1).
+    """Map the NUMBER of correct answers to a CEFR level.
 
-    A gap (wrong answer) caps the recommendation at the last consecutively
-    correct level, so a single miss at B2 with A1–B1 correct yields B1.
+    With one question per level (A1→C2), N correct answers → the N-th level
+    (min A1). This is robust to a single shaky/ambiguous question: getting 5 of
+    6 right yields C1, not A2 — a gap in the middle no longer caps the result.
     """
     if not questions:
         return LEVELS[0]
-    recommended = LEVELS[0]
-    for i, q in enumerate(questions):
-        picked = answers[i] if i < len(answers) else None
-        if picked is not None and picked == q.get("correct_index"):
-            recommended = q.get("level", recommended)
-        else:
-            break
-    return recommended
+    correct = sum(
+        1
+        for i, q in enumerate(questions)
+        if i < len(answers) and answers[i] is not None and answers[i] == q.get("correct_index")
+    )
+    idx = max(0, min(len(LEVELS) - 1, correct - 1))
+    return LEVELS[idx]

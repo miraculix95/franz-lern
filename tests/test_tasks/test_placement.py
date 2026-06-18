@@ -36,12 +36,16 @@ def test_build_test_shuffles_but_keeps_correct_option():
         assert q["options"][q["correct_index"]] == f"RIGHT-{q['level']}"
 
 
-def test_recommend_level_longest_correct_prefix():
+def test_recommend_level_counts_correct_not_prefix():
     qs = [_q(level, ci=1) for level in LEVELS]  # correct option is index 1 for all
-    assert recommend_level(qs, [1, 1, 1, 1, 1, 1]) == "C2"   # all correct
-    assert recommend_level(qs, [1, 1, 1, 0, 1, 1]) == "B1"   # gap at B2 caps at B1
-    assert recommend_level(qs, [0, 1, 1, 1, 1, 1]) == "A1"   # first wrong → A1
-    assert recommend_level(qs, [None, 1, 1, 1, 1, 1]) == "A1"  # unanswered first → A1
+    assert recommend_level(qs, [1, 1, 1, 1, 1, 1]) == "C2"   # 6 correct
+    # 5 correct with a gap at B1 → C1 (NOT A2): a single miss must not cap the result
+    assert recommend_level(qs, [1, 1, 0, 1, 1, 1]) == "C1"
+    assert recommend_level(qs, [1, 1, 1, 0, 0, 0]) == "B1"   # 3 correct → B1
+    assert recommend_level(qs, [1, 0, 0, 0, 0, 0]) == "A1"   # 1 correct → A1
+    assert recommend_level(qs, [0, 0, 0, 0, 0, 0]) == "A1"   # 0 correct → A1
+    assert recommend_level(qs, [1, 1, 0, 0, 0, 0]) == "A2"   # 2 correct → A2
+    assert recommend_level(qs, [None, 1, 1, 1, 1, 1]) == "C1"  # 5 answered+correct → C1
 
 
 def test_recommend_level_empty():
