@@ -49,6 +49,7 @@ TASK_KEYS: list[str] = [
     "conjugation",
     "dictation",
     "reading",
+    "transformation",
 ]
 
 
@@ -65,6 +66,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Verb conjugation",
         "Dictation (audio)",
         "Reading comprehension",
+        "Sentence transformation",
     ],
     "de": [
         "",
@@ -78,6 +80,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Verb konjugieren",
         "Diktat (Audio)",
         "Leseverstehen",
+        "Satztransformation",
     ],
     "fr": [
         "",
@@ -91,6 +94,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Conjugaison des verbes",
         "Dictée (audio)",
         "Compréhension écrite",
+        "Transformation de phrases",
     ],
     "es": [
         "",
@@ -104,6 +108,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Conjugación de verbos",
         "Dictado (audio)",
         "Comprensión lectora",
+        "Transformación de frases",
     ],
     "uk": [
         "",
@@ -117,6 +122,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Дієвідмінювання",
         "Диктант (аудіо)",
         "Читання з розумінням",
+        "Трансформація речень",
     ],
     "pl": [
         "",
@@ -130,6 +136,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Koniugacja czasowników",
         "Dyktando (audio)",
         "Czytanie ze zrozumieniem",
+        "Transformacja zdań",
     ],
     "he": [
         "",
@@ -143,6 +150,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "הטיית פעלים",
         "הכתבה (אודיו)",
         "הבנת הנקרא",
+        "המרת משפטים",
     ],
     "ar": [
         "",
@@ -156,6 +164,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "تصريف الأفعال",
         "إملاء (صوتي)",
         "فهم المقروء",
+        "تحويل الجُمل",
     ],
 }
 
@@ -206,6 +215,9 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_conjugation": "🔠 **Verb conjugation.** A verb + a person is given — you conjugate it across several tenses.",
         "desc_dictation": "🎙️ **Audio dictation.** The LLM writes a short text, ElevenLabs reads it, you transcribe. Playback-speed slider lets you slow the voice down.",
         "desc_reading": "📚 **Reading comprehension.** AI-generated text, a URL, pasted text, or an uploaded .txt — then multiple-choice + open-ended questions about it.",
+        "desc_transformation": "🔄 **Sentence transformation.** A few sentences are given — you rewrite them following a rule (active↔passive, reported speech, tense change, and more).",
+        "transform_type": "🔄 Transformation",
+        "help_transform_type": "Which rewriting rule to drill. 'Mixed' varies the rule per sentence.",
         "new_task_btn": "🎯 New task",
         "correct_btn": "📝 Correct text",
         "task_heading": "Task",
@@ -415,6 +427,9 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_conjugation": "🔠 **Verbkonjugation.** Ein Verb + eine Person sind vorgegeben — du konjugierst es in mehreren Zeiten.",
         "desc_dictation": "🎙️ **Audio-Diktat.** Das LLM schreibt einen kurzen Text, ElevenLabs liest ihn vor, du schreibst mit. Geschwindigkeits-Slider zum Verlangsamen.",
         "desc_reading": "📚 **Leseverstehen.** KI-generierter Text, URL, eingefügter Text oder hochgeladene .txt — danach Multiple-Choice- und offene Fragen dazu.",
+        "desc_transformation": "🔄 **Satztransformation.** Du bekommst Sätze und formst sie nach einer Regel um (Aktiv↔Passiv, indirekte Rede, Zeitenwechsel u. a.).",
+        "transform_type": "🔄 Transformation",
+        "help_transform_type": "Welche Umform-Regel geübt wird. „Gemischt“ variiert die Regel pro Satz.",
         "new_task_btn": "🎯 Neue Aufgabe",
         "correct_btn": "📝 Text korrigieren",
         "task_heading": "Aufgabe",
@@ -624,6 +639,9 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_conjugation": "🔠 **Conjugaison.** Un verbe + une personne sont donnés — tu le conjugues sur plusieurs temps.",
         "desc_dictation": "🎙️ **Dictée audio.** Le LLM écrit un court texte, ElevenLabs le lit, tu transcris. Curseur de vitesse pour ralentir la voix.",
         "desc_reading": "📚 **Compréhension écrite.** Texte généré par IA, URL, texte collé ou .txt importé — puis QCM + questions ouvertes.",
+        "desc_transformation": "🔄 **Transformation de phrases.** Quelques phrases te sont données — tu les réécris selon une règle (actif↔passif, discours indirect, changement de temps, etc.).",
+        "transform_type": "🔄 Transformation",
+        "help_transform_type": "Quelle règle de réécriture travailler. « Mixte » varie la règle selon la phrase.",
         "new_task_btn": "🎯 Nouvel exercice",
         "correct_btn": "📝 Corriger le texte",
         "task_heading": "Exercice",
@@ -834,6 +852,9 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_conjugation": "🔠 **Conjugación de verbos.** Un verbo + una persona — lo conjugas en varios tiempos.",
         "desc_dictation": "🎙️ **Dictado audio.** El LLM escribe un texto corto, ElevenLabs lo lee, tú lo transcribes. Control de velocidad para ralentizar la voz.",
         "desc_reading": "📚 **Comprensión lectora.** Texto generado por IA, URL, texto pegado o .txt subido — luego opción múltiple + preguntas abiertas.",
+        "desc_transformation": "🔄 **Transformación de frases.** Se te dan unas frases — las reescribes según una regla (activa↔pasiva, estilo indirecto, cambio de tiempo, etc.).",
+        "transform_type": "🔄 Transformación",
+        "help_transform_type": "Qué regla de reescritura practicar. «Mixto» varía la regla por frase.",
         "new_task_btn": "🎯 Nuevo ejercicio",
         "correct_btn": "📝 Corregir texto",
         "task_heading": "Ejercicio",
@@ -1044,6 +1065,9 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_conjugation": "🔠 **Дієвідмінювання.** Дано дієслово + особу — ти відмінюєш його в кількох часах.",
         "desc_dictation": "🎙️ **Аудіодиктант.** LLM пише короткий текст, ElevenLabs його читає, ти записуєш. Повзунок швидкості — щоб сповільнити голос.",
         "desc_reading": "📚 **Читання з розумінням.** Текст, згенерований ШІ, URL, вставлений текст або .txt — потім тест + відкриті питання.",
+        "desc_transformation": "🔄 **Трансформація речень.** Тобі дають кілька речень — ти переписуєш їх за правилом (активний↔пасивний стан, непряма мова, зміна часу тощо).",
+        "transform_type": "🔄 Трансформація",
+        "help_transform_type": "Яке правило перетворення тренувати. «Змішано» змінює правило щоразу.",
         "new_task_btn": "🎯 Нове завдання",
         "correct_btn": "📝 Перевірити текст",
         "task_heading": "Завдання",
@@ -1254,6 +1278,9 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_conjugation": "🔠 **Koniugacja czasowników.** Dany czasownik + osoba — odmieniasz go w kilku czasach.",
         "desc_dictation": "🎙️ **Dyktando audio.** LLM pisze krótki tekst, ElevenLabs go czyta, ty zapisujesz. Suwak prędkości do spowolnienia głosu.",
         "desc_reading": "📚 **Czytanie ze zrozumieniem.** Tekst wygenerowany przez AI, URL, wklejony tekst albo przesłany .txt — potem test + pytania otwarte.",
+        "desc_transformation": "🔄 **Transformacja zdań.** Dostajesz kilka zdań — przekształcasz je według reguły (strona czynna↔bierna, mowa zależna, zmiana czasu itd.).",
+        "transform_type": "🔄 Transformacja",
+        "help_transform_type": "Którą regułę przekształcania ćwiczyć. „Mieszane“ zmienia regułę co zdanie.",
         "new_task_btn": "🎯 Nowe zadanie",
         "correct_btn": "📝 Popraw tekst",
         "task_heading": "Zadanie",
@@ -1465,6 +1492,9 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_conjugation": "🔠 **הטיית פעלים.** פועל + גוף ניתנים — אתה מטה אותו בכמה זמנים.",
         "desc_dictation": "🎙️ **הכתבה קולית.** ה-LLM כותב טקסט קצר, ElevenLabs מקריא אותו, אתה מתמלל. מחוון מהירות להאטת הקול.",
         "desc_reading": "📚 **הבנת הנקרא.** טקסט שנוצר ע\"י AI, URL, טקסט מודבק או קובץ .txt שהועלה — לאחר מכן רב-ברירה + שאלות פתוחות.",
+        "desc_transformation": "🔄 **המרת משפטים.** מקבלים כמה משפטים — וכותבים אותם מחדש לפי כלל (פעיל↔סביל, דיבור עקיף, שינוי זמן ועוד).",
+        "transform_type": "🔄 המרה",
+        "help_transform_type": "איזה כלל המרה לתרגל. „מעורב“ משנה את הכלל בכל משפט.",
         "new_task_btn": "🎯 משימה חדשה",
         "correct_btn": "📝 תקן טקסט",
         "task_heading": "משימה",
@@ -1673,6 +1703,9 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_conjugation": "🔠 **تصريف الأفعال.** يُعطى فعل + ضمير — وتصرّفه عبر عدة أزمنة.",
         "desc_dictation": "🎙️ **إملاء صوتي.** يكتب النموذج نصًا قصيرًا، ويقرؤه ElevenLabs، وتكتبه أنت. منزلق سرعة التشغيل يتيح لك إبطاء الصوت.",
         "desc_reading": "📚 **فهم المقروء.** نص يولّده الذكاء الاصطناعي، أو رابط، أو نص ملصق، أو ملف ‎.txt‎ مرفوع — ثم أسئلة اختيار من متعدد + أسئلة مفتوحة عنه.",
+        "desc_transformation": "🔄 **تحويل الجُمل.** تُعطى بضع جُمل — تعيد صياغتها وفق قاعدة (معلوم↔مجهول، كلام غير مباشر، تغيير الزمن، وغيرها).",
+        "transform_type": "🔄 التحويل",
+        "help_transform_type": "أي قاعدة تحويل تتدرّب عليها. «منوّع» يغيّر القاعدة لكل جملة.",
         "new_task_btn": "🎯 مهمة جديدة",
         "correct_btn": "📝 صحّح النص",
         "task_heading": "المهمة",
@@ -2280,6 +2313,59 @@ TIER_DISPLAY: dict[str, dict[str, str]] = {
 }
 
 
+# Transformation-type labels (keys from src.config.TRANSFORMATIONS).
+TRANSFORM_DISPLAY: dict[str, dict[str, str]] = {
+    "en": {
+        "active_passive": "Active ↔ Passive", "direct_indirect": "Direct ↔ Indirect speech",
+        "tense_change": "Tense change", "affirm_negate": "Affirmative ↔ Negative",
+        "statement_question": "Statement ↔ Question", "singular_plural": "Singular ↔ Plural",
+        "mixed": "🎲 Mixed",
+    },
+    "de": {
+        "active_passive": "Aktiv ↔ Passiv", "direct_indirect": "Direkte ↔ indirekte Rede",
+        "tense_change": "Zeitenwechsel", "affirm_negate": "Bejaht ↔ Verneint",
+        "statement_question": "Aussage ↔ Frage", "singular_plural": "Singular ↔ Plural",
+        "mixed": "🎲 Gemischt",
+    },
+    "fr": {
+        "active_passive": "Actif ↔ Passif", "direct_indirect": "Discours direct ↔ indirect",
+        "tense_change": "Changement de temps", "affirm_negate": "Affirmatif ↔ Négatif",
+        "statement_question": "Affirmation ↔ Question", "singular_plural": "Singulier ↔ Pluriel",
+        "mixed": "🎲 Mixte",
+    },
+    "es": {
+        "active_passive": "Activa ↔ Pasiva", "direct_indirect": "Estilo directo ↔ indirecto",
+        "tense_change": "Cambio de tiempo", "affirm_negate": "Afirmativo ↔ Negativo",
+        "statement_question": "Afirmación ↔ Pregunta", "singular_plural": "Singular ↔ Plural",
+        "mixed": "🎲 Mixto",
+    },
+    "uk": {
+        "active_passive": "Активний ↔ Пасивний стан", "direct_indirect": "Пряма ↔ непряма мова",
+        "tense_change": "Зміна часу", "affirm_negate": "Ствердження ↔ Заперечення",
+        "statement_question": "Розповідь ↔ Питання", "singular_plural": "Однина ↔ Множина",
+        "mixed": "🎲 Змішано",
+    },
+    "pl": {
+        "active_passive": "Strona czynna ↔ bierna", "direct_indirect": "Mowa niezależna ↔ zależna",
+        "tense_change": "Zmiana czasu", "affirm_negate": "Twierdzenie ↔ Przeczenie",
+        "statement_question": "Zdanie ↔ Pytanie", "singular_plural": "Liczba poj. ↔ mnoga",
+        "mixed": "🎲 Mieszane",
+    },
+    "ar": {
+        "active_passive": "معلوم ↔ مجهول", "direct_indirect": "كلام مباشر ↔ غير مباشر",
+        "tense_change": "تغيير الزمن", "affirm_negate": "إثبات ↔ نفي",
+        "statement_question": "خبر ↔ سؤال", "singular_plural": "مفرد ↔ جمع",
+        "mixed": "🎲 منوّع",
+    },
+    "he": {
+        "active_passive": "פעיל ↔ סביל", "direct_indirect": "דיבור ישיר ↔ עקיף",
+        "tense_change": "שינוי זמן", "affirm_negate": "חיווי ↔ שלילה",
+        "statement_question": "משפט ↔ שאלה", "singular_plural": "יחיד ↔ רבים",
+        "mixed": "🎲 מעורב",
+    },
+}
+
+
 def _lookup(table: dict[str, dict[str, str]], key: str, lang: str, fallback: str) -> str:
     """Two-level lookup with safe fallback to fallback string."""
     table_for_lang = table.get(lang) or table.get(DEFAULT_UI_LANG, {})
@@ -2313,6 +2399,10 @@ def quote_for(mentor_key: str, lang: str) -> str:
 
 def tier_display(key: str, lang: str) -> str:
     return _lookup(TIER_DISPLAY, key, lang, key)
+
+
+def transform_display(key: str, lang: str) -> str:
+    return _lookup(TRANSFORM_DISPLAY, key, lang, key)
 
 
 def t(key: str, lang: str = DEFAULT_UI_LANG, **fmt: object) -> str:

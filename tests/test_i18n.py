@@ -43,6 +43,14 @@ def test_translating_vocab_key_present_in_all_langs():
         assert t("status_translating_vocab", lang) != "status_translating_vocab"
 
 
+def test_transform_display_covers_all_keys_all_ui_langs():
+    from src.config import TRANSFORMATIONS
+    from src.i18n import transform_display
+    for lang in ["en", "de", "fr", "es", "uk", "pl", "ar", "he"]:
+        for k in TRANSFORMATIONS:
+            assert transform_display(k, lang) != k, f"{lang}/{k} missing display"
+
+
 def test_input_help_localized_in_all_ui_langs():
     # The keyboard-input hint (title + body) must be present and formatable in
     # every UI language, with both {language} and {url} placeholders honoured.

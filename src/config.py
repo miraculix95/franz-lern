@@ -95,6 +95,24 @@ THEMES: list[str] = [
     "Politik",
 ]
 
+# Transformation exercise: sentence-rewriting drills. Keys are stable (used by
+# the UI + dispatch); the English phrase is injected into the (English) prompt,
+# the label is localized per UI language in i18n.TRANSFORM_DISPLAY.
+TRANSFORMATIONS: dict[str, str] = {
+    "active_passive": "rewrite each sentence switching between active and passive voice",
+    "direct_indirect": "convert each sentence between direct and indirect (reported) speech",
+    "tense_change": "shift each sentence into a different tense (e.g. present → past, or past → future)",
+    "affirm_negate": "turn affirmative sentences into negative ones and negative ones into affirmative",
+    "statement_question": "turn statements into questions and questions into statements",
+    "singular_plural": "switch the subject between singular and plural, adjusting all agreement",
+    "mixed": (
+        "apply a DIFFERENT transformation to each sentence — vary among active/passive, "
+        "direct/indirect speech, tense change, negation, statement/question and "
+        "singular/plural — and label each sentence with the transformation it requires"
+    ),
+}
+DEFAULT_TRANSFORMATION: str = "mixed"
+
 # OpenRouter model IDs (https://openrouter.ai/models).
 # 4-tier selection: budget / balanced / premium / best.
 # See research/2026-04-20-model-provider-analysis.md for the rationale.

@@ -2,6 +2,7 @@ from src.config import (
     DEFAULT_LANGUAGE,
     DEFAULT_MODEL,
     DEFAULT_MODEL_UK,
+    DEFAULT_TRANSFORMATION,
     INPUT_KEYBOARD_URL,
     LANGUAGES,
     LEVELS,
@@ -12,6 +13,7 @@ from src.config import (
     NON_LATIN_LANGUAGES,
     RTL_LANGUAGES,
     THEMES,
+    TRANSFORMATIONS,
     default_model_for_language,
 )
 
@@ -68,6 +70,13 @@ def test_default_model_for_language_swaps_on_ukrainian():
     assert default_model_for_language("französisch") == DEFAULT_MODEL
     assert default_model_for_language("ukrainisch") == DEFAULT_MODEL_UK
     assert default_model_for_language("englisch") == DEFAULT_MODEL
+
+
+def test_transformations_have_default_and_mixed():
+    assert DEFAULT_TRANSFORMATION in TRANSFORMATIONS
+    assert "mixed" in TRANSFORMATIONS
+    # every transformation carries a non-empty English prompt phrase
+    assert all(isinstance(v, str) and v.strip() for v in TRANSFORMATIONS.values())
 
 
 def test_input_keyboard_urls_cover_non_latin_languages():

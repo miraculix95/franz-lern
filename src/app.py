@@ -21,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.config import (  # noqa: E402
     DEFAULT_LANGUAGE,
+    DEFAULT_TRANSFORMATION,
     INPUT_KEYBOARD_URL,
     LANGUAGES,
     LEVELS,
@@ -31,6 +32,7 @@ from src.config import (  # noqa: E402
     NIVEAU_LEVELS,
     RTL_LANGUAGES,
     THEMES,
+    TRANSFORMATIONS,
     default_model_for_language,
 )
 from src.correction import answer_comment, correct_text, extract_comments  # noqa: E402
@@ -47,6 +49,7 @@ from src.i18n import (  # noqa: E402
     t,
     task_names_for,
     tier_display,
+    transform_display,
 )
 from src.logging_setup import get_logger  # noqa: E402
 from src.state import init_session_state  # noqa: E402
@@ -58,6 +61,7 @@ from src.tasks import quiz as quiz_task  # noqa: E402
 from src.tasks import reading as reading_task  # noqa: E402
 from src.tasks import sentence_building as sent_task  # noqa: E402
 from src.tasks import synonym_antonym as syn_task  # noqa: E402
+from src.tasks import transformation as transform_task  # noqa: E402
 from src.tasks import translation as trans_task  # noqa: E402
 from src.tasks import writing as write_task  # noqa: E402
 from src.vocab import (  # noqa: E402
@@ -725,6 +729,16 @@ def _generate_task(
                 ui_language_name=ui_lang_name,
                 direction=getattr(state, "translation_direction", "to_learning"),
             )
+        elif task_key == "transformation":
+            instr = transform_task.build(
+                client, vocab_list=state.vocab_list, language=lang_en, level=level,
+                niveau=niveau, number_sentences=state.number_sentences,
+                transformation_en=TRANSFORMATIONS.get(
+                    getattr(state, "transform_type", DEFAULT_TRANSFORMATION),
+                    TRANSFORMATIONS[DEFAULT_TRANSFORMATION],
+                ),
+                model=model, ui_language_name=ui_lang_name,
+            )
         elif task_key == "sentence":
             instr = sent_task.build(
                 client, vocab_list=state.vocab_list, language=lang_en, level=level,
@@ -867,6 +881,7 @@ def _render_main_page() -> None:
         ("vocab_translations", {}),
         ("number_trous", 4),
         ("number_sentences", 1),
+        ("transform_type", DEFAULT_TRANSFORMATION),
         ("translation_direction", "to_learning"),
         ("file_path_extract_trigger", None),
         ("uploaded_vocab_file_trigger", None),
@@ -991,6 +1006,23 @@ def _render_main_page() -> None:
         )
         # Map picked label back to internal key:
         state.translation_direction = next(k for k, v in dir_labels.items() if v == pick)
+    elif task_key == "transformation":
+        col_n, col_t = st.columns([1, 2])
+        state.number_sentences = col_n.number_input(
+            t("num_sentences", ui_lang), min_value=1, max_value=20, value=state.number_sentences,
+            help=t("help_num_sentences", ui_lang),
+        )
+        tkeys = list(TRANSFORMATIONS.keys())
+        tlabels = {k: transform_display(k, ui_lang) for k in tkeys}
+        cur = state.transform_type if state.transform_type in tkeys else DEFAULT_TRANSFORMATION
+        pick_t = col_t.selectbox(
+            t("transform_type", ui_lang),
+            [tlabels[k] for k in tkeys],
+            index=tkeys.index(cur),
+            help=t("help_transform_type", ui_lang),
+            key="transform_type_sel",
+        )
+        state.transform_type = next(k for k, v in tlabels.items() if v == pick_t)
 
     if task_key == "quiz":
         _render_quiz(client, lang_en, model, ui_lang, display_lang=language_display(language, ui_lang))

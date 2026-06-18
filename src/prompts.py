@@ -236,6 +236,38 @@ def build_translation_prompt(
     )
 
 
+def build_transformation_prompt(
+    *,
+    language: str,
+    level: str,
+    niveau: str,
+    selected_vocab: list[str],
+    number_sentences: int,
+    transformation_en: str,
+    ui_language_name: str,
+) -> str:
+    """Sentence-transformation drill: N source sentences + a rewriting rule.
+
+    The learner rewrites each sentence; answers are NOT provided (the shared
+    correction flow grades the rewrites against the stated rule).
+    """
+    joined = ", ".join(selected_vocab)
+    return (
+        f"Create a {language} sentence-transformation exercise. "
+        f"Write {number_sentences} short, self-contained {language} source sentences "
+        f"(CEFR level {level}, register {niveau}) that naturally use these vocabs: {joined}. "
+        f"The learner's task: {transformation_en}. "
+        f"Each source sentence must be transformable by that rule (e.g. for active/passive "
+        f"it needs a transitive verb; for reported speech it needs a quote or statement). "
+        f"Do NOT provide the transformed sentences — the learner produces them.{NO_ANSWERS_HINT}\n\n"
+        f"Output format — write the heading/instruction in {ui_language_name}, keep the "
+        f"{language} sentences in {language}:\n"
+        f"1) One short instruction line telling the learner exactly which transformation to apply "
+        f"(if the rule mixes types, state the required transformation next to each sentence).\n"
+        f"2) A numbered list of the {number_sentences} {language} source sentences."
+    )
+
+
 def build_sentence_building_prompt(
     *,
     language: str,
