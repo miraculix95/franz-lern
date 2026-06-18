@@ -738,6 +738,67 @@ def build_delf_eval_messages(
     ]
 
 
+PLACEMENT_FUNCTION_SPEC: dict = {
+    "name": "emit_placement_test",
+    "description": (
+        "Emit a short CEFR placement test: exactly 6 multiple-choice questions, one at "
+        "each level A1, A2, B1, B2, C1, C2, in increasing difficulty."
+    ),
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "questions": {
+                "type": "array",
+                "description": "Exactly 6 items, ordered A1 → C2 (one per level).",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "level": {"type": "string", "description": "A1 | A2 | B1 | B2 | C1 | C2"},
+                        "question": {"type": "string", "description": "the item, in the target language"},
+                        "options": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "exactly 4 options in the target language",
+                        },
+                        "correct_index": {"type": "integer", "description": "0-based index (0..3)"},
+                    },
+                    "required": ["level", "question", "options", "correct_index"],
+                },
+            },
+        },
+        "required": ["questions"],
+    },
+}
+
+
+def build_placement_messages(*, language: str) -> list[dict]:
+    """Messages to produce a 6-item CEFR placement test via emit_placement_test.
+
+    Questions are IN the target language (that is what measures ability); each
+    targets one CEFR level, from very easy (A1) to near-native (C2).
+    """
+    return [
+        {
+            "role": "system",
+            "content": (
+                f"You are a {language} placement examiner. Produce a quick test that locates a "
+                f"learner's CEFR level. Use the emit_placement_test tool. Exactly 6 "
+                f"multiple-choice questions, one each at A1, A2, B1, B2, C1, C2, strictly "
+                f"increasing in difficulty. Each question and its 4 options are in {language}. "
+                f"A1 must be answerable by a near-beginner (basic words, present tense); C2 must "
+                f"require near-native mastery (nuance, idiom, register). Exactly one correct "
+                f"option per item; distractors plausible but clearly wrong."
+            ),
+        },
+        {
+            "role": "user",
+            "content": (
+                f"Create the 6-question {language} placement test now, ordered from A1 to C2."
+            ),
+        },
+    ]
+
+
 def build_answer_comment_prompt(comment: str) -> list[dict]:
     return [
         {"role": "system", "content": "Beantworte die folgende Frage sachlich und präzise."},

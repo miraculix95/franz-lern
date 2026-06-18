@@ -61,6 +61,15 @@ def test_grammar_focus_display_covers_all_keys_all_ui_langs():
         assert t("grammar_focus_none", lang) != "grammar_focus_none"
 
 
+def test_placement_keys_localized_in_all_ui_langs():
+    for lang in ["en", "de", "fr", "es", "uk", "pl", "ar", "he"]:
+        for key in ("placement_title", "placement_intro", "placement_start",
+                    "placement_evaluate", "placement_recommend", "placement_apply"):
+            assert t(key, lang) != key, f"{lang}/{key} missing"
+        # placeholder substitution works
+        assert "{level}" not in t("placement_recommend", lang, level="B1")
+
+
 def test_delf_localized_in_all_ui_langs():
     from src.config import TEXT_TYPES
     from src.i18n import text_type_display

@@ -63,6 +63,7 @@ from src.tasks import conjugation as conj_task  # noqa: E402
 from src.tasks import delf as delf_task  # noqa: E402
 from src.tasks import dictation as dict_task  # noqa: E402
 from src.tasks import error_detection as err_task  # noqa: E402
+from src.tasks import placement as placement_task  # noqa: E402
 from src.tasks import quiz as quiz_task  # noqa: E402
 from src.tasks import reading as reading_task  # noqa: E402
 from src.tasks import sentence_building as sent_task  # noqa: E402
@@ -947,6 +948,7 @@ def _render_main_page() -> None:
         st.rerun()
     st.caption(t("practice_intro", ui_lang))
     _render_input_help(language, ui_lang)
+    _render_placement(client, lang_en, model, ui_lang)
     task_names = task_names_for(ui_lang)
 
     # Pre-selection overview: expander with the full catalogue of types + their
@@ -1254,6 +1256,8 @@ def _soft_reset_tasks(state: Any) -> None:
         # delf production écrite
         "delf_task", "delf_text", "delf_assessment", "delf_type_pick",
         "delf_word_input", "delf_theme_input", "delf_text_area",
+        # placement test
+        "placement_questions", "placement_answers", "placement_result",
         # exercise dropdown — force back to the blank "choose exercise" row
         "task_type_sel",
     ):
@@ -1733,6 +1737,61 @@ def _render_delf(
         st.markdown(f"**{t('delf_suggestions', ui_lang)}**")
         for s in assessment.suggestions:
             st.markdown(f"- {s}")
+
+
+def _render_placement(
+    client: openai.OpenAI, language_en: str, model: str, ui_lang: str,
+) -> None:
+    """CEFR placement test — a separate, collapsed block above the exercise picker.
+
+    Six questions (one per level A1–C2) in the learning language; the recommended
+    level is the longest correct prefix from A1 up, and 'apply' sets the sidebar
+    level via st.session_state['level'] + rerun.
+    """
+    with st.expander(t("placement_title", ui_lang), expanded=False):
+        st.caption(t("placement_intro", ui_lang))
+        if st.button(t("placement_start", ui_lang), key="placement_start_btn"):
+            with st.status(t("placement_status", ui_lang), expanded=False) as status:
+                qs = placement_task.build_test(client, language=language_en, model=model)
+                st.session_state["placement_questions"] = qs
+                st.session_state["placement_answers"] = [None] * len(qs)
+                st.session_state.pop("placement_result", None)
+                status.update(label="✅", state="complete")
+
+        questions = st.session_state.get("placement_questions")
+        if not questions:
+            return
+        st.caption(t("placement_q_instr", ui_lang))
+        answers: list[int | None] = list(st.session_state.get("placement_answers", []))
+        for i, q in enumerate(questions):
+            opts = q.get("options", [])
+            picked = st.radio(
+                f"**{i + 1}.** {q.get('question', '')}", options=opts, index=None,
+                key=f"placement_q_{i}",
+            )
+            answers[i] = opts.index(picked) if picked in opts else None
+        st.session_state["placement_answers"] = answers
+
+        if st.button(t("placement_evaluate", ui_lang), type="primary", key="placement_eval_btn"):
+            if any(a is None for a in answers):
+                st.warning(t("placement_need_answers", ui_lang))
+            else:
+                st.session_state["placement_result"] = placement_task.recommend_level(
+                    questions, answers,
+                )
+
+        result = st.session_state.get("placement_result")
+        if result:
+            st.markdown(t("placement_recommend", ui_lang, level=result))
+            if st.button(
+                t("placement_apply", ui_lang, level=result), type="primary",
+                key="placement_apply_btn",
+            ):
+                st.session_state["level"] = result
+                st.success(t("placement_applied", ui_lang, level=result))
+                for k in ("placement_questions", "placement_answers", "placement_result"):
+                    st.session_state.pop(k, None)
+                st.rerun()
 
 
 if __name__ == "__main__":
