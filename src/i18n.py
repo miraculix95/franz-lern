@@ -228,10 +228,10 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_translation": "🔁 **Translate sentences.** A handful of sentences to translate — either into or out of the learning language, your pick.",
         "desc_quiz": "🎲 **Vocabulary quiz.** Flashcard-style: you get the translation, you type the word. Fuzzy matching tolerates small typos.",
         "desc_sentence": "🧩 **Sentence building.** A few vocabs are given — you build a sentence that uses them naturally.",
-        "desc_error": "🔍 **Error detection.** The LLM writes a few sentences that contain grammar or spelling mistakes. You find and fix them.",
+        "desc_error": "🔍 **Error detection.** The AI writes a few sentences that contain grammar or spelling mistakes. You find and fix them.",
         "desc_synonym": "🔤 **Synonyms & antonyms.** A word is given — you produce synonyms and antonyms in the learning language.",
         "desc_conjugation": "🔠 **Verb conjugation.** A verb + a person is given — you conjugate it across several tenses.",
-        "desc_dictation": "🎙️ **Audio dictation.** The LLM writes a short text, ElevenLabs reads it, you transcribe. Playback-speed slider lets you slow the voice down.",
+        "desc_dictation": "🎙️ **Audio dictation.** The AI writes a short text, ElevenLabs reads it, you transcribe. Playback-speed slider lets you slow the voice down.",
         "desc_reading": "📚 **Reading comprehension.** AI-generated text, a URL, pasted text, or an uploaded .txt — then multiple-choice + open-ended questions about it.",
         "desc_transformation": "🔄 **Sentence transformation.** A few sentences are given — you rewrite them following a rule (active↔passive, reported speech, tense change, and more).",
         "desc_listening": "🎧 **Listening comprehension.** Listen to a short AI-generated audio passage (with a speed control), then answer multiple-choice + open questions. Reveal the transcript afterwards.",
@@ -297,7 +297,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "status_quiz_ready": "✅ Quiz ready",
         "vocab_loaded_ok": "✅ {n} vocabs loaded",
         "num_blanks": "Number of blanks",
-        "cloze_freeform_hint": "💬 Type your answers in any format — one per line, comma-separated, or in running prose. The LLM will match them to the blanks.",
+        "cloze_freeform_hint": "💬 Type your answers in any format — one per line, comma-separated, or in running prose. The AI will match them to the blanks.",
         "num_sentences": "Number of sentences",
         "error_no_key": "🔑 No API key. Enter your OpenRouter key in the sidebar.",
         "error_no_key_hint": "💡 Get one at https://openrouter.ai/keys — the key stays only in your session.",
@@ -340,7 +340,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "with register-aware corrections and mentor personas that change the voice of the feedback.\n\n"
             "### Highlights\n"
             "What sets lingua-app apart from mass-market language apps (Duolingo, Babbel, Busuu):\n\n"
-            "- **Seven language registers**, not just 'formal vs. casual' — the LLM matches corrections "
+            "- **Seven language styles**, not just 'formal vs. casual' — the AI matches corrections "
             "to the register you're writing in (criminal slang · vulgar · colloquial · standard · "
             "formal · literary · technical).\n"
             "- **Ten mentor personas** — from Kind Teacher to Machiavelli. The stylistic contrast "
@@ -401,13 +401,13 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "help_correct": "Send your answer to the coach for correction.",
         "help_num_blanks": "How many blanks to produce.",
         "help_num_sentences": "How many translation sentences to produce.",
-        "help_dict_generate": "The LLM writes a short text, ElevenLabs speaks it. You transcribe, the app diffs.",
+        "help_dict_generate": "The AI writes a short text, ElevenLabs speaks it. You transcribe, the app diffs.",
         "help_dict_speed": "Slow down or speed up the voice without changing pitch.",
         "help_read_source": "Where the passage comes from: AI-generated, a webpage, pasted text, or an uploaded .txt.",
         "help_read_length": "Rough word count for the AI-generated passage.",
         "help_read_theme": "Optional topic seed — e.g. 'climate', 'urbanism', 'childhood'.",
         "help_read_generate": "Pulls the text and drafts multiple-choice + open questions.",
-        "help_read_submit": "Evaluate: MC is scored locally, open answers are graded by the LLM against a reference.",
+        "help_read_submit": "Evaluate: MC is scored locally, open answers are graded by the AI against a reference.",
         "read_source": "📖 Text source",
         "read_source_ai": "Generate with AI",
         "read_source_url": "Fetch from URL",
@@ -472,14 +472,14 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "practice_intro": "Wähle unten einen Übungstyp. Jeder Typ ist eine andere Art, mit deinen Vokabeln zu üben — konzentrier dich auf einen oder arbeite sie der Reihe nach durch.",
         "types_overview_title": "📖 Was sind die Übungstypen?",
         "desc_writing": "📝 **Freies Schreiben.** Du bekommst ein Thema und schreibst einen kurzen Text in der Lernsprache. Der Coach korrigiert Grammatik, Wortschatz und Stil — im gewählten Register.",
-        "desc_cloze": "📖 **Lückentext.** Das LLM baut einen kurzen Text mit Lücken. Du tippst die fehlenden Wörter; der Coach prüft sie.",
+        "desc_cloze": "📖 **Lückentext.** Die KI baut einen kurzen Text mit Lücken. Du tippst die fehlenden Wörter; der Coach prüft sie.",
         "desc_translation": "🔁 **Sätze übersetzen.** Ein paar Sätze zum Übersetzen — wahlweise in oder aus der Lernsprache.",
         "desc_quiz": "🎲 **Vokabel-Quiz.** Flashcard-Stil: du siehst die Übersetzung, tippst das Wort. Tippfehler-tolerant.",
         "desc_sentence": "🧩 **Satz bauen.** Ein paar Vokabeln sind vorgegeben — du baust einen Satz, der sie natürlich benutzt.",
-        "desc_error": "🔍 **Fehler finden.** Das LLM schreibt ein paar Sätze mit Grammatik- oder Rechtschreibfehlern. Du findest und korrigierst sie.",
+        "desc_error": "🔍 **Fehler finden.** Die KI schreibt ein paar Sätze mit Grammatik- oder Rechtschreibfehlern. Du findest und korrigierst sie.",
         "desc_synonym": "🔤 **Synonyme & Antonyme.** Ein Wort ist vorgegeben — du nennst Synonyme und Antonyme in der Lernsprache.",
         "desc_conjugation": "🔠 **Verbkonjugation.** Ein Verb + eine Person sind vorgegeben — du konjugierst es in mehreren Zeiten.",
-        "desc_dictation": "🎙️ **Audio-Diktat.** Das LLM schreibt einen kurzen Text, ElevenLabs liest ihn vor, du schreibst mit. Geschwindigkeits-Slider zum Verlangsamen.",
+        "desc_dictation": "🎙️ **Audio-Diktat.** Die KI schreibt einen kurzen Text, ElevenLabs liest ihn vor, du schreibst mit. Geschwindigkeits-Slider zum Verlangsamen.",
         "desc_reading": "📚 **Leseverstehen.** KI-generierter Text, URL, eingefügter Text oder hochgeladene .txt — danach Multiple-Choice- und offene Fragen dazu.",
         "desc_transformation": "🔄 **Satztransformation.** Du bekommst Sätze und formst sie nach einer Regel um (Aktiv↔Passiv, indirekte Rede, Zeitenwechsel u. a.).",
         "desc_listening": "🎧 **Hörverstehen.** Höre eine kurze KI-generierte Audio-Passage (mit Tempo-Regler) und beantworte dann Multiple-Choice- und offene Fragen. Das Transkript kannst du danach einblenden.",
@@ -545,7 +545,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "status_quiz_ready": "✅ Quiz bereit",
         "vocab_loaded_ok": "✅ {n} Vokabeln geladen",
         "num_blanks": "Wortlücken",
-        "cloze_freeform_hint": "💬 Antworten können im Freiformat eingegeben werden — pro Zeile, kommagetrennt oder im Fließtext. Das LLM ordnet sie den Lücken zu.",
+        "cloze_freeform_hint": "💬 Antworten können im Freiformat eingegeben werden — pro Zeile, kommagetrennt oder im Fließtext. Die KI ordnet sie den Lücken zu.",
         "num_sentences": "Anzahl Sätze",
         "error_no_key": "🔑 Kein API-Key. Gib deinen OpenRouter-Key in der Sidebar ein.",
         "error_no_key_hint": "💡 Hol einen auf https://openrouter.ai/keys — der Key bleibt nur in deiner Session.",
@@ -588,7 +588,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "Korrektur und Mentor-Personas, die die Stimme des Feedbacks ändern.\n\n"
             "### Besonderheiten\n"
             "Was lingua-app von Massenmarkt-Sprach­apps (Duolingo, Babbel, Busuu) unterscheidet:\n\n"
-            "- **Sieben Sprachregister**, nicht nur 'formell vs. locker' — das LLM passt die Korrektur "
+            "- **Sieben Sprachstile**, nicht nur 'formell vs. locker' — die KI passt die Korrektur "
             "dem Register an, in dem du schreibst (Gossensprache · vulgär · umgangssprachlich · "
             "Standard · formell · literarisch · technisch).\n"
             "- **Zehn Mentor-Personas** — von Netter Lehrer bis Machiavelli. Der Stilkontrast "
@@ -649,13 +649,13 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "help_correct": "Antwort an den Coach zur Korrektur schicken.",
         "help_num_blanks": "Wie viele Lücken der Text haben soll.",
         "help_num_sentences": "Wie viele Sätze zum Übersetzen erzeugt werden.",
-        "help_dict_generate": "Das LLM schreibt einen kurzen Text, ElevenLabs spricht ihn. Du schreibst mit, die App vergleicht.",
+        "help_dict_generate": "Die KI schreibt einen kurzen Text, ElevenLabs spricht ihn. Du schreibst mit, die App vergleicht.",
         "help_dict_speed": "Stimme verlangsamen oder beschleunigen, ohne die Tonhöhe zu ändern.",
         "help_read_source": "Woher der Text kommt: KI-generiert, Webseite, eingefügter Text oder hochgeladene .txt.",
         "help_read_length": "Ungefähre Wortzahl für den KI-generierten Text.",
         "help_read_theme": "Optionales Thema — z.B. 'Klima', 'Städtebau', 'Kindheit'.",
         "help_read_generate": "Holt den Text und erzeugt Multiple-Choice- und offene Fragen.",
-        "help_read_submit": "Auswerten: MC wird lokal gezählt, offene Antworten bewertet das LLM gegen eine Referenz.",
+        "help_read_submit": "Auswerten: MC wird lokal gezählt, offene Antworten bewertet die KI gegen eine Referenz.",
         "read_source": "📖 Textquelle",
         "read_source_ai": "KI generieren lassen",
         "read_source_url": "Von URL laden",
@@ -720,14 +720,14 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "practice_intro": "Choisis un type d'exercice ci-dessous. Chaque type est une manière différente de pratiquer ton vocabulaire — concentre-toi sur un ou fais-les tous.",
         "types_overview_title": "📖 Quels sont les types d'exercices ?",
         "desc_writing": "📝 **Rédaction libre.** Tu reçois un thème et écris un court texte dans la langue cible. Le coach corrige la grammaire, le vocabulaire et le style — dans le registre choisi.",
-        "desc_cloze": "📖 **Texte à trous.** Le LLM construit un court texte avec des trous. Tu tapes les mots manquants ; le coach vérifie.",
+        "desc_cloze": "📖 **Texte à trous.** L'IA construit un court texte avec des trous. Tu tapes les mots manquants ; le coach vérifie.",
         "desc_translation": "🔁 **Traduire des phrases.** Quelques phrases à traduire — au choix vers ou depuis la langue cible.",
         "desc_quiz": "🎲 **Quiz de vocabulaire.** Style flashcards : tu vois la traduction, tu tapes le mot. Tolère les petites fautes de frappe.",
         "desc_sentence": "🧩 **Construction de phrase.** Quelques mots te sont donnés — tu construis une phrase qui les utilise naturellement.",
-        "desc_error": "🔍 **Détection d'erreurs.** Le LLM écrit quelques phrases contenant des fautes de grammaire ou d'orthographe. Tu les trouves et tu les corriges.",
+        "desc_error": "🔍 **Détection d'erreurs.** L'IA écrit quelques phrases contenant des fautes de grammaire ou d'orthographe. Tu les trouves et tu les corriges.",
         "desc_synonym": "🔤 **Synonymes et antonymes.** Un mot est donné — tu produis synonymes et antonymes dans la langue cible.",
         "desc_conjugation": "🔠 **Conjugaison.** Un verbe + une personne sont donnés — tu le conjugues sur plusieurs temps.",
-        "desc_dictation": "🎙️ **Dictée audio.** Le LLM écrit un court texte, ElevenLabs le lit, tu transcris. Curseur de vitesse pour ralentir la voix.",
+        "desc_dictation": "🎙️ **Dictée audio.** L'IA écrit un court texte, ElevenLabs le lit, tu transcris. Curseur de vitesse pour ralentir la voix.",
         "desc_reading": "📚 **Lire et comprendre.** Texte généré par IA, URL, texte collé ou .txt importé — puis des questions à choix multiple + questions ouvertes.",
         "desc_transformation": "🔄 **Transformation de phrases.** Quelques phrases te sont données — tu les réécris selon une règle (actif↔passif, discours indirect, changement de temps, etc.).",
         "desc_listening": "🎧 **Écouter et comprendre.** Écoute un court passage audio généré par IA (avec réglage de vitesse), puis réponds à des questions à choix multiple + questions ouvertes. Tu peux afficher la transcription ensuite.",
@@ -793,7 +793,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "status_quiz_ready": "✅ Quiz prêt",
         "vocab_loaded_ok": "✅ {n} mots chargés",
         "num_blanks": "Nombre de trous",
-        "cloze_freeform_hint": "💬 Saisis tes réponses librement — une par ligne, séparées par des virgules ou en texte continu. Le LLM les associera aux trous.",
+        "cloze_freeform_hint": "💬 Saisis tes réponses librement — une par ligne, séparées par des virgules ou en texte continu. L'IA les associera aux trous.",
         "num_sentences": "Nombre de phrases",
         "error_no_key": "🔑 Pas de clé API. Saisis ta clé OpenRouter dans la barre latérale.",
         "error_no_key_hint": "💡 Obtiens-en une sur https://openrouter.ai/keys — la clé reste dans ta session.",
@@ -837,7 +837,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "mentor qui changent la voix du feedback.\n\n"
             "### Points forts\n"
             "Ce qui distingue lingua-app des applis grand public (Duolingo, Babbel, Busuu) :\n\n"
-            "- **Sept registres de langue**, pas seulement 'soutenu vs. familier' — le LLM adapte "
+            "- **Sept styles de langue**, pas seulement 'soutenu vs. familier' — l'IA adapte "
             "la correction au registre dans lequel tu écris (argot · vulgaire · familier · courant · "
             "soutenu · littéraire · technique).\n"
             "- **Dix personas de mentor** — du Professeur sympathique à Machiavel. Le contraste "
@@ -898,7 +898,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "help_correct": "Envoyer ta réponse au coach pour correction.",
         "help_num_blanks": "Combien de trous dans le texte.",
         "help_num_sentences": "Combien de phrases à traduire.",
-        "help_dict_generate": "Le LLM écrit un court texte, ElevenLabs le prononce. Tu transcris, l'app compare.",
+        "help_dict_generate": "L'IA écrit un court texte, ElevenLabs le prononce. Tu transcris, l'app compare.",
         "help_dict_speed": "Ralentir ou accélérer la voix sans changer le ton.",
         "help_read_source": "D'où vient le texte : généré par IA, page web, texte collé, ou .txt importé.",
         "help_read_length": "Nombre approximatif de mots pour le texte généré par IA.",
@@ -969,14 +969,14 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "practice_intro": "Elige un tipo de ejercicio abajo. Cada tipo es una forma distinta de practicar tu vocabulario — concéntrate en uno o hazlos todos.",
         "types_overview_title": "📖 ¿Qué tipos de ejercicio hay?",
         "desc_writing": "📝 **Redacción libre.** Recibes un tema y escribes un texto corto en el idioma que estudias. El coach corrige gramática, vocabulario y estilo — en el registro que elegiste.",
-        "desc_cloze": "📖 **Texto con huecos.** El LLM crea un texto corto con huecos. Tú tecleas las palabras que faltan; el coach las revisa.",
+        "desc_cloze": "📖 **Texto con huecos.** La IA crea un texto corto con huecos. Tú tecleas las palabras que faltan; el coach las revisa.",
         "desc_translation": "🔁 **Traducir frases.** Unas cuantas frases para traducir — al idioma que estudias o desde él, tú eliges.",
         "desc_quiz": "🎲 **Quiz de vocabulario.** Estilo tarjetas: ves la traducción, escribes la palabra. Tolera pequeños errores de tipeo.",
         "desc_sentence": "🧩 **Construir una frase.** Se te dan unas palabras — construyes una frase que las usa de forma natural.",
-        "desc_error": "🔍 **Detectar errores.** El LLM escribe frases con errores de gramática u ortografía. Tú los encuentras y los corriges.",
+        "desc_error": "🔍 **Detectar errores.** La IA escribe frases con errores de gramática u ortografía. Tú los encuentras y los corriges.",
         "desc_synonym": "🔤 **Sinónimos y antónimos.** Se te da una palabra — produces sinónimos y antónimos en el idioma que estudias.",
         "desc_conjugation": "🔠 **Conjugación de verbos.** Un verbo + una persona — lo conjugas en varios tiempos.",
-        "desc_dictation": "🎙️ **Dictado audio.** El LLM escribe un texto corto, ElevenLabs lo lee, tú lo transcribes. Control de velocidad para ralentizar la voz.",
+        "desc_dictation": "🎙️ **Dictado audio.** La IA escribe un texto corto, ElevenLabs lo lee, tú lo transcribes. Control de velocidad para ralentizar la voz.",
         "desc_reading": "📚 **Comprensión lectora.** Texto generado por IA, URL, texto pegado o .txt subido — luego opción múltiple + preguntas abiertas.",
         "desc_transformation": "🔄 **Transformación de frases.** Se te dan unas frases — las reescribes según una regla (activa↔pasiva, estilo indirecto, cambio de tiempo, etc.).",
         "desc_listening": "🎧 **Comprensión auditiva.** Escucha un breve pasaje de audio generado por IA (con control de velocidad) y responde opción múltiple + preguntas abiertas. Después puedes mostrar la transcripción.",
@@ -1042,7 +1042,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "status_quiz_ready": "✅ Quiz listo",
         "vocab_loaded_ok": "✅ {n} palabras cargadas",
         "num_blanks": "Número de huecos",
-        "cloze_freeform_hint": "💬 Escribe tus respuestas en formato libre — una por línea, separadas por comas o en texto corrido. El LLM las emparejará con los huecos.",
+        "cloze_freeform_hint": "💬 Escribe tus respuestas en formato libre — una por línea, separadas por comas o en texto corrido. La IA las emparejará con los huecos.",
         "num_sentences": "Número de frases",
         "error_no_key": "🔑 No hay clave API. Introduce tu clave OpenRouter en la barra lateral.",
         "error_no_key_hint": "💡 Consigue una en https://openrouter.ai/keys — la clave solo vive en tu sesión.",
@@ -1086,7 +1086,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "voz del feedback.\n\n"
             "### Lo destacado\n"
             "Qué diferencia a lingua-app de las apps de idiomas más populares (Duolingo, Babbel, Busuu):\n\n"
-            "- **Siete registros de lengua**, no solo 'formal vs. informal' — el LLM ajusta la "
+            "- **Siete estilos de lengua**, no solo 'formal vs. informal' — la IA ajusta la "
             "corrección al registro en el que estás escribiendo (argot · vulgar · coloquial · "
             "estándar · formal · literario · técnico).\n"
             "- **Diez personas de mentor** — desde Profesor amable hasta Maquiavelo. El contraste "
@@ -1147,13 +1147,13 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "help_correct": "Enviar tu respuesta al coach para corregir.",
         "help_num_blanks": "Cuántos huecos tendrá el texto.",
         "help_num_sentences": "Cuántas frases para traducir.",
-        "help_dict_generate": "El LLM escribe un texto corto, ElevenLabs lo pronuncia. Tú transcribes, la app compara.",
+        "help_dict_generate": "La IA escribe un texto corto, ElevenLabs lo pronuncia. Tú transcribes, la app compara.",
         "help_dict_speed": "Ralentizar o acelerar la voz sin cambiar el tono.",
         "help_read_source": "De dónde viene el texto: generado por IA, página web, texto pegado, o .txt subido.",
         "help_read_length": "Número aproximado de palabras para el texto generado por IA.",
         "help_read_theme": "Tema opcional — p. ej. «clima», «urbanismo», «infancia».",
         "help_read_generate": "Obtiene el texto y redacta preguntas (MC + abiertas).",
-        "help_read_submit": "Evaluar: MC se cuenta localmente, las respuestas abiertas las califica el LLM contra una referencia.",
+        "help_read_submit": "Evaluar: MC se cuenta localmente, las respuestas abiertas las califica la IA contra una referencia.",
         "read_source": "📖 Fuente del texto",
         "read_source_ai": "Generar con IA",
         "read_source_url": "Cargar desde URL",
@@ -1218,14 +1218,14 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "practice_intro": "Обери тип вправи нижче. Кожен тип — інший спосіб попрактикувати словник — зосередься на одному або пройди всі по черзі.",
         "types_overview_title": "📖 Які є типи вправ?",
         "desc_writing": "📝 **Вільне письмо.** Отримуєш тему і пишеш короткий текст мовою, яку вивчаєш. Коуч виправляє граматику, лексику і стиль — у вибраному регістрі.",
-        "desc_cloze": "📖 **Текст із пропусками.** LLM створює короткий текст із пропусками. Ти вписуєш потрібні слова; коуч перевіряє.",
+        "desc_cloze": "📖 **Текст із пропусками.** AI створює короткий текст із пропусками. Ти вписуєш потрібні слова; коуч перевіряє.",
         "desc_translation": "🔁 **Переклад речень.** Кілька речень для перекладу — у мову, яку вивчаєш, або з неї, на твій вибір.",
         "desc_quiz": "🎲 **Словниковий квіз.** Формат карток: бачиш переклад, вводиш слово. Терпить дрібні одруки.",
         "desc_sentence": "🧩 **Побудова речення.** Дано кілька слів — будуєш речення, яке їх природно використовує.",
-        "desc_error": "🔍 **Пошук помилок.** LLM пише речення з граматичними або орфографічними помилками. Ти їх знаходиш і виправляєш.",
+        "desc_error": "🔍 **Пошук помилок.** AI пише речення з граматичними або орфографічними помилками. Ти їх знаходиш і виправляєш.",
         "desc_synonym": "🔤 **Синоніми та антоніми.** Дано слово — ти наводиш синоніми й антоніми мовою, яку вивчаєш.",
         "desc_conjugation": "🔠 **Дієвідмінювання.** Дано дієслово + особу — ти відмінюєш його в кількох часах.",
-        "desc_dictation": "🎙️ **Аудіодиктант.** LLM пише короткий текст, ElevenLabs його читає, ти записуєш. Повзунок швидкості — щоб сповільнити голос.",
+        "desc_dictation": "🎙️ **Аудіодиктант.** AI пише короткий текст, ElevenLabs його читає, ти записуєш. Повзунок швидкості — щоб сповільнити голос.",
         "desc_reading": "📚 **Читання з розумінням.** Текст, згенерований ШІ, URL, вставлений текст або .txt — потім тест + відкриті питання.",
         "desc_transformation": "🔄 **Трансформація речень.** Тобі дають кілька речень — ти переписуєш їх за правилом (активний↔пасивний стан, непряма мова, зміна часу тощо).",
         "desc_listening": "🎧 **Аудіювання.** Прослухай короткий аудіо-уривок, згенерований ШІ (з регулюванням швидкості), потім дай відповіді на тест + відкриті питання. Транскрипцію можна показати після.",
@@ -1291,7 +1291,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "status_quiz_ready": "✅ Квіз готовий",
         "vocab_loaded_ok": "✅ Завантажено {n} слів",
         "num_blanks": "Кількість пропусків",
-        "cloze_freeform_hint": "💬 Відповіді можна писати в будь-якому форматі — по одному на рядок, через кому або суцільним текстом. LLM зіставить їх з пропусками.",
+        "cloze_freeform_hint": "💬 Відповіді можна писати в будь-якому форматі — по одному на рядок, через кому або суцільним текстом. AI зіставить їх з пропусками.",
         "num_sentences": "Кількість речень",
         "error_no_key": "🔑 Немає API-ключа. Введи свій OpenRouter-ключ у сайдбарі.",
         "error_no_key_hint": "💡 Отримай на https://openrouter.ai/keys — ключ залишається тільки в твоїй сесії.",
@@ -1337,7 +1337,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "голос фідбеку.\n\n"
             "### Особливості\n"
             "Чим lingua-app відрізняється від масових мовних застосунків (Duolingo, Babbel, Busuu):\n\n"
-            "- **Сім мовних регістрів**, не просто «формальний проти неформального» — LLM узгоджує "
+            "- **Сім мовних стилів**, не просто «формальний проти неформального» — AI узгоджує "
             "виправлення з регістром, у якому ти пишеш (злодійський жаргон · вульгарний · "
             "розмовний · стандартний · формальний · літературний · технічний).\n"
             "- **Десять персон-наставників** — від Доброго вчителя до Макіавеллі. Стилістичний "
@@ -1396,13 +1396,13 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "help_correct": "Надіслати відповідь коучу на корекцію.",
         "help_num_blanks": "Скільки пропусків у тексті.",
         "help_num_sentences": "Скільки речень для перекладу.",
-        "help_dict_generate": "LLM пише короткий текст, ElevenLabs озвучує. Ти транскрибуєш, застосунок порівнює.",
+        "help_dict_generate": "AI пише короткий текст, ElevenLabs озвучує. Ти транскрибуєш, застосунок порівнює.",
         "help_dict_speed": "Сповільнити чи прискорити голос без зміни тону.",
         "help_read_source": "Звідки текст: згенерований ШІ, веб-сторінка, вставлений текст або .txt.",
         "help_read_length": "Приблизна кількість слів для згенерованого ШІ тексту.",
         "help_read_theme": "Необов'язкова тема — напр. «клімат», «містобудування», «дитинство».",
         "help_read_generate": "Отримує текст і складає питання (тест + відкриті).",
-        "help_read_submit": "Оцінити: тест рахується локально, відкриті відповіді оцінює LLM за еталоном.",
+        "help_read_submit": "Оцінити: тест рахується локально, відкриті відповіді оцінює AI за еталоном.",
         "read_source": "📖 Джерело тексту",
         "read_source_ai": "Згенерувати ШІ",
         "read_source_url": "Завантажити з URL",
@@ -1467,14 +1467,14 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "practice_intro": "Wybierz typ ćwiczenia poniżej. Każdy typ to inny sposób ćwiczenia słownictwa — skup się na jednym albo przejdź wszystkie po kolei.",
         "types_overview_title": "📖 Jakie są typy ćwiczeń?",
         "desc_writing": "📝 **Pisanie swobodne.** Dostajesz temat i piszesz krótki tekst w języku, którego się uczysz. Coach poprawia gramatykę, słownictwo i styl — w wybranym rejestrze.",
-        "desc_cloze": "📖 **Tekst z lukami.** LLM tworzy krótki tekst z lukami. Wpisujesz brakujące słowa; coach sprawdza.",
+        "desc_cloze": "📖 **Tekst z lukami.** AI tworzy krótki tekst z lukami. Wpisujesz brakujące słowa; coach sprawdza.",
         "desc_translation": "🔁 **Tłumaczenie zdań.** Kilka zdań do tłumaczenia — na język, którego się uczysz, albo z niego.",
         "desc_quiz": "🎲 **Quiz słownictwa.** Styl fiszek: widzisz tłumaczenie, wpisujesz słowo. Toleruje drobne literówki.",
         "desc_sentence": "🧩 **Budowanie zdania.** Dano kilka słów — budujesz zdanie, które używa ich naturalnie.",
-        "desc_error": "🔍 **Wykrywanie błędów.** LLM pisze zdania zawierające błędy gramatyczne lub ortograficzne. Znajdujesz je i poprawiasz.",
+        "desc_error": "🔍 **Wykrywanie błędów.** AI pisze zdania zawierające błędy gramatyczne lub ortograficzne. Znajdujesz je i poprawiasz.",
         "desc_synonym": "🔤 **Synonimy i antonimy.** Dane słowo — podajesz synonimy i antonimy w języku, którego się uczysz.",
         "desc_conjugation": "🔠 **Koniugacja czasowników.** Dany czasownik + osoba — odmieniasz go w kilku czasach.",
-        "desc_dictation": "🎙️ **Dyktando audio.** LLM pisze krótki tekst, ElevenLabs go czyta, ty zapisujesz. Suwak prędkości do spowolnienia głosu.",
+        "desc_dictation": "🎙️ **Dyktando audio.** AI pisze krótki tekst, ElevenLabs go czyta, ty zapisujesz. Suwak prędkości do spowolnienia głosu.",
         "desc_reading": "📚 **Czytanie ze zrozumieniem.** Tekst wygenerowany przez AI, URL, wklejony tekst albo przesłany .txt — potem test + pytania otwarte.",
         "desc_transformation": "🔄 **Transformacja zdań.** Dostajesz kilka zdań — przekształcasz je według reguły (strona czynna↔bierna, mowa zależna, zmiana czasu itd.).",
         "desc_listening": "🎧 **Rozumienie ze słuchu.** Posłuchaj krótkiego nagrania wygenerowanego przez AI (z regulacją tempa), potem odpowiedz na test + pytania otwarte. Transkrypcję możesz pokazać później.",
@@ -1540,7 +1540,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "status_quiz_ready": "✅ Quiz gotowy",
         "vocab_loaded_ok": "✅ Załadowano {n} słów",
         "num_blanks": "Liczba luk",
-        "cloze_freeform_hint": "💬 Odpowiedzi możesz wpisywać w dowolnym formacie — po jednej na linię, po przecinku lub w ciągłym tekście. LLM dopasuje je do luk.",
+        "cloze_freeform_hint": "💬 Odpowiedzi możesz wpisywać w dowolnym formacie — po jednej na linię, po przecinku lub w ciągłym tekście. AI dopasuje je do luk.",
         "num_sentences": "Liczba zdań",
         "error_no_key": "🔑 Brak klucza API. Wpisz swój klucz OpenRouter w pasku bocznym.",
         "error_no_key_hint": "💡 Pobierz na https://openrouter.ai/keys — klucz zostaje tylko w Twojej sesji.",
@@ -1586,7 +1586,7 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "zmieniają głos feedbacku.\n\n"
             "### Wyróżniki\n"
             "Co wyróżnia lingua-app na tle popularnych aplikacji (Duolingo, Babbel, Busuu):\n\n"
-            "- **Siedem rejestrów językowych**, nie tylko 'formalny vs. potoczny' — LLM "
+            "- **Siedem rejestrów językowych**, nie tylko 'formalny vs. potoczny' — AI "
             "dopasowuje korektę do rejestru, w którym piszesz (gwara przestępcza · wulgarny · "
             "potoczny · standardowy · formalny · literacki · techniczny).\n"
             "- **Dziesięć person mentorów** — od Miłego nauczyciela do Machiavellego. "
@@ -1646,13 +1646,13 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "help_correct": "Wyślij odpowiedź do coacha do korekty.",
         "help_num_blanks": "Ile luk w tekście.",
         "help_num_sentences": "Ile zdań do tłumaczenia.",
-        "help_dict_generate": "LLM pisze krótki tekst, ElevenLabs go czyta. Ty transkrybujesz, aplikacja porównuje.",
+        "help_dict_generate": "AI pisze krótki tekst, ElevenLabs go czyta. Ty transkrybujesz, aplikacja porównuje.",
         "help_dict_speed": "Zwolnij lub przyspiesz głos bez zmiany tonu.",
         "help_read_source": "Skąd tekst: wygenerowany przez AI, strona WWW, wklejony tekst lub przesłany .txt.",
         "help_read_length": "Przybliżona liczba słów w tekście generowanym przez AI.",
         "help_read_theme": "Opcjonalny temat — np. 'klimat', 'urbanistyka', 'dzieciństwo'.",
         "help_read_generate": "Pobiera tekst i układa pytania (wielokrotny wybór + otwarte).",
-        "help_read_submit": "Oceń: MC liczone lokalnie, odpowiedzi otwarte ocenia LLM na tle wzorca.",
+        "help_read_submit": "Oceń: MC liczone lokalnie, odpowiedzi otwarte ocenia AI na tle wzorca.",
         "read_source": "📖 Źródło tekstu",
         "read_source_ai": "Wygeneruj przez AI",
         "read_source_url": "Załaduj z URL",
@@ -1717,14 +1717,14 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "practice_intro": "בחר סוג תרגיל למטה. כל סוג הוא דרך אחרת לתרגל את אוצר המילים שלך — התרכז באחד או עבור על כולם בסדר.",
         "types_overview_title": "📖 מה הם סוגי התרגילים?",
         "desc_writing": "📝 **כתיבה חופשית.** אתה מקבל נושא וכותב טקסט קצר בשפת הלימוד. המאמן מתקן דקדוק, אוצר מילים וסגנון — ברגיסטר שבחרת.",
-        "desc_cloze": "📖 **טקסט פעור.** ה-LLM בונה טקסט קצר עם פערים. אתה מקליד את המילים החסרות; המאמן בודק.",
+        "desc_cloze": "📖 **טקסט פעור.** ה-AI בונה טקסט קצר עם פערים. אתה מקליד את המילים החסרות; המאמן בודק.",
         "desc_translation": "🔁 **תרגום משפטים.** כמה משפטים לתרגום — אל שפת הלימוד או ממנה, לבחירתך.",
         "desc_quiz": "🎲 **חידון אוצר מילים.** סגנון כרטיסים: אתה רואה את התרגום, מקליד את המילה. סובלני לטעויות הקלדה קטנות.",
         "desc_sentence": "🧩 **בניית משפט.** מספר מילים ניתנות — אתה בונה משפט שמשתמש בהן באופן טבעי.",
-        "desc_error": "🔍 **איתור שגיאות.** ה-LLM כותב כמה משפטים עם שגיאות דקדוק או כתיב. אתה מוצא ומתקן אותן.",
+        "desc_error": "🔍 **איתור שגיאות.** ה-AI כותב כמה משפטים עם שגיאות דקדוק או כתיב. אתה מוצא ומתקן אותן.",
         "desc_synonym": "🔤 **מילים נרדפות ומנוגדות.** מילה ניתנת — אתה מציע נרדפות ומנוגדות בשפת הלימוד.",
         "desc_conjugation": "🔠 **הטיית פעלים.** פועל + גוף ניתנים — אתה מטה אותו בכמה זמנים.",
-        "desc_dictation": "🎙️ **הכתבה קולית.** ה-LLM כותב טקסט קצר, ElevenLabs מקריא אותו, אתה מתמלל. מחוון מהירות להאטת הקול.",
+        "desc_dictation": "🎙️ **הכתבה קולית.** ה-AI כותב טקסט קצר, ElevenLabs מקריא אותו, אתה מתמלל. מחוון מהירות להאטת הקול.",
         "desc_reading": "📚 **הבנת הנקרא.** טקסט שנוצר ע\"י AI, URL, טקסט מודבק או קובץ .txt שהועלה — לאחר מכן רב-ברירה + שאלות פתוחות.",
         "desc_transformation": "🔄 **המרת משפטים.** מקבלים כמה משפטים — וכותבים אותם מחדש לפי כלל (פעיל↔סביל, דיבור עקיף, שינוי זמן ועוד).",
         "desc_listening": "🎧 **הבנת הנשמע.** האזן לקטע אודיו קצר שנוצר ע\"י AI (עם בקרת מהירות), ואז ענה על שאלות רב-ברירה + שאלות פתוחות. אפשר לחשוף את התמליל לאחר מכן.",
@@ -1893,13 +1893,13 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "help_correct": "שלח את התשובה למאמן לתיקון.",
         "help_num_blanks": "כמה חורים בטקסט.",
         "help_num_sentences": "כמה משפטים לתרגום.",
-        "help_dict_generate": "ה-LLM כותב טקסט קצר, ElevenLabs מקריא. אתה מתמלל, האפליקציה משווה.",
+        "help_dict_generate": "ה-AI כותב טקסט קצר, ElevenLabs מקריא. אתה מתמלל, האפליקציה משווה.",
         "help_dict_speed": "להאט או להאיץ את הקול בלי לשנות את הגובה.",
         "help_read_source": "מאיפה הטקסט: שנוצר ע\"י AI, אתר, טקסט מודבק או קובץ .txt.",
         "help_read_length": "מספר מילים משוער לטקסט שנוצר ע\"י AI.",
         "help_read_theme": "נושא אופציונלי — למשל 'אקלים', 'עירוניות', 'ילדות'.",
         "help_read_generate": "מביא את הטקסט ומנסח שאלות (רב-ברירה + פתוחות).",
-        "help_read_submit": "הערכה: רב-ברירה נספר מקומית, תשובות פתוחות מוערכות ע\"י ה-LLM מול תשובה מדגמית.",
+        "help_read_submit": "הערכה: רב-ברירה נספר מקומית, תשובות פתוחות מוערכות ע\"י ה-AI מול תשובה מדגמית.",
         "read_source": "📖 מקור הטקסט",
         "read_source_ai": "הפק באמצעות AI",
         "read_source_url": "טען מ-URL",
@@ -2299,11 +2299,11 @@ LANGUAGE_DISPLAY: dict[str, dict[str, str]] = {
     },
 }
 
-# The English form for use in LLM prompts (prompts are in English).
+# The English form for use in AI prompts (prompts are in English).
 LANGUAGE_IN_ENGLISH: dict[str, str] = LANGUAGE_DISPLAY["en"]
 
 
-# Sprachregister (7 levels from src.config.NIVEAU_LEVELS).
+# Sprachstile (7 levels from src.config.NIVEAU_LEVELS).
 NIVEAU_DISPLAY: dict[str, dict[str, str]] = {
     "en": {
         "Gossensprache/Kriminelle Sprache": "Criminal slang",
