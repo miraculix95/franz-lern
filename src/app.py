@@ -967,7 +967,7 @@ def _render_main_page() -> None:
         st.info(t(f"desc_{task_key}", ui_lang), icon="📘")
 
     vocab_missing = not state.vocab_list
-    needs_vocab = task_key not in ("", "writing", "reading")
+    needs_vocab = task_key not in ("", "writing", "reading", "listening")
     if vocab_missing and needs_vocab:
         st.info(t("no_vocab_info", ui_lang))
         if st.button(t("autogen_vocab_btn", ui_lang), type="primary"):
@@ -1057,6 +1057,8 @@ def _render_main_page() -> None:
         _render_dictation(client, lang_en, level, niveau, model, ui_lang)
     elif task_key == "reading":
         _render_reading(client, lang_en, level, niveau, model, ui_lang)
+    elif task_key == "listening":
+        _render_listening(client, lang_en, level, niveau, model, ui_lang)
     elif task_key:
         if st.button(
             t("new_task_btn", ui_lang), type="primary", use_container_width=True,
@@ -1237,6 +1239,10 @@ def _soft_reset_tasks(state: Any) -> None:
         "reading_open_answers", "reading_results", "reading_reveal",
         "read_source_pick", "read_length_pick", "read_theme_input",
         "read_url_input", "read_paste_input", "read_file_input",
+        # listening
+        "listen_passage", "listen_audio", "listen_questions", "listen_mc_choices",
+        "listen_open_answers", "listen_results", "listen_revealed",
+        "listen_length_pick", "listen_theme_input", "listen_speed",
         # exercise dropdown — force back to the blank "choose exercise" row
         "task_type_sel",
     ):
@@ -1444,6 +1450,175 @@ def _render_reading(
                 st.markdown(f"> {ev.feedback}")
             with st.expander(t("read_reference_answer", ui_lang)):
                 st.markdown(q.get("reference_answer", ""))
+
+
+def _render_listening(
+    client: openai.OpenAI, language_en: str, level: str, niveau: str,
+    model: str, ui_lang: str,
+) -> None:
+    """Listening comprehension: AI passage → ElevenLabs audio → MC + open questions.
+
+    Reuses reading_task for the questions/grading and dict_task for the TTS.
+    The passage is delivered as audio (with a speed slider) and only revealed
+    as text on demand — the learner answers from listening alone.
+    """
+    import base64
+
+    import streamlit.components.v1 as components
+
+    state = st.session_state["state"]
+    ui_lang_name = UI_LANG_NAMES.get(ui_lang, "English")
+    el_key, el_source = _resolve_elevenlabs_key()
+    if not el_key:
+        st.warning(t("dict_no_key", ui_lang))
+        return
+    st.caption(t("el_source_byok" if el_source == "byok" else "el_source_env", ui_lang))
+
+    length_labels = {
+        "short": t("read_length_short", ui_lang),
+        "medium": t("read_length_medium", ui_lang),
+        "long": t("read_length_long", ui_lang),
+    }
+    length_pick = st.select_slider(
+        t("read_length", ui_lang), options=list(length_labels.values()),
+        value=length_labels["short"], key="listen_length_pick",
+        help=t("help_read_length", ui_lang),
+    )
+    length_key = next(k for k, v in length_labels.items() if v == length_pick)
+    theme_input = st.text_input(
+        t("read_theme", ui_lang), value=st.session_state.get("listen_theme_input", ""),
+        placeholder="e.g. travel, work, daily life", key="listen_theme_input",
+        help=t("help_read_theme", ui_lang),
+    )
+    theme = theme_input.strip() or "everyday life"
+
+    if st.button(
+        t("listen_generate", ui_lang), type="primary", use_container_width=True,
+        help=t("help_listen_generate", ui_lang),
+    ):
+        try:
+            with st.status(t("read_status_text", ui_lang), expanded=False) as status:
+                passage = reading_task.generate_text(
+                    client, language=language_en, level=level, niveau=niveau,
+                    theme=theme, length=length_key, model=model,
+                )
+                status.update(label=t("listen_status_audio", ui_lang))
+                audio = dict_task.synthesize_speech(passage, api_key=el_key)
+                status.update(label=t("read_status_questions", ui_lang))
+                questions = reading_task.generate_questions(
+                    client, text=passage, language=language_en, model=model,
+                    ui_language_name=ui_lang_name,
+                )
+                status.update(label=t("read_status_ready", ui_lang), state="complete")
+        except dict_task.TTSUnavailable as exc:
+            st.error(t("dict_tts_error", ui_lang, err=str(exc)))
+            return
+        st.session_state["listen_passage"] = passage
+        st.session_state["listen_audio"] = audio
+        st.session_state["listen_questions"] = questions
+        st.session_state["listen_mc_choices"] = [None] * len(questions.multiple_choice)
+        st.session_state["listen_open_answers"] = [""] * len(questions.open_questions)
+        st.session_state.pop("listen_results", None)
+        st.session_state["listen_revealed"] = False
+        state.num_tasks_generated = getattr(state, "num_tasks_generated", 0) + 1
+
+    audio_bytes = st.session_state.get("listen_audio")
+    questions: reading_task.ReadingQuestions | None = st.session_state.get("listen_questions")
+    if not audio_bytes or questions is None:
+        return
+
+    # Audio player with speed control (native st.audio can't set playbackRate).
+    st.markdown(f"### {t('listen_audio_heading', ui_lang)}")
+    speed = st.select_slider(
+        t("dict_speed", ui_lang), options=[0.5, 0.75, 1.0, 1.25, 1.5], value=1.0,
+        key="listen_speed", help=t("help_dict_speed", ui_lang),
+    )
+    audio_b64 = base64.b64encode(audio_bytes).decode("ascii")
+    components.html(
+        f"""
+        <audio id="listen_player" controls style="width:100%; background:transparent;"
+               src="data:audio/mp3;base64,{audio_b64}"></audio>
+        <script>
+          (function() {{
+            const el = document.getElementById("listen_player");
+            if (el) {{ el.playbackRate = {speed}; }}
+          }})();
+        </script>
+        """,
+        height=70,
+    )
+
+    # Multiple choice
+    st.markdown(f"### {t('read_mc_heading', ui_lang)}")
+    mc_choices: list[int | None] = list(st.session_state.get("listen_mc_choices", []))
+    for i, q in enumerate(questions.multiple_choice):
+        options = q.get("options", [])
+        kind = q.get("kind", "")
+        label = f"**{i + 1}.** {q.get('question', '')}  _(`{kind}`)_"
+        picked = st.radio(label, options=options, index=None, key=f"listen_mc_{i}")
+        mc_choices[i] = options.index(picked) if picked in options else None
+    st.session_state["listen_mc_choices"] = mc_choices
+
+    # Open questions
+    st.markdown(f"### {t('read_open_heading', ui_lang)}")
+    open_answers: list[str] = list(st.session_state.get("listen_open_answers", []))
+    for i, q in enumerate(questions.open_questions):
+        kind = q.get("kind", "")
+        label = f"**{i + 1}.** {q.get('question', '')}  _(`{kind}`)_"
+        open_answers[i] = st.text_area(
+            label, value=open_answers[i] if i < len(open_answers) else "",
+            height=100, key=f"listen_open_{i}",
+        )
+    st.session_state["listen_open_answers"] = open_answers
+
+    if st.button(t("read_submit", ui_lang), type="primary", help=t("help_read_submit", ui_lang)):
+        passage = st.session_state["listen_passage"]
+        mc_result = reading_task.score_mc(questions.multiple_choice, mc_choices)
+        open_evals: list[reading_task.OpenEvaluation] = []
+        with st.status(t("read_status_questions", ui_lang), expanded=False) as status:
+            for q, answer in zip(questions.open_questions, open_answers, strict=False):
+                open_evals.append(
+                    reading_task.evaluate_open(
+                        client, text=passage, question=q.get("question", ""),
+                        reference_answer=q.get("reference_answer", ""),
+                        user_answer=answer, language=language_en, model=model,
+                        ui_language_name=ui_lang_name,
+                    )
+                )
+            status.update(label=t("status_feedback_ready", ui_lang), state="complete")
+        st.session_state["listen_results"] = {"mc": mc_result, "open": open_evals}
+        state.num_corrections = getattr(state, "num_corrections", 0) + 1
+
+    results = st.session_state.get("listen_results")
+    if results:
+        mc: reading_task.MCResult = results["mc"]
+        st.metric(t("read_score", ui_lang), f"{mc.correct} / {mc.total}")
+        for i, (q, ok) in enumerate(zip(questions.multiple_choice, mc.per_question, strict=False)):
+            mark = "✅" if ok else "❌"
+            correct_opt = q.get("options", [])[q.get("correct_index", 0)]
+            rationale = q.get("rationale", "")
+            if ok:
+                st.markdown(f"{mark} **{i + 1}.** {q.get('question', '')}")
+            else:
+                st.markdown(
+                    f"{mark} **{i + 1}.** {q.get('question', '')}  \n"
+                    f"→ **{correct_opt}** — *{rationale}*"
+                )
+        st.markdown(f"### {t('read_open_feedback', ui_lang)}")
+        for i, (q, ev) in enumerate(zip(questions.open_questions, results["open"], strict=False)):
+            verdict_label = t(f"read_verdict_{ev.verdict}", ui_lang)
+            st.markdown(f"**{i + 1}.** {q.get('question', '')}  \n{verdict_label}")
+            if ev.feedback:
+                st.markdown(f"> {ev.feedback}")
+            with st.expander(t("read_reference_answer", ui_lang)):
+                st.markdown(q.get("reference_answer", ""))
+
+    # Transcript stays hidden until the learner opts in (answer from audio alone).
+    if st.button(t("listen_reveal_transcript", ui_lang), key="listen_reveal_btn"):
+        st.session_state["listen_revealed"] = True
+    if st.session_state.get("listen_revealed"):
+        st.markdown(f"**{t('dict_original', ui_lang)}**")
+        st.info(st.session_state["listen_passage"])
 
 
 if __name__ == "__main__":

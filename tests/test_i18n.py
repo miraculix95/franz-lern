@@ -61,6 +61,13 @@ def test_grammar_focus_display_covers_all_keys_all_ui_langs():
         assert t("grammar_focus_none", lang) != "grammar_focus_none"
 
 
+def test_listening_keys_localized_in_all_ui_langs():
+    for lang in ["en", "de", "fr", "es", "uk", "pl", "ar", "he"]:
+        for key in ("desc_listening", "listen_generate", "listen_audio_heading",
+                    "listen_reveal_transcript", "listen_status_audio"):
+            assert t(key, lang) != key, f"{lang}/{key} missing"
+
+
 def test_input_help_localized_in_all_ui_langs():
     # The keyboard-input hint (title + body) must be present and formatable in
     # every UI language, with both {language} and {url} placeholders honoured.
