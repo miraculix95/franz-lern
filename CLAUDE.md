@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Status
 
 Active project: **lingua-app** — AI language tutor, Streamlit + OpenRouter, BYOK.
-Repo: `miraculix95/lingua-app` (private). 7 learning languages, 4+ UI languages, 10+ exercise types, ~85 pure-function tests.
+Repo: `miraculix95/lingua-app` (private). 9 learning languages, 8 UI languages, 10 exercise types, ~93 pure-function tests.
 The original 2025 prototype (`franz-lern-streamlit.py`, `franz-lern.py`) lives untouched under `archive/legacy/` per the no-delete-archive rule.
 
 ## Run

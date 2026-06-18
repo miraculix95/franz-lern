@@ -20,7 +20,7 @@ can meet you wherever you're writing, from street-level banter to Sorbonne-polis
 prose. The stylistic contrast between coaches makes errors memorable.
 
 Built originally to practise French at C1-level, then generalised into a modular,
-tested, seven-language tool.
+tested, nine-language tool.
 
 - **Register-aware corrections** — Slang / Vulgar / Colloquial / Standard / Formal /
   Literary / Technical. Mainstream apps don't model register; the stronger LLMs do,
@@ -39,9 +39,10 @@ tested, seven-language tool.
 - **BYOK (Bring Your Own Key)** — users paste their OpenRouter key in the sidebar;
   keys never touch the server. No ops cost, no GDPR liability, and the architecture
   carries cleanly to a future Next.js version.
-- **Four UI languages** (English / Deutsch / Français / Español) with IP-based
-  auto-detection at first load, and **seven learning-target languages**: French,
-  English, Spanish, Ukrainian, German, Polish, and Hebrew (with RTL rendering).
+- **Eight UI languages** (English / Deutsch / Français / Español / Українська /
+  Polski / العربية / עברית) with IP-based auto-detection at first load, and
+  **nine learning-target languages**: French, English, Spanish, Ukrainian, German,
+  Polish, Greek, Arabic, and Hebrew (with RTL rendering for Arabic and Hebrew).
 - **Inline `<meta-comments>`** — embed `<what does passé composé mean?>` anywhere in
   your answer; you get a side-answer without derailing the main correction.
 - **Anti-cheat cloze** — structured LLM output (tools API) prevents the LLM from

@@ -17,6 +17,7 @@ UI_LANGS: dict[str, str] = {
     "Español": "es",
     "Українська": "uk",
     "Polski": "pl",
+    "العربية": "ar",
     "עברית": "he",
 }
 
@@ -27,6 +28,7 @@ UI_LANG_NAMES: dict[str, str] = {
     "es": "Español",
     "uk": "Українська",
     "pl": "Polski",
+    "ar": "العربية",
     "he": "עברית",
 }
 
@@ -141,6 +143,19 @@ _TASK_NAMES: dict[str, list[str]] = {
         "הטיית פעלים",
         "הכתבה (אודיו)",
         "הבנת הנקרא",
+    ],
+    "ar": [
+        "",
+        "كتابة نص والحصول على تصحيح",
+        "ملء نص بالفراغات",
+        "ترجمة الجُمل",
+        "اختبار المفردات",
+        "بناء جملة",
+        "إيجاد الأخطاء وتصحيحها",
+        "المرادفات والأضداد",
+        "تصريف الأفعال",
+        "إملاء (صوتي)",
+        "فهم المقروء",
     ],
 }
 
@@ -269,8 +284,8 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **BYOK (Bring Your Own Key)** — your OpenRouter and ElevenLabs keys stay in your "
             "browser session. Never stored, never logged. Beta testers can leave the field empty — "
             "the server key is used instead.\n"
-            "- **Eight learning languages** — French, English, Spanish, Ukrainian, German, Polish, Greek, Hebrew.\n"
-            "- **Seven UI languages** — English, German, French, Spanish, Ukrainian, Polish, Hebrew, "
+            "- **Nine learning languages** — French, English, Spanish, Ukrainian, German, Polish, Greek, Arabic, Hebrew.\n"
+            "- **Eight UI languages** — English, German, French, Spanish, Ukrainian, Polish, Arabic, Hebrew, "
             "with IP-based auto-detection on first visit.\n\n"
             "### Author\n"
             "Built by **Bastian Brand** ([Website](https://www.bastian-brand.com/) · "
@@ -476,9 +491,9 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **BYOK (Bring Your Own Key)** — OpenRouter- und ElevenLabs-Keys bleiben in deiner "
             "Browser-Session. Nichts wird gespeichert oder geloggt. Beta-Tester können das Feld leer "
             "lassen — dann wird der Server-Key genutzt.\n"
-            "- **Acht Lernsprachen** — Französisch, Englisch, Spanisch, Ukrainisch, Deutsch, Polnisch, Griechisch, Hebräisch.\n"
-            "- **Sieben UI-Sprachen** — Englisch, Deutsch, Französisch, Spanisch, Ukrainisch, Polnisch, "
-            "Hebräisch, mit IP-basierter Auto-Erkennung beim ersten Besuch.\n\n"
+            "- **Neun Lernsprachen** — Französisch, Englisch, Spanisch, Ukrainisch, Deutsch, Polnisch, Griechisch, Arabisch, Hebräisch.\n"
+            "- **Acht UI-Sprachen** — Englisch, Deutsch, Französisch, Spanisch, Ukrainisch, Polnisch, "
+            "Arabisch, Hebräisch, mit IP-basierter Auto-Erkennung beim ersten Besuch.\n\n"
             "### Autor\n"
             "Gebaut von **Bastian Brand** ([Website](https://www.bastian-brand.com/) · "
             "[GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)) — "
@@ -684,9 +699,9 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **BYOK (Bring Your Own Key)** — tes clés OpenRouter et ElevenLabs restent dans ta "
             "session navigateur. Jamais stockées, jamais journalisées. Les beta-testeurs peuvent "
             "laisser vide — la clé du serveur sera utilisée.\n"
-            "- **Huit langues à apprendre** — français, anglais, espagnol, ukrainien, allemand, polonais, grec, hébreu.\n"
-            "- **Sept langues d'interface** — anglais, allemand, français, espagnol, ukrainien, "
-            "polonais, hébreu, avec détection automatique par IP à la première visite.\n\n"
+            "- **Neuf langues à apprendre** — français, anglais, espagnol, ukrainien, allemand, polonais, grec, arabe, hébreu.\n"
+            "- **Huit langues d'interface** — anglais, allemand, français, espagnol, ukrainien, "
+            "polonais, arabe, hébreu, avec détection automatique par IP à la première visite.\n\n"
             "### Auteur\n"
             "Créé par **Bastian Brand** ([Site](https://www.bastian-brand.com/) · "
             "[GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)) — "
@@ -892,9 +907,9 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **BYOK (Bring Your Own Key)** — tus claves de OpenRouter y ElevenLabs se quedan en "
             "tu sesión del navegador. Nunca se guardan ni se registran. Los beta-testers pueden "
             "dejarlo vacío — se usará la clave del servidor.\n"
-            "- **Ocho idiomas a aprender** — francés, inglés, español, ucraniano, alemán, polaco, griego, hebreo.\n"
-            "- **Siete idiomas de interfaz** — inglés, alemán, francés, español, ucraniano, polaco, "
-            "hebreo, con detección automática por IP en la primera visita.\n\n"
+            "- **Nueve idiomas a aprender** — francés, inglés, español, ucraniano, alemán, polaco, griego, árabe, hebreo.\n"
+            "- **Ocho idiomas de interfaz** — inglés, alemán, francés, español, ucraniano, polaco, "
+            "árabe, hebreo, con detección automática por IP en la primera visita.\n\n"
             "### Autor\n"
             "Creado por **Bastian Brand** ([Sitio web](https://www.bastian-brand.com/) · "
             "[GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)) — "
@@ -1102,9 +1117,9 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **BYOK (Bring Your Own Key)** — твої ключі OpenRouter і ElevenLabs залишаються "
             "в сесії браузера. Ніколи не зберігаються і не логуються. Бета-тестери можуть "
             "залишити порожнім — використається ключ сервера.\n"
-            "- **Вісім мов для вивчення** — французька, англійська, іспанська, українська, німецька, польська, грецька, іврит.\n"
-            "- **Сім мов інтерфейсу** — англійська, німецька, французька, іспанська, українська, "
-            "польська, іврит, з авто-визначенням за IP при першому відвідуванні.\n\n"
+            "- **Дев'ять мов для вивчення** — французька, англійська, іспанська, українська, німецька, польська, грецька, арабська, іврит.\n"
+            "- **Вісім мов інтерфейсу** — англійська, німецька, французька, іспанська, українська, "
+            "польська, арабська, іврит, з авто-визначенням за IP при першому відвідуванні.\n\n"
             "### Автор\n"
             "Створено **Бастіаном Брандом** ([Вебсайт](https://www.bastian-brand.com/) · "
             "[GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)) — "
@@ -1311,9 +1326,9 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **BYOK (Bring Your Own Key)** — Twoje klucze OpenRouter i ElevenLabs pozostają "
             "w sesji przeglądarki. Nigdy nie są zapisywane ani logowane. Beta-testerzy mogą "
             "zostawić puste — użyty zostanie klucz serwera.\n"
-            "- **Osiem języków do nauki** — francuski, angielski, hiszpański, ukraiński, niemiecki, polski, grecki, hebrajski.\n"
-            "- **Siedem języków interfejsu** — angielski, niemiecki, francuski, hiszpański, "
-            "ukraiński, polski, hebrajski, z automatycznym wykrywaniem po IP przy pierwszej wizycie.\n\n"
+            "- **Dziewięć języków do nauki** — francuski, angielski, hiszpański, ukraiński, niemiecki, polski, grecki, arabski, hebrajski.\n"
+            "- **Osiem języków interfejsu** — angielski, niemiecki, francuski, hiszpański, "
+            "ukraiński, polski, arabski, hebrajski, z automatycznym wykrywaniem po IP przy pierwszej wizycie.\n\n"
             "### Autor\n"
             "Stworzony przez **Bastiana Branda** ([Strona](https://www.bastian-brand.com/) · "
             "[GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)) — "
@@ -1517,9 +1532,9 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
             "- **BYOK (Bring Your Own Key)** — המפתחות שלך ב-OpenRouter וב-ElevenLabs נשארים "
             "בסשן הדפדפן בלבד. אף פעם לא נשמרים ולא נרשמים. בודקי בטא יכולים להשאיר ריק — "
             "ישמש המפתח של השרת.\n"
-            "- **שמונה שפות ללימוד** — צרפתית, אנגלית, ספרדית, אוקראינית, גרמנית, פולנית, יוונית, עברית.\n"
-            "- **שבע שפות ממשק** — אנגלית, גרמנית, צרפתית, ספרדית, אוקראינית, פולנית, "
-            "עברית, עם זיהוי אוטומטי לפי IP בביקור ראשון.\n\n"
+            "- **תשע שפות ללימוד** — צרפתית, אנגלית, ספרדית, אוקראינית, גרמנית, פולנית, יוונית, ערבית, עברית.\n"
+            "- **שמונה שפות ממשק** — אנגלית, גרמנית, צרפתית, ספרדית, אוקראינית, פולנית, "
+            "ערבית, עברית, עם זיהוי אוטומטי לפי IP בביקור ראשון.\n\n"
             "### המחבר\n"
             "נבנה על ידי **בסטיאן ברנד** ([אתר](https://www.bastian-brand.com/) · "
             "[GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)) — "
@@ -1603,6 +1618,212 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "read_reveal_answers": "🔍 הצג תשובות נכונות",
         "read_reference_answer": "תשובה מדגמית",
     },
+    "ar": {
+        "app_title": "{language} — معلّم اللغة",
+        "meta_hint": "💡 ضع الأسئلة الجانبية بين قوسين زاويين، مثل `<ما معنى passé composé؟>` — وستحصل على إجابة منفصلة.",
+        "sidebar_title": "🇫🇷 تعلّم {language}",
+        "ui_language": "🌍 لغة الواجهة",
+        "dark_mode": "🌙 الوضع الداكن",
+        "coach_and_style": "👤 المدرّب والأسلوب",
+        "vocab_source": "📚 مصدر المفردات",
+        "model_api": "🤖 النموذج وواجهة البرمجة",
+        "coach": "المدرّب",
+        "level": "مستوى اللغة",
+        "register": "السجل اللغوي",
+        "txt_files": "ملفات نصية",
+        "txt_files_help": "يستخرج المفردات حسب المستوى المختار.",
+        "num_vocab": "عدد المفردات",
+        "webpage_url": "رابط صفحة الويب",
+        "ready_vocab_file": "ملف مفردات جاهز",
+        "api_key": "🔑 مفتاح OpenRouter",
+        "api_key_help": "🧪 هل أنت مختبِر بيتا؟ اترك الحقل فارغًا — سيُستخدم مفتاح الخادم. وإلا: مفتاحك يبقى في الجلسة ولا يُخزَّن أبدًا. احصل على واحد من openrouter.ai/keys.",
+        "model_tier": "فئة النموذج",
+        "key_source_byok": "✅ مفتاحك (BYOK)",
+        "key_source_or": "🔑 خادم .env (OpenRouter)",
+        "key_source_oa": "⚠️ خادم .env (بديل OpenAI)",
+        "key_source_none": "❌ لم يُعثر على مفتاح",
+        "key_source_label": "مصدر المفتاح",
+        "metric_tasks": "📚 المهام",
+        "metric_corrections": "✏️ التصحيحات",
+        "metric_runs": "🔄 جلسات التشغيل",
+        "choose_exercise": "🎯 اختر نوع التمرين",
+        "practice_intro": "اختر نوع تمرين أدناه. كل نوع طريقة مختلفة للتدرّب على مفرداتك — ركّز على واحد أو جرّبها كلها.",
+        "types_overview_title": "📖 ما هي أنواع التمارين؟",
+        "desc_writing": "📝 **كتابة حرّة.** تحصل على موضوع وتكتب نصًا قصيرًا بلغة التعلّم. يصحّح المدرّب القواعد والمفردات والأسلوب — وفق السجل الذي اخترته.",
+        "desc_cloze": "📖 **نص بالفراغات (ملء الفراغات).** ينشئ النموذج نصًا قصيرًا فيه فراغات. تكتب الكلمات الناقصة ويتحقق منها المدرّب.",
+        "desc_translation": "🔁 **ترجمة الجُمل.** بضع جُمل لترجمتها — إمّا إلى لغة التعلّم أو منها، حسب اختيارك.",
+        "desc_quiz": "🎲 **اختبار المفردات.** بأسلوب البطاقات: تحصل على الترجمة وتكتب الكلمة. المطابقة المرنة تتسامح مع الأخطاء الإملائية الصغيرة.",
+        "desc_sentence": "🧩 **بناء الجُمل.** تُعطى بضع مفردات — وتبني جملة تستخدمها بشكل طبيعي.",
+        "desc_error": "🔍 **اكتشاف الأخطاء.** يكتب النموذج بضع جُمل تحتوي أخطاء نحوية أو إملائية. تجدها وتصحّحها.",
+        "desc_synonym": "🔤 **المرادفات والأضداد.** تُعطى كلمة — وتنتج مرادفات وأضدادًا بلغة التعلّم.",
+        "desc_conjugation": "🔠 **تصريف الأفعال.** يُعطى فعل + ضمير — وتصرّفه عبر عدة أزمنة.",
+        "desc_dictation": "🎙️ **إملاء صوتي.** يكتب النموذج نصًا قصيرًا، ويقرؤه ElevenLabs، وتكتبه أنت. منزلق سرعة التشغيل يتيح لك إبطاء الصوت.",
+        "desc_reading": "📚 **فهم المقروء.** نص يولّده الذكاء الاصطناعي، أو رابط، أو نص ملصق، أو ملف ‎.txt‎ مرفوع — ثم أسئلة اختيار من متعدد + أسئلة مفتوحة عنه.",
+        "new_task_btn": "🎯 مهمة جديدة",
+        "correct_btn": "📝 صحّح النص",
+        "task_heading": "المهمة",
+        "your_answer": "✏️ إجابتك:",
+        "your_answer_placeholder": "اكتب بـ{language}… ضع الأسئلة الجانبية بين <>.",
+        "no_vocab_info": "لا توجد مفردات محمّلة. استخدم مصدرًا أعلاه أو:",
+        "autogen_vocab_btn": "🎲 توليد مفردات تلقائيًا",
+        "status_extract_file": "📚 استخراج المفردات من الملف…",
+        "status_load_url": "🌐 تحميل {url}…",
+        "status_extract_web": "🧠 استخراج المفردات…",
+        "status_extracted_ok": "✅ تم استخراج {n} مفردة",
+        "status_extract_web_ok": "✅ {n} مفردة من الويب",
+        "status_generating_task": "🧠 {task}…",
+        "status_task_ready": "✅ المهمة جاهزة",
+        "status_generating_vocab": "🧠 توليد المفردات…",
+        "status_gen_vocab_ok": "✅ تم توليد {n} مفردة",
+        "status_translating_vocab": "🌍 ترجمة المفردات…",
+        "status_coach_reading": "🧠 {mentor} يقرأ…",
+        "status_feedback_ready": "✅ الملاحظات جاهزة",
+        "status_generating_quiz": "🧠 توليد الاختبار…",
+        "status_quiz_ready": "✅ الاختبار جاهز",
+        "vocab_loaded_ok": "✅ تم تحميل {n} مفردة",
+        "num_blanks": "عدد الفراغات",
+        "cloze_freeform_hint": "💬 اكتب إجاباتك بأي تنسيق — واحدة في كل سطر، مفصولة بفواصل، أو في نص متّصل. سيطابقها النموذج مع الفراغات.",
+        "num_sentences": "عدد الجُمل",
+        "error_no_key": "🔑 لا يوجد مفتاح API. أدخل مفتاح OpenRouter في الشريط الجانبي.",
+        "error_no_key_hint": "💡 احصل على واحد من https://openrouter.ai/keys — يبقى المفتاح في جلستك فقط.",
+        "quiz_new_btn": "🎲 اختبار جديد",
+        "quiz_evaluate_btn": "✅ تقييم",
+        "quiz_score": "🎯 النتيجة",
+        "quiz_prompt_format": "ما الكلمة بـ{language} المقابلة لـ '{trans}'؟",
+        "side_questions": "**أسئلة جانبية:**",
+        "writing_task_prompt": "اكتب نصًا حول الموضوع: {theme}",
+        "cloze_vocab_heading": "المفردات (أبجديًا):",
+        "cloze_use_these": "استخدم هذه",
+        "cloze_text_heading": "النص بالفراغات:",
+        "error_task_prompt": "اعثر على الأخطاء في النص التالي وصحّحها:",
+        "sentence_task_prompt": "ابنِ جملة باستخدام هذه الكلمات:",
+        "synant_task_prompt": "اعثر على مرادفات وأضداد لـ:",
+        "conjugation_task_prompt": "صرّف الفعل '{verb}' للضمير '{person}' في الأزمنة التالية: المضارع، الماضي، المستقبل، الماضي التام، المضارع المنصوب، المستقبل القريب، المضارع المستمر.",
+        "translation_direction": "الاتجاه",
+        "dir_to_learning": "→ إلى {learning} (إنتاج)",
+        "dir_to_native": "→ إلى {native} (فهم)",
+        "current_vocabs": "📖 المفردات الحالية ({n})",
+        "no_vocabs_yet": "_لا توجد مفردات محمّلة بعد._",
+        "learning_language": "🎯 لغة التعلّم",
+        "dict_speed": "🐢 ⇄ 🐇  سرعة التشغيل",
+        "dict_reveal": "🔍 إظهار النص الأصلي",
+        "dict_your_transcript": "✏️ ماذا سمعت؟",
+        "dict_original": "📜 النص الأصلي",
+        "dict_no_key": "🎙️ يحتاج الإملاء إلى مفتاح ElevenLabs. أضف `ELEVENLABS_KEY` إلى ملف `.env`.",
+        "dict_generate": "🎙️ توليد إملاء جديد",
+        "dict_status_text": "🧠 كتابة النص…",
+        "dict_status_tts": "🎙️ توليف الصوت…",
+        "dict_status_ready": "✅ الإملاء جاهز — استمع واكتب",
+        "dict_tts_error": "❌ فشل تحويل النص إلى كلام: {err}",
+        "elevenlabs_key": "🎙️ مفتاح ElevenLabs (اختياري)",
+        "elevenlabs_key_help": "لإملاء الصوت. يبقى في الجلسة ولا يُخزَّن أبدًا. احصل على واحد من elevenlabs.io.",
+        "back_to_app": "العودة إلى التطبيق",
+        "nav_about": "حول",
+        "about_title": "ℹ️ حول lingua",
+        "about_body": (
+            "**lingua-app** معلّم لغة مدعوم بالذكاء الاصطناعي مصمَّم للتدرّب حتى مستوى C1/C2، "
+            "مع تصحيحات واعية بالسجل اللغوي وشخصيات مرشدين تغيّر نبرة الملاحظات.\n\n"
+            "### أبرز المزايا\n"
+            "ما يميّز lingua-app عن تطبيقات اللغات الجماهيرية (Duolingo وBabbel وBusuu):\n\n"
+            "- **سبعة سجلات لغوية**، وليس مجرد «رسمي مقابل عادي» — يطابق النموذج التصحيحات "
+            "مع السجل الذي تكتب به (لغة الجريمة · بذيء · عامي · معياري · رسمي · أدبي · تقني).\n"
+            "- **عشر شخصيات مرشدين** — من المعلّم اللطيف إلى مكيافيلي. التباين الأسلوبي "
+            "يجعل الأخطاء لا تُنسى.\n"
+            "- **عشرة أنواع تمارين** — الكتابة، النص بالفراغات، الترجمة (في الاتجاهين)، بناء الجُمل، "
+            "اكتشاف الأخطاء، المرادفات/الأضداد، تصريف الأفعال، اختبار المفردات، الإملاء الصوتي "
+            "(ElevenLabs مع منزلق سرعة التشغيل)، وفهم المقروء "
+            "(مولّد بالذكاء الاصطناعي / رابط / لصق / TXT ← اختيار من متعدد + أسئلة مفتوحة).\n"
+            "- **BYOK (أحضِر مفتاحك)** — تبقى مفاتيح OpenRouter وElevenLabs في جلسة متصفحك. "
+            "لا تُخزَّن ولا تُسجَّل أبدًا. يمكن لمختبري بيتا ترك الحقل فارغًا — "
+            "فيُستخدم مفتاح الخادم بدلًا منه.\n"
+            "- **تسع لغات للتعلّم** — الفرنسية والإنجليزية والإسبانية والأوكرانية والألمانية والبولندية واليونانية والعربية والعبرية.\n"
+            "- **ثماني لغات للواجهة** — الإنجليزية والألمانية والفرنسية والإسبانية والأوكرانية والبولندية "
+            "والعربية والعبرية، مع كشف تلقائي حسب عنوان IP عند أول زيارة.\n\n"
+            "### المؤلّف\n"
+            "صُنع بواسطة **Bastian Brand** ([الموقع](https://www.bastian-brand.com/) · "
+            "[GitHub](https://github.com/miraculix95) · [LinkedIn](https://www.linkedin.com/in/dr-bastian-brand/)) — "
+            "مستشار مستقل مقيم في ميونخ في تحليلات البيانات والتمويل وأتمتة الذكاء الاصطناعي، خرّيج McKinsey، "
+            "يعمل مع عملاء في الأسهم الخاصة والسفر والتأمين والسيارات في أنحاء أوروبا. "
+            "كُتب lingua-app في الأصل أوائل 2025 كأداة شخصية للتدرّب على الفرنسية بمستوى C1؛ "
+            "ثم أُعيدت هيكلته في 2026 إلى هذا الإصدار المعياري المُختبَر متعدد اللغات.\n\n"
+            "### الكود المصدري\n"
+            "[lingua-app على GitHub](https://github.com/miraculix95/lingua-app) — مفتوح المصدر برخصة MIT. نرحّب بالمشكلات وطلبات الدمج والملاحظات."
+        ),
+        "setup_guide_title": "🚀 أول مرة هنا؟ الإعداد في دقيقتين",
+        "setup_guide_body": (
+            "> 🧪 **مختبِر بيتا؟ لا حاجة لمفتاح.** تخطَّ الخطوة 1 — يستخدم التطبيق مفتاح خادم مشترك. انتقل إلى الخطوة 4.\n\n"
+            "**1. احصل على مفتاح OpenRouter** (لغير مختبري بيتا فقط)\n\n"
+            "- اذهب إلى [openrouter.ai/keys](https://openrouter.ai/keys) وسجّل الدخول (Google أو GitHub أو البريد الإلكتروني)\n"
+            "- انقر **Create Key**، وانسخه (يبدأ بـ `sk-or-...`)\n"
+            "- أضف رصيد $5 ضمن **Settings → Credits** — يكفي لمئات التمارين\n"
+            "- الصق المفتاح أدناه في **🤖 النموذج وواجهة البرمجة**\n\n"
+            "**2. (اختياري) مفتاح ElevenLabs** — فقط إن أردت تمرين الإملاء\n\n"
+            "- اذهب إلى [elevenlabs.io](https://elevenlabs.io) ← سجّل (الباقة المجانية تشمل ~10 دقائق TTS شهريًا)\n"
+            "- **Profile → API Keys → Create Key**، وانسخه (يبدأ بـ `xi-...`)\n"
+            "- الصقه أدناه في **🤖 النموذج وواجهة البرمجة**\n\n"
+            "**3. تبقى المفاتيح في جلسة متصفحك فقط** — لا تُخزَّن على الخادم ولا تُسجَّل أبدًا.\n\n"
+            "**4. اختر لغة تعلّم ومستوى ونوع تمرين.** تُولَّد المفردات تلقائيًا إن لم تحمّل مفرداتك الخاصة."
+        ),
+        "el_source_byok": "🎙️ الصوت: مفتاح ElevenLabs الخاص بك (BYOK)",
+        "el_source_env": "🎙️ الصوت: خادم .env ElevenLabs",
+        "sidebar_heading": "⚙️ الإعدادات",
+        "main_heading": "🎯 منطقة التدريب",
+        "home_btn": "🔄 إعادة تعيين",
+        "help_home": "امسح المهمة الحالية وعُد إلى مُنتقي التمارين. تبقى لغتك ومستواك وسجلّك ومفرداتك ومفاتيحك.",
+        "how_it_works": "👈 **الخطوة 1 — الشريط الجانبي:** اضبط المدرّب والمستوى والسجل ومصدر المفردات ومفتاح API. **الخطوة 2 — هنا:** اختر تمرينًا أدناه وانقر **مهمة جديدة**.",
+        "help_ui_language": "لغة الأزرار والتسميات والملاحظات.",
+        "help_learning_language": "اللغة التي تريد التدرّب عليها. بدّلها في أي وقت — تُعاد المفردات عند التغيير.",
+        "help_coach": "الشخصية التي تكتب تصحيحك. الأسلوب فقط — قواعد النحو تبقى نفسها.",
+        "help_level": "مستواك حسب الإطار الأوروبي (A1 مبتدئ ← C2 شبه أصلي). تتكيّف النصوص والأسئلة معه.",
+        "help_register": "أي سجل اجتماعي ينبغي للنموذج استخدامه والتصحيح وفقه، من لغة الشارع إلى النثر التقني.",
+        "help_num_vocab": "كم مفردة تُستخرج / تُولَّد من المصدر.",
+        "help_url": "الصق رابط خبر/مقال — يستخرج التطبيق المفردات منه.",
+        "help_ready_vocab": "ارفع ملفًا نصيًا بمفردة واحدة في كل سطر.",
+        "help_model_tier": "Budget هو الأرخص؛ Best هو الأدقّ. اللغات غير الإنجليزية تستخدم افتراضيًا نموذجًا أقوى.",
+        "help_choose_exercise": "اختر نوع التدريب الذي تريده تاليًا. كل خيار طريقة مختلفة للعمل على مفرداتك — ملء الفراغات، ترجمة الجُمل، الاستماع لإملاء، قراءة نص والإجابة عن أسئلة، والمزيد. بدّل في أي وقت.",
+        "help_new_task": "أعِد توليد مهمة جديدة بالإعدادات الحالية.",
+        "help_correct": "أرسل إجابتك إلى المدرّب للتصحيح.",
+        "help_num_blanks": "كم فراغًا يُنتج في النص.",
+        "help_num_sentences": "كم جملة ترجمة تُنتج.",
+        "help_dict_generate": "يكتب النموذج نصًا قصيرًا، ويقرؤه ElevenLabs. تكتبه أنت ويقارنه التطبيق.",
+        "help_dict_speed": "أبطئ الصوت أو سرّعه دون تغيير طبقة الصوت.",
+        "help_read_source": "من أين يأتي النص: مولّد بالذكاء الاصطناعي، أو صفحة ويب، أو نص ملصق، أو ملف ‎.txt‎ مرفوع.",
+        "help_read_length": "عدد كلمات تقريبي للنص المولّد بالذكاء الاصطناعي.",
+        "help_read_theme": "بذرة موضوع اختيارية — مثل «المناخ» أو «العمران» أو «الطفولة».",
+        "help_read_generate": "يجلب النص ويصوغ أسئلة اختيار من متعدد + أسئلة مفتوحة.",
+        "help_read_submit": "التقييم: تُحتسب أسئلة الاختيار محليًا، وتُقيَّم الإجابات المفتوحة بواسطة النموذج مقابل إجابة مرجعية.",
+        "read_source": "📖 مصدر النص",
+        "read_source_ai": "توليد بالذكاء الاصطناعي",
+        "read_source_url": "جلب من رابط",
+        "read_source_paste": "لصق نص",
+        "read_source_file": "رفع ‎.txt‎",
+        "read_length": "📏 الطول",
+        "read_length_short": "قصير (~150 كلمة)",
+        "read_length_medium": "متوسط (~350 كلمة)",
+        "read_length_long": "طويل (~600 كلمة)",
+        "read_theme": "🎯 الموضوع",
+        "read_url_placeholder": "https://…",
+        "read_paste_placeholder": "الصق النص المراد قراءته هنا…",
+        "read_generate": "📖 احصل على النص والأسئلة",
+        "read_status_text": "🧠 كتابة النص…",
+        "read_status_fetch": "🌐 جلب الصفحة…",
+        "read_status_questions": "🧠 صياغة الأسئلة…",
+        "read_status_ready": "✅ النص والأسئلة جاهزان",
+        "read_passage_heading": "النص",
+        "read_mc_heading": "اختيار من متعدد",
+        "read_open_heading": "أسئلة مفتوحة",
+        "read_submit": "✅ تقييم",
+        "read_score": "🎯 نتيجة الاختيار من متعدد",
+        "read_open_feedback": "الإجابات المفتوحة",
+        "read_need_passage": "لا يوجد نص بعد. ولّد أو حمّل واحدًا أولًا.",
+        "read_url_failed": "❌ تعذّر جلب هذا الرابط: {err}",
+        "read_verdict_CORRECT": "✅ صحيح",
+        "read_verdict_PARTIAL": "🟡 صحيح جزئيًا",
+        "read_verdict_INCORRECT": "❌ غير صحيح",
+        "read_verdict_ERROR": "⚠️ تعذّر التقييم",
+        "read_reveal_answers": "🔍 أظهر إجابات الاختيار الصحيحة",
+        "read_reference_answer": "الإجابة المرجعية",
+    },
 }
 
 
@@ -1624,6 +1845,10 @@ _COUNTRY_TO_LANG: dict[str, str] = {
     "PL": "pl",
     # Hebrew (Israel)
     "IL": "he",
+    # Arabic-speaking (MENA)
+    "SA": "ar", "EG": "ar", "AE": "ar", "MA": "ar", "DZ": "ar", "TN": "ar",
+    "IQ": "ar", "JO": "ar", "LB": "ar", "KW": "ar", "QA": "ar", "BH": "ar",
+    "OM": "ar", "YE": "ar", "SY": "ar", "PS": "ar", "LY": "ar", "SD": "ar",
     # English-speaking (default everywhere else)
     "US": "en", "GB": "en", "IE": "en", "CA": "en", "AU": "en", "NZ": "en",
 }
@@ -1680,37 +1905,42 @@ LANGUAGE_DISPLAY: dict[str, dict[str, str]] = {
     "en": {
         "französisch": "French", "englisch": "English", "spanisch": "Spanish",
         "ukrainisch": "Ukrainian", "deutsch": "German",
-        "polnisch": "Polish", "griechisch": "Greek", "hebräisch": "Hebrew",
+        "polnisch": "Polish", "griechisch": "Greek", "arabisch": "Arabic", "hebräisch": "Hebrew",
     },
     "de": {
         "französisch": "Französisch", "englisch": "Englisch", "spanisch": "Spanisch",
         "ukrainisch": "Ukrainisch", "deutsch": "Deutsch",
-        "polnisch": "Polnisch", "griechisch": "Griechisch", "hebräisch": "Hebräisch",
+        "polnisch": "Polnisch", "griechisch": "Griechisch", "arabisch": "Arabisch", "hebräisch": "Hebräisch",
     },
     "fr": {
         "französisch": "français", "englisch": "anglais", "spanisch": "espagnol",
         "ukrainisch": "ukrainien", "deutsch": "allemand",
-        "polnisch": "polonais", "griechisch": "grec", "hebräisch": "hébreu",
+        "polnisch": "polonais", "griechisch": "grec", "arabisch": "arabe", "hebräisch": "hébreu",
     },
     "es": {
         "französisch": "francés", "englisch": "inglés", "spanisch": "español",
         "ukrainisch": "ucraniano", "deutsch": "alemán",
-        "polnisch": "polaco", "griechisch": "griego", "hebräisch": "hebreo",
+        "polnisch": "polaco", "griechisch": "griego", "arabisch": "árabe", "hebräisch": "hebreo",
     },
     "uk": {
         "französisch": "французька", "englisch": "англійська", "spanisch": "іспанська",
         "ukrainisch": "українська", "deutsch": "німецька",
-        "polnisch": "польська", "griechisch": "грецька", "hebräisch": "іврит",
+        "polnisch": "польська", "griechisch": "грецька", "arabisch": "арабська", "hebräisch": "іврит",
     },
     "pl": {
         "französisch": "francuski", "englisch": "angielski", "spanisch": "hiszpański",
         "ukrainisch": "ukraiński", "deutsch": "niemiecki",
-        "polnisch": "polski", "griechisch": "grecki", "hebräisch": "hebrajski",
+        "polnisch": "polski", "griechisch": "grecki", "arabisch": "arabski", "hebräisch": "hebrajski",
+    },
+    "ar": {
+        "französisch": "الفرنسية", "englisch": "الإنجليزية", "spanisch": "الإسبانية",
+        "ukrainisch": "الأوكرانية", "deutsch": "الألمانية",
+        "polnisch": "البولندية", "griechisch": "اليونانية", "arabisch": "العربية", "hebräisch": "العبرية",
     },
     "he": {
         "französisch": "צרפתית", "englisch": "אנגלית", "spanisch": "ספרדית",
         "ukrainisch": "אוקראינית", "deutsch": "גרמנית",
-        "polnisch": "פולנית", "griechisch": "יוונית", "hebräisch": "עברית",
+        "polnisch": "פולנית", "griechisch": "יוונית", "arabisch": "ערבית", "hebräisch": "עברית",
     },
 }
 
@@ -1783,6 +2013,15 @@ NIVEAU_DISPLAY: dict[str, dict[str, str]] = {
         "Hohe Literatur": "ספרותי",
         "Technisch": "טכני",
     },
+    "ar": {
+        "Gossensprache/Kriminelle Sprache": "لغة الجريمة",
+        "Argot/Vulgär": "عامية بذيئة",
+        "Umgangssprache": "عامية",
+        "Standardsprache": "معياري",
+        "Gehoben/Vornehm": "رفيع / فصيح",
+        "Hohe Literatur": "أدبي",
+        "Technisch": "تقني",
+    },
 }
 
 
@@ -1823,6 +2062,11 @@ THEME_DISPLAY: dict[str, dict[str, str]] = {
         "Kultur": "תרבות", "Medien": "תקשורת", "Raumfahrt": "טיסות חלל",
         "Business": "עסקים", "Politik": "פוליטיקה",
     },
+    "ar": {
+        "Urlaub": "العطلة", "Schule": "المدرسة", "Essen": "الطعام", "Sport": "الرياضة",
+        "Kultur": "الثقافة", "Medien": "الإعلام", "Raumfahrt": "رحلات الفضاء",
+        "Business": "الأعمال", "Politik": "السياسة",
+    },
 }
 
 
@@ -1855,6 +2099,10 @@ MENTOR_DISPLAY: dict[str, dict[str, str]] = {
     "he": {
         "Netter Lehrer": "מורה חביב",
         "Strenger Lehrer": "מורה קפדן",
+    },
+    "ar": {
+        "Netter Lehrer": "معلّم لطيف",
+        "Strenger Lehrer": "معلّم صارم",
     },
 }
 
@@ -1948,6 +2196,18 @@ QUOTE_DISPLAY: dict[str, dict[str, str]] = {
         "Konfuzius": "לימוד בלי מחשבה — שווא; מחשבה בלי לימוד — סכנה.",
         "Machiavelli": "המזל מחייך לאמיצים.",
     },
+    "ar": {
+        "Netter Lehrer": "كل خطأ خطوة إلى الأمام.",
+        "Strenger Lehrer": "الدقة لباقة الملوك.",
+        "Dalai Lama": "كن لطيفًا كلما أمكن. وهو ممكن دائمًا.",
+        "Vitalik Buterin": "لامركزية السلطة؛ مركزية المعرفة.",
+        "Elon Musk": "حين يكون الأمر مهمًا بما يكفي، تفعله ولو كانت الاحتمالات ضدك.",
+        "Jesus Christus": "الحرف يقتل، والروح تُحيي.",
+        "Chairman Mao": "رحلة الألف ميل تبدأ بخطوة واحدة.",
+        "Homer": "حتى في النوم، يهبط الحزن على أرواحنا.",
+        "Konfuzius": "التعلّم بلا تفكير ضائع؛ والتفكير بلا تعلّم خطر.",
+        "Machiavelli": "الحظ يحالف الجريئين.",
+    },
 }
 
 
@@ -1994,6 +2254,12 @@ TIER_DISPLAY: dict[str, dict[str, str]] = {
         "⚖️ Balanced (Claude Haiku 4.5)": "⚖️ מאוזן (Claude Haiku 4.5)",
         "🚀 Premium (Mistral Large 3)": "🚀 פרימיום (Mistral Large 3)",
         "👑 Best (Claude Sonnet 4.6)": "👑 הכי טוב (Claude Sonnet 4.6)",
+    },
+    "ar": {
+        "💰 Budget (Gemini Flash Lite)": "💰 اقتصادي (Gemini Flash Lite)",
+        "⚖️ Balanced (Claude Haiku 4.5)": "⚖️ متوازن (Claude Haiku 4.5)",
+        "🚀 Premium (Mistral Large 3)": "🚀 متميّز (Mistral Large 3)",
+        "👑 Best (Claude Sonnet 4.6)": "👑 الأفضل (Claude Sonnet 4.6)",
     },
 }
 

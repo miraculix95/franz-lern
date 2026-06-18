@@ -16,7 +16,7 @@ def test_default_lang_is_english():
 
 def test_all_ui_langs_have_names():
     for code in UI_LANG_NAMES.keys():
-        assert code in {"en", "de", "fr", "es", "uk", "pl", "he"}
+        assert code in {"en", "de", "fr", "es", "uk", "pl", "ar", "he"}
 
 
 def test_ui_langs_dict_matches_lang_names():
@@ -39,12 +39,12 @@ def test_t_formats_kwargs():
 
 def test_translating_vocab_key_present_in_all_langs():
     # The sidebar-translation status label must be localized in every UI language.
-    for lang in ["en", "de", "fr", "es", "uk", "pl", "he"]:
+    for lang in ["en", "de", "fr", "es", "uk", "pl", "ar", "he"]:
         assert t("status_translating_vocab", lang) != "status_translating_vocab"
 
 
 def test_task_names_for_all_langs_have_same_length():
-    lengths = {lang: len(task_names_for(lang)) for lang in ["en", "de", "fr", "es", "uk", "pl", "he"]}
+    lengths = {lang: len(task_names_for(lang)) for lang in ["en", "de", "fr", "es", "uk", "pl", "ar", "he"]}
     assert len(set(lengths.values())) == 1, f"Task-name lists differ in length: {lengths}"
     assert all(v == len(TASK_KEYS) for v in lengths.values())
 

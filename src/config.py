@@ -25,11 +25,12 @@ LANGUAGES: list[str] = [
     "deutsch",
     "polnisch",
     "griechisch",
+    "arabisch",
     "hebräisch",
 ]
 
 # Right-to-left learning languages — UI wraps task/feedback output in dir=rtl.
-RTL_LANGUAGES: set[str] = {"hebräisch"}
+RTL_LANGUAGES: set[str] = {"hebräisch", "arabisch"}
 
 MENTORS: list[str] = [
     "Netter Lehrer",
@@ -108,11 +109,12 @@ def default_model_for_language(language: str) -> str:
     """Pick a sensible default model based on target language.
 
     Ukrainian (Cyrillic), Polish (Slavic with heavy diacritics), Greek
-    (non-Latin alphabet + rich case morphology) and Hebrew (non-Latin + RTL)
-    all need the stronger Haiku default — smaller models hallucinate morphology.
+    (non-Latin alphabet + rich case morphology), Arabic (non-Latin + RTL +
+    rich morphology) and Hebrew (non-Latin + RTL) all need the stronger Haiku
+    default — smaller models hallucinate morphology.
     """
     lang = language.lower()
-    if lang.startswith(("ukrain", "polnisch", "griech", "hebrä", "hebra")):
+    if lang.startswith(("ukrain", "polnisch", "griech", "arab", "hebrä", "hebra")):
         return DEFAULT_MODEL_UK
     return DEFAULT_MODEL
 

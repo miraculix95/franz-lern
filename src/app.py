@@ -303,7 +303,7 @@ def _apply_theme(learning_language: str = "", ui_lang: str = "en") -> None:
     else:
         # Dial down Streamlit's stock white — users have complained it's glaring.
         st.markdown(_LIGHT_CSS, unsafe_allow_html=True)
-    if ui_lang == "he":
+    if ui_lang in ("he", "ar"):
         st.markdown(_UI_RTL_CSS, unsafe_allow_html=True)
     elif learning_language in RTL_LANGUAGES:
         st.markdown(_RTL_CSS, unsafe_allow_html=True)
