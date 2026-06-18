@@ -18,6 +18,24 @@ def test_build_test_orders_and_filters_levels():
     assert fake.calls[0]["tool_choice"]["function"]["name"] == "emit_placement_test"
 
 
+def test_build_test_shuffles_but_keeps_correct_option():
+    # Correct option carries a recognizable marker; after the in-code shuffle the
+    # correct_index must still point to that exact option (defends against "always A").
+    qs = []
+    for level in LEVELS:
+        qs.append({
+            "level": level,
+            "question": f"q-{level}",
+            "options": [f"RIGHT-{level}", "w1", "w2", "w3"],  # correct at index 0 from the LLM
+            "correct_index": 0,
+        })
+    fake = FakeOpenAIClient(responses=[{"tool_arguments": json.dumps({"questions": qs})}])
+    out = build_test(fake, language="French", model="m")
+    assert len(out) == len(LEVELS)
+    for q in out:
+        assert q["options"][q["correct_index"]] == f"RIGHT-{q['level']}"
+
+
 def test_recommend_level_longest_correct_prefix():
     qs = [_q(level, ci=1) for level in LEVELS]  # correct option is index 1 for all
     assert recommend_level(qs, [1, 1, 1, 1, 1, 1]) == "C2"   # all correct

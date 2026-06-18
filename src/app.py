@@ -1783,6 +1783,17 @@ def _render_placement(
         result = st.session_state.get("placement_result")
         if result:
             st.markdown(t("placement_recommend", ui_lang, level=result))
+            # Show which answers were right/wrong + the correct option.
+            for i, q in enumerate(questions):
+                opts = q.get("options", [])
+                ci = q.get("correct_index", 0)
+                picked = answers[i] if i < len(answers) else None
+                ok = picked is not None and picked == ci
+                correct_opt = opts[ci] if 0 <= ci < len(opts) else ""
+                line = f"{'✅' if ok else '❌'} **{q.get('level', '')}** — {q.get('question', '')}"
+                if not ok:
+                    line += f"  \n→ {t('placement_correct', ui_lang)} **{correct_opt}**"
+                st.markdown(line)
             if st.button(
                 t("placement_apply", ui_lang, level=result), type="primary",
                 key="placement_apply_btn",

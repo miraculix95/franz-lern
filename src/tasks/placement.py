@@ -10,10 +10,26 @@ Flow:
 from __future__ import annotations
 
 import json
+import random
 from typing import Any
 
 from src.config import LEVELS  # ["A1","A2","B1","B2","C1","C2"]
 from src.prompts import PLACEMENT_FUNCTION_SPEC, build_placement_messages
+
+
+def _shuffle_options(q: dict) -> dict:
+    """Shuffle a question's options and re-point correct_index.
+
+    LLMs tend to park the correct answer at index 0; shuffling in code
+    guarantees the correct option is evenly distributed regardless.
+    """
+    opts = list(q.get("options", []))
+    ci = q.get("correct_index", 0)
+    if not opts or not (0 <= ci < len(opts)):
+        return q
+    correct = opts[ci]
+    random.shuffle(opts)
+    return {**q, "options": opts, "correct_index": opts.index(correct)}
 
 
 def build_test(client: Any, *, language: str, model: str) -> list[dict]:
@@ -27,10 +43,10 @@ def build_test(client: Any, *, language: str, model: str) -> list[dict]:
     )
     payload = json.loads(response.choices[0].message.tool_calls[0].function.arguments)
     questions = payload.get("questions", [])
-    # Keep only known CEFR levels, ordered as in LEVELS.
+    # Keep only known CEFR levels, ordered as in LEVELS; shuffle each item's options.
     order = {lvl: i for i, lvl in enumerate(LEVELS)}
     return sorted(
-        [q for q in questions if q.get("level") in order],
+        [_shuffle_options(q) for q in questions if q.get("level") in order],
         key=lambda q: order[q["level"]],
     )
 

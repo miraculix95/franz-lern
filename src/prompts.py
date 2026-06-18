@@ -774,26 +774,44 @@ PLACEMENT_FUNCTION_SPEC: dict = {
 def build_placement_messages(*, language: str) -> list[dict]:
     """Messages to produce a 6-item CEFR placement test via emit_placement_test.
 
-    Questions are IN the target language (that is what measures ability); each
-    targets one CEFR level, from very easy (A1) to near-native (C2).
+    Items test GRAMMAR and VOCABULARY (not reading comprehension), one per CEFR
+    level, in the target language, from very easy (A1) to near-native (C2).
     """
     return [
         {
             "role": "system",
             "content": (
-                f"You are a {language} placement examiner. Produce a quick test that locates a "
-                f"learner's CEFR level. Use the emit_placement_test tool. Exactly 6 "
-                f"multiple-choice questions, one each at A1, A2, B1, B2, C1, C2, strictly "
-                f"increasing in difficulty. Each question and its 4 options are in {language}. "
-                f"A1 must be answerable by a near-beginner (basic words, present tense); C2 must "
-                f"require near-native mastery (nuance, idiom, register). Exactly one correct "
-                f"option per item; distractors plausible but clearly wrong."
+                f"You are a {language} placement examiner. Produce a quick GRAMMAR-AND-VOCABULARY "
+                f"test that locates a learner's CEFR level. Use the emit_placement_test tool: "
+                f"exactly 6 multiple-choice items, one each at A1, A2, B1, B2, C1, C2, strictly "
+                f"increasing in difficulty.\n\n"
+                f"ITEM MIX — the six items MUST cover all three kinds. Use EXACTLY this "
+                f"distribution by position (the items are ordered A1→C2):\n"
+                f"- item 1 (A1): grammar\n"
+                f"- item 2 (A2): vocabulary\n"
+                f"- item 3 (B1): reading comprehension\n"
+                f"- item 4 (B2): grammar\n"
+                f"- item 5 (C1): reading comprehension\n"
+                f"- item 6 (C2): vocabulary\n"
+                f"Grammar = fill-in-the-blank 'choose the correct form' (verb tense/conjugation, "
+                f"article & gender, preposition, pronoun, agreement, word order). "
+                f"Vocabulary = the right word / collocation / meaning in context. "
+                f"Reading comprehension = 1–2 short sentences, then a question about THEIR content "
+                f"(the 4 options are answers to that question). Do NOT test general knowledge.\n\n"
+                f"DIFFICULTY: A1 = a near-beginner can answer (basic words, present tense); C2 = "
+                f"requires near-native mastery (subtle grammar, idiom, register).\n\n"
+                f"UNAMBIGUITY (critical): exactly ONE option is unambiguously correct in standard "
+                f"{language}; the other three must be clearly and grammatically WRONG — no "
+                f"near-synonyms, no regionally-acceptable variants, no two defensible answers. "
+                f"Vary which position the correct option takes across the 6 items.\n\n"
+                f"Every question and all 4 options are written in {language}."
             ),
         },
         {
             "role": "user",
             "content": (
-                f"Create the 6-question {language} placement test now, ordered from A1 to C2."
+                f"Create the 6-question {language} grammar/vocabulary placement test now, "
+                f"ordered from A1 to C2. Double-check that each item has exactly one correct option."
             ),
         },
     ]
