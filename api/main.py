@@ -30,6 +30,8 @@ from src.tasks import translation as translation_task
 from src.tasks import sentence_building as sentence_task
 from src.tasks import error_detection as error_task
 from src.tasks import conjugation as conjugation_task
+from src.tasks import synonym_antonym as synonym_task
+from src.tasks import quiz as quiz_task
 from src.vocab import generate_vocabulary_via_function_call
 
 # Shared-secret auth. When LINGUA_CORE_TOKEN is set (production / public route),
@@ -192,6 +194,51 @@ def generate_conjugation(r: VocabTaskReq):
         niveau=r.niveau, model=_model(r.model), ui_lang=r.ui_lang,
     )
     return {"displayed": instr.displayed_to_user, "context": instr.internal_context}
+
+
+# ---- synonym / antonym (local free-answer task, no LLM in build) ----
+class SynonymReq(BaseModel):
+    vocab_list: list[str]
+    ui_lang: str = "en"
+
+
+@app.post("/generate/synonym")
+def generate_synonym(r: SynonymReq):
+    instr = synonym_task.build(vocab_list=r.vocab_list, ui_lang=r.ui_lang)
+    return {"displayed": instr.displayed_to_user, "context": instr.internal_context}
+
+
+# ---- vocabulary quiz (translation prompts + tolerant scoring) ----
+class QuizBuildReq(BaseModel):
+    vocab_list: list[str]
+    language: str
+    count: int = 8
+    ui_language_name: str = "English"
+    model: str | None = None
+
+
+@app.post("/quiz/build")
+def quiz_build(r: QuizBuildReq):
+    quiz = quiz_task.build_quiz(
+        client(), vocab_list=r.vocab_list, language=r.language, count=r.count,
+        model=_model(r.model), ui_language_name=r.ui_language_name,
+    )
+    return {"quiz": quiz}
+
+
+class QuizScoreReq(BaseModel):
+    quiz: dict[str, str]
+    answers: dict[str, str]
+
+
+@app.post("/quiz/score")
+def quiz_score(r: QuizScoreReq):
+    result = quiz_task.score_answers(r.quiz, r.answers)
+    return {
+        "correct": result.correct,
+        "total": result.total,
+        "per_word": result.per_word,
+    }
 
 
 # ---- correction (shared grading path for free-answer tasks) ----
