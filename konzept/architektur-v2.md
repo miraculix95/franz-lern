@@ -72,13 +72,13 @@ Postgres (Supabase ODER App-Server)
 - **progress** — user_id, metriken (tasks_done, corrections, streak, per-skill)
 - **usage_events** — user_id, endpoint, model, tokens_in/out, cost_estimate, ts → für jedes Kostenmodell
 
-## 7. Offene Entscheidungen (vor/bei Umsetzung)
+## 7. Entscheidungen (Stand 2026-06-18)
 
-1. **Kostenmodell** — *bewusst offen gelassen* (Entscheidung Bastian 2026-06-18). Optionen: gratis/gefördert · Freemium (Stripe) · B2B (Träger zahlen pro Gruppe). Architektur ist agnostisch (managed keys + usage_events von Anfang an). **Bestimmt** Auth-Wahl + ob Payment/Quota gebaut wird.
-2. **Auth:** Clerk (stark bei B2B/Organizations) vs. Supabase Auth (kommt mit der DB, eine Sache weniger). Hängt an (1): B2B → Clerk; reines B2C → Supabase Auth.
-3. **Postgres:** Supabase (managed, + evtl. Auth gebündelt) vs. App-Server-Postgres (schon da, datalab-Box, kein neuer Dienst).
-4. **Subdomain-Name** (Public-Surface, deine Entscheidung): `lingua2.` / `app.lingua…` / eigene Produkt-Domain?
-5. **Default-LLM-Modell** bei managed keys (Kosten!): günstiges Default (Gemini Flash Lite / Haiku) mit Usage-Limits.
+1. **Kostenmodell** — *bewusst offen* (Entscheidung Bastian 2026-06-18). Optionen: gratis/gefördert · Freemium (Stripe) · B2B (Träger zahlen pro Gruppe). Architektur ist agnostisch (managed keys + usage_events von Anfang an). Blockt **Phase 4**, nicht 0–3.
+2. **Auth: ✅ Supabase Auth** (entschieden). B2C-Individuen; kommt mit der DB.
+3. **Postgres: ✅ Supabase** (entschieden — gleiches Projekt wie Auth). Begründung: `auth.users` + **Row-Level-Security** auf `auth.uid()` → Pro-Nutzer-Isolation + FKs auf den Auth-User quasi geschenkt; managed Backups, EU-hostbar, gleicher Stack wie HypeType. (App-Server-Postgres verworfen: würde RLS/Auth-Integration wegwerfen + manuellen User-ID-Sync erzwingen.)
+4. **Subdomain: ✅ `lingua-saas.ai-devhub-247.site`** (entschieden; eigene Produkt-Domain kommt später).
+5. **Default-LLM-Modell** bei managed keys (Kosten!): günstiges Default (Gemini Flash Lite / Haiku) mit Usage-Limits — Detail in Phase 1/4.
 
 ## 8. Phasen-Plan (kein Big-Bang; V1 läuft durchgehend weiter)
 
