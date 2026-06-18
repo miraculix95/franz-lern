@@ -513,6 +513,12 @@ def _render_sidebar(language: str, ui_lang: str) -> tuple[str, str, str, str, st
             )
             mentor = MENTORS[mentor_displays.index(mentor_pick)]
 
+            # A placement test may have requested a level — apply it BEFORE the
+            # widget is created (Streamlit forbids setting key="level" afterwards).
+            if "_pending_level" in st.session_state:
+                pending = st.session_state.pop("_pending_level")
+                if pending in LEVELS:
+                    st.session_state["level"] = pending
             level = st.selectbox(
                 t("level", ui_lang), LEVELS, index=2, key="level",
                 help=t("help_level", ui_lang),
@@ -1798,7 +1804,10 @@ def _render_placement(
                 t("placement_apply", ui_lang, level=result), type="primary",
                 key="placement_apply_btn",
             ):
-                st.session_state["level"] = result
+                # Can't set st.session_state['level'] here — the sidebar widget
+                # with key='level' already exists this run. Hand it a pending
+                # value; the sidebar applies it before instantiating the widget.
+                st.session_state["_pending_level"] = result
                 st.success(t("placement_applied", ui_lang, level=result))
                 for k in ("placement_questions", "placement_answers", "placement_result"):
                     st.session_state.pop(k, None)
