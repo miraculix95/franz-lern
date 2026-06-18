@@ -61,6 +61,17 @@ def test_grammar_focus_display_covers_all_keys_all_ui_langs():
         assert t("grammar_focus_none", lang) != "grammar_focus_none"
 
 
+def test_delf_localized_in_all_ui_langs():
+    from src.config import TEXT_TYPES
+    from src.i18n import text_type_display
+    for lang in ["en", "de", "fr", "es", "uk", "pl", "ar", "he"]:
+        for k in TEXT_TYPES:
+            assert text_type_display(k, lang) != k, f"{lang}/{k} text-type missing"
+        for key in ("desc_delf", "delf_text_type", "delf_word_count", "delf_generate",
+                    "delf_evaluate", "delf_grade_heading", "delf_suggestions"):
+            assert t(key, lang) != key, f"{lang}/{key} missing"
+
+
 def test_listening_keys_localized_in_all_ui_langs():
     for lang in ["en", "de", "fr", "es", "uk", "pl", "ar", "he"]:
         for key in ("desc_listening", "listen_generate", "listen_audio_heading",

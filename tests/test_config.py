@@ -2,6 +2,7 @@ from src.config import (
     DEFAULT_LANGUAGE,
     DEFAULT_MODEL,
     DEFAULT_MODEL_UK,
+    DEFAULT_TEXT_TYPE,
     DEFAULT_TRANSFORMATION,
     GRAMMAR_FOCI,
     INPUT_KEYBOARD_URL,
@@ -13,6 +14,7 @@ from src.config import (
     NIVEAU_LEVELS,
     NON_LATIN_LANGUAGES,
     RTL_LANGUAGES,
+    TEXT_TYPES,
     THEMES,
     TRANSFORMATIONS,
     default_model_for_language,
@@ -78,6 +80,12 @@ def test_transformations_have_default_and_mixed():
     assert "mixed" in TRANSFORMATIONS
     # every transformation carries a non-empty English prompt phrase
     assert all(isinstance(v, str) and v.strip() for v in TRANSFORMATIONS.values())
+
+
+def test_text_types_have_consigne_hints():
+    assert DEFAULT_TEXT_TYPE in TEXT_TYPES
+    assert len(TEXT_TYPES) >= 4
+    assert all(isinstance(v, str) and v.strip() for v in TEXT_TYPES.values())
 
 
 def test_grammar_foci_have_prompt_phrases():

@@ -128,6 +128,18 @@ GRAMMAR_FOCI: dict[str, str] = {
     "negation": "negation — the blanks must test correct negation forms and particles",
 }
 
+# DELF production-écrite text types: keys are stable, the English phrase is the
+# consigne hint injected into the (English) task prompt, the label is localized
+# in i18n.TEXT_TYPE_DISPLAY.
+TEXT_TYPES: dict[str, str] = {
+    "email": "an email — state clearly to whom and why (e.g. to a friend, or a semi-formal email to a colleague), with an appropriate opening and closing",
+    "formal_letter": "a formal letter (e.g. a complaint, an application, or a request to an institution), with a proper salutation, structured body and closing formula",
+    "opinion_essay": "an argumentative opinion essay: introduction, two or three arguments with examples, a counter-argument, and a conclusion",
+    "forum_post": "a forum or blog post reacting to a topic, giving a personal opinion supported by reasons and examples",
+    "summary": "a summary in your own words that condenses the key points of the described text or situation without adding personal opinion",
+}
+DEFAULT_TEXT_TYPE: str = "email"
+
 # OpenRouter model IDs (https://openrouter.ai/models).
 # 4-tier selection: budget / balanced / premium / best.
 # See research/2026-04-20-model-provider-analysis.md for the rationale.

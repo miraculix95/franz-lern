@@ -625,6 +625,119 @@ def build_reading_eval_prompt(
     ]
 
 
+def build_delf_task_prompt(
+    *,
+    language: str,
+    level: str,
+    text_type_en: str,
+    word_target: int,
+    theme: str,
+    ui_language_name: str,
+) -> list[dict]:
+    """Produce a DELF-style writing consigne (task brief) — no model answer."""
+    return [
+        {
+            "role": "system",
+            "content": (
+                f"You are a DELF/DALF examiner writing a production-écrite task for "
+                f"{language} learners at CEFR level {level}. Output ONLY the task brief "
+                f"(consigne) — never a model answer or the text itself."
+            ),
+        },
+        {
+            "role": "user",
+            "content": (
+                f"Write a clear consigne asking the learner to produce {text_type_en}. "
+                f"Topic/context: {theme}. Target length: about {word_target} words. "
+                f"Give a concrete, realistic situation (who, what, why) so the learner "
+                f"knows the communicative goal. State the text type and the ~{word_target}-word "
+                f"target explicitly.\n\n"
+                f"Write the consigne in {ui_language_name}. Keep it to 2–4 sentences. "
+                f"Do NOT write any example answer."
+            ),
+        },
+    ]
+
+
+DELF_GRILLE_FUNCTION_SPEC: dict = {
+    "name": "emit_delf_assessment",
+    "description": (
+        "Score a learner's written production against the DELF production-écrite grid: "
+        "four criteria, each 0–5, plus an overall comment and concrete suggestions."
+    ),
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "criteria": {
+                "type": "array",
+                "description": (
+                    "Exactly 4 items, in this order and with these keys: "
+                    "'consigne' (task achievement / respect de la consigne), "
+                    "'coherence' (coherence & cohesion), "
+                    "'lexicon' (vocabulary range & spelling), "
+                    "'grammar' (grammar & syntax)."
+                ),
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "key": {"type": "string", "description": "consigne | coherence | lexicon | grammar"},
+                        "label": {"type": "string", "description": "criterion name in the UI language"},
+                        "score": {"type": "integer", "description": "0..5"},
+                        "comment": {"type": "string", "description": "1–2 sentences in the UI language"},
+                    },
+                    "required": ["key", "label", "score", "comment"],
+                },
+            },
+            "word_count": {"type": "integer", "description": "number of words the learner actually wrote"},
+            "overall": {"type": "string", "description": "2–3 sentence overall assessment in the UI language"},
+            "suggestions": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "2–4 concrete improvement tips in the UI language",
+            },
+        },
+        "required": ["criteria", "word_count", "overall", "suggestions"],
+    },
+}
+
+
+def build_delf_eval_messages(
+    *,
+    task: str,
+    user_text: str,
+    language: str,
+    level: str,
+    text_type_en: str,
+    word_target: int,
+    ui_language_name: str,
+) -> list[dict]:
+    """Messages to grade a written production via the emit_delf_assessment tool."""
+    return [
+        {
+            "role": "system",
+            "content": (
+                f"You are a DELF/DALF examiner marking a {language} production écrite at CEFR "
+                f"level {level}. Apply the official grid criteria. Be fair but rigorous: each of "
+                f"the four criteria is scored 0–5 (5 = fully meets the level's expectation). "
+                f"'consigne' must reflect whether the learner produced {text_type_en} of about "
+                f"{word_target} words and met the communicative goal — penalise major length "
+                f"deviations. Use the emit_delf_assessment tool. Write every label, comment, "
+                f"overall and suggestion in {ui_language_name}; quote the learner's {language} "
+                f"only when citing an error."
+            ),
+        },
+        {
+            "role": "user",
+            "content": (
+                f"TASK (consigne):\n{task}\n\n"
+                f"LEARNER'S TEXT:\n---\n{user_text}\n---\n\n"
+                f"Score it on the four DELF criteria, count the words, give an overall "
+                f"assessment and 2–4 concrete suggestions."
+            ),
+        },
+    ]
+
+
 def build_answer_comment_prompt(comment: str) -> list[dict]:
     return [
         {"role": "system", "content": "Beantworte die folgende Frage sachlich und präzise."},

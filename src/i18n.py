@@ -51,6 +51,7 @@ TASK_KEYS: list[str] = [
     "reading",
     "transformation",
     "listening",
+    "delf",
 ]
 
 
@@ -69,6 +70,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Reading comprehension",
         "Sentence transformation",
         "Listening comprehension",
+        "Exam writing (DELF)",
     ],
     "de": [
         "",
@@ -84,6 +86,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Leseverstehen",
         "Satztransformation",
         "Hörverstehen",
+        "Prüfungsschreiben (DELF)",
     ],
     "fr": [
         "",
@@ -99,6 +102,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Compréhension écrite",
         "Transformation de phrases",
         "Compréhension orale",
+        "Production écrite (DELF)",
     ],
     "es": [
         "",
@@ -114,6 +118,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Comprensión lectora",
         "Transformación de frases",
         "Comprensión auditiva",
+        "Expresión escrita (DELF)",
     ],
     "uk": [
         "",
@@ -129,6 +134,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Читання з розумінням",
         "Трансформація речень",
         "Аудіювання",
+        "Письмо (екзамен DELF)",
     ],
     "pl": [
         "",
@@ -144,6 +150,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "Czytanie ze zrozumieniem",
         "Transformacja zdań",
         "Rozumienie ze słuchu",
+        "Pisanie egzaminacyjne (DELF)",
     ],
     "he": [
         "",
@@ -159,6 +166,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "הבנת הנקרא",
         "המרת משפטים",
         "הבנת הנשמע",
+        "כתיבה למבחן (DELF)",
     ],
     "ar": [
         "",
@@ -174,6 +182,7 @@ _TASK_NAMES: dict[str, list[str]] = {
         "فهم المقروء",
         "تحويل الجُمل",
         "فهم المسموع",
+        "تعبير كتابي (DELF)",
     ],
 }
 
@@ -226,6 +235,21 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_reading": "📚 **Reading comprehension.** AI-generated text, a URL, pasted text, or an uploaded .txt — then multiple-choice + open-ended questions about it.",
         "desc_transformation": "🔄 **Sentence transformation.** A few sentences are given — you rewrite them following a rule (active↔passive, reported speech, tense change, and more).",
         "desc_listening": "🎧 **Listening comprehension.** Listen to a short AI-generated audio passage (with a speed control), then answer multiple-choice + open questions. Reveal the transcript afterwards.",
+        "desc_delf": "📝 **Exam writing (DELF).** Produce a text type (email, formal letter, opinion essay, forum post, summary) to a target word count, then get scored on the DELF grid: task achievement, coherence, vocabulary, grammar.",
+        "delf_text_type": "📄 Text type",
+        "help_delf_text_type": "Which DELF-style text to produce.",
+        "delf_word_count": "🔢 Target word count",
+        "help_delf_word_count": "The brief asks for about this many words; length adherence counts toward the score.",
+        "delf_generate": "📝 Get writing prompt",
+        "help_delf_generate": "Generates a DELF-style task: text type, context and word count.",
+        "delf_evaluate": "📊 Score on the DELF grid",
+        "help_delf_evaluate": "Grades your text on task achievement, coherence, vocabulary and grammar.",
+        "delf_grade_heading": "📊 DELF assessment",
+        "delf_total": "Total",
+        "delf_word_count_label": "Word count",
+        "delf_suggestions": "How to improve",
+        "delf_status_eval": "📊 Assessing against the DELF grid…",
+        "delf_need_text": "Write your text first.",
         "listen_generate": "🎧 Generate audio & questions",
         "help_listen_generate": "Generates a passage, speaks it with ElevenLabs, and drafts MC + open questions.",
         "listen_audio_heading": "🎧 Listen",
@@ -448,6 +472,21 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_reading": "📚 **Leseverstehen.** KI-generierter Text, URL, eingefügter Text oder hochgeladene .txt — danach Multiple-Choice- und offene Fragen dazu.",
         "desc_transformation": "🔄 **Satztransformation.** Du bekommst Sätze und formst sie nach einer Regel um (Aktiv↔Passiv, indirekte Rede, Zeitenwechsel u. a.).",
         "desc_listening": "🎧 **Hörverstehen.** Höre eine kurze KI-generierte Audio-Passage (mit Tempo-Regler) und beantworte dann Multiple-Choice- und offene Fragen. Das Transkript kannst du danach einblenden.",
+        "desc_delf": "📝 **Prüfungsschreiben (DELF).** Verfasse eine Textsorte (E-Mail, formeller Brief, Meinungs-Essay, Forenbeitrag, Zusammenfassung) zu einer Ziel-Wortzahl und werde nach dem DELF-Raster bewertet: Aufgabenerfüllung, Kohärenz, Lexik, Grammatik.",
+        "delf_text_type": "📄 Textsorte",
+        "help_delf_text_type": "Welche DELF-Textsorte erzeugt werden soll.",
+        "delf_word_count": "🔢 Ziel-Wortzahl",
+        "help_delf_word_count": "Der Auftrag verlangt etwa so viele Wörter; Längen-Treue zählt in die Bewertung.",
+        "delf_generate": "📝 Schreibauftrag holen",
+        "help_delf_generate": "Erzeugt eine DELF-Aufgabe: Textsorte, Kontext und Wortzahl.",
+        "delf_evaluate": "📊 Nach DELF-Raster bewerten",
+        "help_delf_evaluate": "Bewertet deinen Text nach Aufgabenerfüllung, Kohärenz, Lexik und Grammatik.",
+        "delf_grade_heading": "📊 DELF-Bewertung",
+        "delf_total": "Gesamt",
+        "delf_word_count_label": "Wortzahl",
+        "delf_suggestions": "Verbesserungen",
+        "delf_status_eval": "📊 Bewertung nach DELF-Raster…",
+        "delf_need_text": "Schreib zuerst deinen Text.",
         "listen_generate": "🎧 Audio & Fragen erzeugen",
         "help_listen_generate": "Erzeugt eine Passage, spricht sie mit ElevenLabs und entwirft MC- + offene Fragen.",
         "listen_audio_heading": "🎧 Hören",
@@ -670,6 +709,21 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_reading": "📚 **Compréhension écrite.** Texte généré par IA, URL, texte collé ou .txt importé — puis QCM + questions ouvertes.",
         "desc_transformation": "🔄 **Transformation de phrases.** Quelques phrases te sont données — tu les réécris selon une règle (actif↔passif, discours indirect, changement de temps, etc.).",
         "desc_listening": "🎧 **Compréhension orale.** Écoute un court passage audio généré par IA (avec réglage de vitesse), puis réponds à des QCM + questions ouvertes. Tu peux afficher la transcription ensuite.",
+        "desc_delf": "📝 **Production écrite (DELF).** Rédige un type de texte (e-mail, lettre formelle, essai argumentatif, message de forum, résumé) avec un nombre de mots visé, puis fais-toi évaluer selon la grille DELF : respect de la consigne, cohérence, lexique, grammaire.",
+        "delf_text_type": "📄 Type de texte",
+        "help_delf_text_type": "Quel type de texte DELF produire.",
+        "delf_word_count": "🔢 Nombre de mots visé",
+        "help_delf_word_count": "La consigne demande environ ce nombre de mots ; le respect de la longueur compte dans la note.",
+        "delf_generate": "📝 Obtenir le sujet",
+        "help_delf_generate": "Génère une tâche DELF : type de texte, contexte et nombre de mots.",
+        "delf_evaluate": "📊 Évaluer selon la grille DELF",
+        "help_delf_evaluate": "Évalue ton texte sur le respect de la consigne, la cohérence, le lexique et la grammaire.",
+        "delf_grade_heading": "📊 Évaluation DELF",
+        "delf_total": "Total",
+        "delf_word_count_label": "Nombre de mots",
+        "delf_suggestions": "Pistes d'amélioration",
+        "delf_status_eval": "📊 Évaluation selon la grille DELF…",
+        "delf_need_text": "Écris d'abord ton texte.",
         "listen_generate": "🎧 Générer l'audio & les questions",
         "help_listen_generate": "Génère un passage, le fait lire par ElevenLabs et rédige des QCM + questions ouvertes.",
         "listen_audio_heading": "🎧 Écouter",
@@ -893,6 +947,21 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_reading": "📚 **Comprensión lectora.** Texto generado por IA, URL, texto pegado o .txt subido — luego opción múltiple + preguntas abiertas.",
         "desc_transformation": "🔄 **Transformación de frases.** Se te dan unas frases — las reescribes según una regla (activa↔pasiva, estilo indirecto, cambio de tiempo, etc.).",
         "desc_listening": "🎧 **Comprensión auditiva.** Escucha un breve pasaje de audio generado por IA (con control de velocidad) y responde opción múltiple + preguntas abiertas. Después puedes mostrar la transcripción.",
+        "desc_delf": "📝 **Expresión escrita (DELF).** Redacta un tipo de texto (correo, carta formal, ensayo de opinión, mensaje de foro, resumen) con un número de palabras objetivo y recibe una evaluación según la rejilla DELF: cumplimiento de la consigna, coherencia, léxico, gramática.",
+        "delf_text_type": "📄 Tipo de texto",
+        "help_delf_text_type": "Qué tipo de texto DELF producir.",
+        "delf_word_count": "🔢 Número de palabras objetivo",
+        "help_delf_word_count": "La consigna pide aproximadamente esta cantidad de palabras; ajustarse cuenta para la nota.",
+        "delf_generate": "📝 Obtener la consigna",
+        "help_delf_generate": "Genera una tarea DELF: tipo de texto, contexto y número de palabras.",
+        "delf_evaluate": "📊 Evaluar con la rejilla DELF",
+        "help_delf_evaluate": "Evalúa tu texto en cumplimiento de la consigna, coherencia, léxico y gramática.",
+        "delf_grade_heading": "📊 Evaluación DELF",
+        "delf_total": "Total",
+        "delf_word_count_label": "Número de palabras",
+        "delf_suggestions": "Cómo mejorar",
+        "delf_status_eval": "📊 Evaluando con la rejilla DELF…",
+        "delf_need_text": "Escribe primero tu texto.",
         "listen_generate": "🎧 Generar audio y preguntas",
         "help_listen_generate": "Genera un pasaje, lo lee con ElevenLabs y redacta opción múltiple + preguntas abiertas.",
         "listen_audio_heading": "🎧 Escuchar",
@@ -1116,6 +1185,21 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_reading": "📚 **Читання з розумінням.** Текст, згенерований ШІ, URL, вставлений текст або .txt — потім тест + відкриті питання.",
         "desc_transformation": "🔄 **Трансформація речень.** Тобі дають кілька речень — ти переписуєш їх за правилом (активний↔пасивний стан, непряма мова, зміна часу тощо).",
         "desc_listening": "🎧 **Аудіювання.** Прослухай короткий аудіо-уривок, згенерований ШІ (з регулюванням швидкості), потім дай відповіді на тест + відкриті питання. Транскрипцію можна показати після.",
+        "desc_delf": "📝 **Письмо (екзамен DELF).** Напиши певний тип тексту (лист-email, офіційний лист, есе-роздум, допис на форумі, резюме) із цільовою кількістю слів і отримай оцінку за сіткою DELF: виконання завдання, зв'язність, лексика, граматика.",
+        "delf_text_type": "📄 Тип тексту",
+        "help_delf_text_type": "Який тип тексту DELF створити.",
+        "delf_word_count": "🔢 Цільова кількість слів",
+        "help_delf_word_count": "Завдання просить приблизно стільки слів; дотримання обсягу впливає на оцінку.",
+        "delf_generate": "📝 Отримати завдання",
+        "help_delf_generate": "Генерує завдання DELF: тип тексту, контекст і кількість слів.",
+        "delf_evaluate": "📊 Оцінити за сіткою DELF",
+        "help_delf_evaluate": "Оцінює твій текст за виконанням завдання, зв'язністю, лексикою та граматикою.",
+        "delf_grade_heading": "📊 Оцінювання DELF",
+        "delf_total": "Разом",
+        "delf_word_count_label": "Кількість слів",
+        "delf_suggestions": "Як покращити",
+        "delf_status_eval": "📊 Оцінювання за сіткою DELF…",
+        "delf_need_text": "Спершу напиши свій текст.",
         "listen_generate": "🎧 Згенерувати аудіо та питання",
         "help_listen_generate": "Генерує уривок, озвучує його через ElevenLabs і складає тест + відкриті питання.",
         "listen_audio_heading": "🎧 Слухати",
@@ -1339,6 +1423,21 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_reading": "📚 **Czytanie ze zrozumieniem.** Tekst wygenerowany przez AI, URL, wklejony tekst albo przesłany .txt — potem test + pytania otwarte.",
         "desc_transformation": "🔄 **Transformacja zdań.** Dostajesz kilka zdań — przekształcasz je według reguły (strona czynna↔bierna, mowa zależna, zmiana czasu itd.).",
         "desc_listening": "🎧 **Rozumienie ze słuchu.** Posłuchaj krótkiego nagrania wygenerowanego przez AI (z regulacją tempa), potem odpowiedz na test + pytania otwarte. Transkrypcję możesz pokazać później.",
+        "desc_delf": "📝 **Pisanie egzaminacyjne (DELF).** Napisz określony typ tekstu (e-mail, list formalny, esej argumentacyjny, post na forum, streszczenie) z docelową liczbą słów i otrzymaj ocenę wg siatki DELF: realizacja polecenia, spójność, leksyka, gramatyka.",
+        "delf_text_type": "📄 Typ tekstu",
+        "help_delf_text_type": "Jaki typ tekstu DELF stworzyć.",
+        "delf_word_count": "🔢 Docelowa liczba słów",
+        "help_delf_word_count": "Polecenie prosi o mniej więcej tyle słów; trzymanie się długości liczy się do oceny.",
+        "delf_generate": "📝 Pobierz polecenie",
+        "help_delf_generate": "Generuje zadanie DELF: typ tekstu, kontekst i liczbę słów.",
+        "delf_evaluate": "📊 Oceń wg siatki DELF",
+        "help_delf_evaluate": "Ocenia tekst pod kątem realizacji polecenia, spójności, leksyki i gramatyki.",
+        "delf_grade_heading": "📊 Ocena DELF",
+        "delf_total": "Razem",
+        "delf_word_count_label": "Liczba słów",
+        "delf_suggestions": "Jak poprawić",
+        "delf_status_eval": "📊 Ocena wg siatki DELF…",
+        "delf_need_text": "Najpierw napisz tekst.",
         "listen_generate": "🎧 Wygeneruj audio i pytania",
         "help_listen_generate": "Generuje fragment, czyta go przez ElevenLabs i układa test + pytania otwarte.",
         "listen_audio_heading": "🎧 Słuchaj",
@@ -1563,6 +1662,21 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_reading": "📚 **הבנת הנקרא.** טקסט שנוצר ע\"י AI, URL, טקסט מודבק או קובץ .txt שהועלה — לאחר מכן רב-ברירה + שאלות פתוחות.",
         "desc_transformation": "🔄 **המרת משפטים.** מקבלים כמה משפטים — וכותבים אותם מחדש לפי כלל (פעיל↔סביל, דיבור עקיף, שינוי זמן ועוד).",
         "desc_listening": "🎧 **הבנת הנשמע.** האזן לקטע אודיו קצר שנוצר ע\"י AI (עם בקרת מהירות), ואז ענה על שאלות רב-ברירה + שאלות פתוחות. אפשר לחשוף את התמליל לאחר מכן.",
+        "desc_delf": "📝 **כתיבה למבחן (DELF).** כתוב סוג טקסט (אימייל, מכתב רשמי, חיבור עמדה, פוסט בפורום, תקציר) במספר מילים יעד, וקבל ציון לפי מחוון DELF: עמידה במשימה, קוהרנטיות, אוצר מילים, דקדוק.",
+        "delf_text_type": "📄 סוג טקסט",
+        "help_delf_text_type": "איזה סוג טקסט DELF להפיק.",
+        "delf_word_count": "🔢 מספר מילים יעד",
+        "help_delf_word_count": "המשימה מבקשת בערך כך מילים; עמידה באורך נחשבת לציון.",
+        "delf_generate": "📝 קבל משימת כתיבה",
+        "help_delf_generate": "מפיק משימת DELF: סוג טקסט, הקשר ומספר מילים.",
+        "delf_evaluate": "📊 הערך לפי מחוון DELF",
+        "help_delf_evaluate": "מעריך את הטקסט לפי עמידה במשימה, קוהרנטיות, אוצר מילים ודקדוק.",
+        "delf_grade_heading": "📊 הערכת DELF",
+        "delf_total": "סך הכול",
+        "delf_word_count_label": "מספר מילים",
+        "delf_suggestions": "איך להשתפר",
+        "delf_status_eval": "📊 מעריך לפי מחוון DELF…",
+        "delf_need_text": "כתוב קודם את הטקסט שלך.",
         "listen_generate": "🎧 הפק אודיו ושאלות",
         "help_listen_generate": "מפיק קטע, מקריא אותו עם ElevenLabs ומנסח רב-ברירה + שאלות פתוחות.",
         "listen_audio_heading": "🎧 האזן",
@@ -1784,6 +1898,21 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_reading": "📚 **فهم المقروء.** نص يولّده الذكاء الاصطناعي، أو رابط، أو نص ملصق، أو ملف ‎.txt‎ مرفوع — ثم أسئلة اختيار من متعدد + أسئلة مفتوحة عنه.",
         "desc_transformation": "🔄 **تحويل الجُمل.** تُعطى بضع جُمل — تعيد صياغتها وفق قاعدة (معلوم↔مجهول، كلام غير مباشر، تغيير الزمن، وغيرها).",
         "desc_listening": "🎧 **فهم المسموع.** استمع إلى مقطع صوتي قصير يولّده الذكاء الاصطناعي (مع تحكّم بالسرعة)، ثم أجب عن أسئلة اختيار من متعدد + أسئلة مفتوحة. يمكنك إظهار النص لاحقًا.",
+        "desc_delf": "📝 **تعبير كتابي (DELF).** اكتب نوعًا من النصوص (بريد إلكتروني، رسالة رسمية، مقال رأي، منشور منتدى، تلخيص) بعدد كلمات مستهدف، ثم احصل على تقييم وفق شبكة DELF: تحقيق المطلوب، الترابط، المفردات، القواعد.",
+        "delf_text_type": "📄 نوع النص",
+        "help_delf_text_type": "أي نوع نص بأسلوب DELF تكتب.",
+        "delf_word_count": "🔢 عدد الكلمات المستهدف",
+        "help_delf_word_count": "تطلب المهمة هذا العدد تقريبًا من الكلمات؛ الالتزام بالطول يدخل في الدرجة.",
+        "delf_generate": "📝 احصل على المهمة",
+        "help_delf_generate": "يولّد مهمة DELF: نوع النص والسياق وعدد الكلمات.",
+        "delf_evaluate": "📊 قيّم وفق شبكة DELF",
+        "help_delf_evaluate": "يقيّم نصّك من حيث تحقيق المطلوب والترابط والمفردات والقواعد.",
+        "delf_grade_heading": "📊 تقييم DELF",
+        "delf_total": "المجموع",
+        "delf_word_count_label": "عدد الكلمات",
+        "delf_suggestions": "كيف تتحسّن",
+        "delf_status_eval": "📊 التقييم وفق شبكة DELF…",
+        "delf_need_text": "اكتب نصّك أولًا.",
         "listen_generate": "🎧 توليد الصوت والأسئلة",
         "help_listen_generate": "يولّد مقطعًا، ويقرؤه عبر ElevenLabs، ويصوغ أسئلة اختيار من متعدد + مفتوحة.",
         "listen_audio_heading": "🎧 استمع",
@@ -2500,6 +2629,43 @@ GRAMMAR_FOCUS_DISPLAY: dict[str, dict[str, str]] = {
 }
 
 
+# DELF text-type labels (keys from src.config.TEXT_TYPES).
+TEXT_TYPE_DISPLAY: dict[str, dict[str, str]] = {
+    "en": {
+        "email": "Email", "formal_letter": "Formal letter", "opinion_essay": "Opinion essay",
+        "forum_post": "Forum post", "summary": "Summary",
+    },
+    "de": {
+        "email": "E-Mail", "formal_letter": "Formeller Brief", "opinion_essay": "Meinungs-Essay",
+        "forum_post": "Forenbeitrag", "summary": "Zusammenfassung",
+    },
+    "fr": {
+        "email": "E-mail", "formal_letter": "Lettre formelle", "opinion_essay": "Essai argumentatif",
+        "forum_post": "Message de forum", "summary": "Résumé",
+    },
+    "es": {
+        "email": "Correo", "formal_letter": "Carta formal", "opinion_essay": "Ensayo de opinión",
+        "forum_post": "Mensaje de foro", "summary": "Resumen",
+    },
+    "uk": {
+        "email": "Лист (email)", "formal_letter": "Офіційний лист", "opinion_essay": "Есе-роздум",
+        "forum_post": "Допис на форумі", "summary": "Резюме",
+    },
+    "pl": {
+        "email": "E-mail", "formal_letter": "List formalny", "opinion_essay": "Esej argumentacyjny",
+        "forum_post": "Post na forum", "summary": "Streszczenie",
+    },
+    "ar": {
+        "email": "بريد إلكتروني", "formal_letter": "رسالة رسمية", "opinion_essay": "مقال رأي",
+        "forum_post": "منشور منتدى", "summary": "تلخيص",
+    },
+    "he": {
+        "email": "אימייל", "formal_letter": "מכתב רשמי", "opinion_essay": "חיבור עמדה",
+        "forum_post": "פוסט בפורום", "summary": "תקציר",
+    },
+}
+
+
 def _lookup(table: dict[str, dict[str, str]], key: str, lang: str, fallback: str) -> str:
     """Two-level lookup with safe fallback to fallback string."""
     table_for_lang = table.get(lang) or table.get(DEFAULT_UI_LANG, {})
@@ -2541,6 +2707,10 @@ def transform_display(key: str, lang: str) -> str:
 
 def grammar_focus_display(key: str, lang: str) -> str:
     return _lookup(GRAMMAR_FOCUS_DISPLAY, key, lang, key)
+
+
+def text_type_display(key: str, lang: str) -> str:
+    return _lookup(TEXT_TYPE_DISPLAY, key, lang, key)
 
 
 def t(key: str, lang: str = DEFAULT_UI_LANG, **fmt: object) -> str:

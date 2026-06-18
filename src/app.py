@@ -21,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.config import (  # noqa: E402
     DEFAULT_LANGUAGE,
+    DEFAULT_TEXT_TYPE,
     DEFAULT_TRANSFORMATION,
     GRAMMAR_FOCI,
     INPUT_KEYBOARD_URL,
@@ -32,6 +33,7 @@ from src.config import (  # noqa: E402
     MODEL_TIERS,
     NIVEAU_LEVELS,
     RTL_LANGUAGES,
+    TEXT_TYPES,
     THEMES,
     TRANSFORMATIONS,
     default_model_for_language,
@@ -50,6 +52,7 @@ from src.i18n import (  # noqa: E402
     quote_for,
     t,
     task_names_for,
+    text_type_display,
     tier_display,
     transform_display,
 )
@@ -57,6 +60,7 @@ from src.logging_setup import get_logger  # noqa: E402
 from src.state import init_session_state  # noqa: E402
 from src.tasks import cloze as cloze_task  # noqa: E402
 from src.tasks import conjugation as conj_task  # noqa: E402
+from src.tasks import delf as delf_task  # noqa: E402
 from src.tasks import dictation as dict_task  # noqa: E402
 from src.tasks import error_detection as err_task  # noqa: E402
 from src.tasks import quiz as quiz_task  # noqa: E402
@@ -889,6 +893,8 @@ def _render_main_page() -> None:
         ("transform_type", DEFAULT_TRANSFORMATION),
         ("cloze_focus_key", "none"),
         ("cloze_focus_custom", ""),
+        ("delf_text_type", DEFAULT_TEXT_TYPE),
+        ("delf_word_target", 160),
         ("translation_direction", "to_learning"),
         ("file_path_extract_trigger", None),
         ("uploaded_vocab_file_trigger", None),
@@ -967,7 +973,7 @@ def _render_main_page() -> None:
         st.info(t(f"desc_{task_key}", ui_lang), icon="📘")
 
     vocab_missing = not state.vocab_list
-    needs_vocab = task_key not in ("", "writing", "reading", "listening")
+    needs_vocab = task_key not in ("", "writing", "reading", "listening", "delf")
     if vocab_missing and needs_vocab:
         st.info(t("no_vocab_info", ui_lang))
         if st.button(t("autogen_vocab_btn", ui_lang), type="primary"):
@@ -1059,6 +1065,8 @@ def _render_main_page() -> None:
         _render_reading(client, lang_en, level, niveau, model, ui_lang)
     elif task_key == "listening":
         _render_listening(client, lang_en, level, niveau, model, ui_lang)
+    elif task_key == "delf":
+        _render_delf(client, lang_en, level, niveau, model, ui_lang)
     elif task_key:
         if st.button(
             t("new_task_btn", ui_lang), type="primary", use_container_width=True,
@@ -1243,6 +1251,9 @@ def _soft_reset_tasks(state: Any) -> None:
         "listen_passage", "listen_audio", "listen_questions", "listen_mc_choices",
         "listen_open_answers", "listen_results", "listen_revealed",
         "listen_length_pick", "listen_theme_input", "listen_speed",
+        # delf production écrite
+        "delf_task", "delf_text", "delf_assessment", "delf_type_pick",
+        "delf_word_input", "delf_theme_input", "delf_text_area",
         # exercise dropdown — force back to the blank "choose exercise" row
         "task_type_sel",
     ):
@@ -1619,6 +1630,109 @@ def _render_listening(
     if st.session_state.get("listen_revealed"):
         st.markdown(f"**{t('dict_original', ui_lang)}**")
         st.info(st.session_state["listen_passage"])
+
+
+def _render_delf(
+    client: openai.OpenAI, language_en: str, level: str, niveau: str,
+    model: str, ui_lang: str,
+) -> None:
+    """DELF production écrite: generate a text-type consigne, then score the
+    learner's writing on the four-criteria DELF grid (each 0–5, total /20)."""
+    state = st.session_state["state"]
+    ui_lang_name = UI_LANG_NAMES.get(ui_lang, "English")
+
+    type_keys = list(TEXT_TYPES.keys())
+    type_labels = {k: text_type_display(k, ui_lang) for k in type_keys}
+    cur = state.delf_text_type if state.delf_text_type in type_keys else DEFAULT_TEXT_TYPE
+    c1, c2 = st.columns([2, 1])
+    pick = c1.selectbox(
+        t("delf_text_type", ui_lang), [type_labels[k] for k in type_keys],
+        index=type_keys.index(cur), help=t("help_delf_text_type", ui_lang),
+        key="delf_type_pick",
+    )
+    state.delf_text_type = next(k for k, v in type_labels.items() if v == pick)
+    state.delf_word_target = c2.number_input(
+        t("delf_word_count", ui_lang), min_value=40, max_value=600,
+        value=int(getattr(state, "delf_word_target", 160)), step=10,
+        help=t("help_delf_word_count", ui_lang), key="delf_word_input",
+    )
+    theme_input = st.text_input(
+        t("read_theme", ui_lang), value=st.session_state.get("delf_theme_input", ""),
+        placeholder="e.g. travel, work, environment", key="delf_theme_input",
+        help=t("help_read_theme", ui_lang),
+    )
+    theme = theme_input.strip() or "everyday life"
+
+    if st.button(
+        t("delf_generate", ui_lang), type="primary", use_container_width=True,
+        help=t("help_delf_generate", ui_lang),
+    ):
+        with st.status(
+            t("status_generating_task", ui_lang, task=type_labels[state.delf_text_type]),
+            expanded=False,
+        ) as status:
+            instr = delf_task.build(
+                client, language=language_en, level=level,
+                text_type_en=TEXT_TYPES[state.delf_text_type],
+                word_target=int(state.delf_word_target), theme=theme,
+                model=model, ui_language_name=ui_lang_name,
+            )
+            status.update(label=t("status_task_ready", ui_lang), state="complete")
+        st.session_state["delf_task"] = instr.displayed_to_user
+        st.session_state.pop("delf_assessment", None)
+        state.num_tasks_generated = getattr(state, "num_tasks_generated", 0) + 1
+
+    consigne = st.session_state.get("delf_task")
+    if not consigne:
+        return
+    st.markdown(f"### {t('task_heading', ui_lang)}")
+    st.info(consigne)
+
+    user_text = st.text_area(
+        t("your_answer", ui_lang), value="", height=240, key="delf_text_area",
+        placeholder=t("your_answer_placeholder", ui_lang, language=language_en.capitalize()),
+    )
+
+    if st.button(
+        t("delf_evaluate", ui_lang), type="primary", use_container_width=True,
+        help=t("help_delf_evaluate", ui_lang),
+    ):
+        if not user_text.strip():
+            st.warning(t("delf_need_text", ui_lang))
+        else:
+            with st.status(t("delf_status_eval", ui_lang), expanded=False) as status:
+                st.session_state["delf_assessment"] = delf_task.evaluate(
+                    client, task=consigne, user_text=user_text.strip(),
+                    language=language_en, level=level,
+                    text_type_en=TEXT_TYPES[state.delf_text_type],
+                    word_target=int(state.delf_word_target), model=model,
+                    ui_language_name=ui_lang_name,
+                )
+                status.update(label=t("status_feedback_ready", ui_lang), state="complete")
+            state.num_corrections = getattr(state, "num_corrections", 0) + 1
+
+    assessment: delf_task.DelfAssessment | None = st.session_state.get("delf_assessment")
+    if not assessment:
+        return
+    st.markdown(f"### {t('delf_grade_heading', ui_lang)}")
+    ctot, cwc = st.columns(2)
+    ctot.metric(t("delf_total", ui_lang), f"{assessment.total} / {delf_task.MAX_TOTAL}")
+    cwc.metric(
+        t("delf_word_count_label", ui_lang),
+        f"{assessment.word_count} / ~{int(state.delf_word_target)}",
+    )
+    for crit in assessment.criteria:
+        score = max(0, min(delf_task.MAX_PER_CRITERION, int(crit.get("score", 0))))
+        st.markdown(f"**{crit.get('label', '')}** — {score} / {delf_task.MAX_PER_CRITERION}")
+        st.progress(score / delf_task.MAX_PER_CRITERION)
+        if crit.get("comment"):
+            st.caption(crit["comment"])
+    if assessment.overall:
+        st.info(assessment.overall)
+    if assessment.suggestions:
+        st.markdown(f"**{t('delf_suggestions', ui_lang)}**")
+        for s in assessment.suggestions:
+            st.markdown(f"- {s}")
 
 
 if __name__ == "__main__":
