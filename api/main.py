@@ -26,6 +26,10 @@ from src.tasks import delf as delf_task
 from src.tasks import placement as placement_task
 from src.tasks import reading as reading_task
 from src.tasks import transformation as transform_task
+from src.tasks import translation as translation_task
+from src.tasks import sentence_building as sentence_task
+from src.tasks import error_detection as error_task
+from src.tasks import conjugation as conjugation_task
 from src.vocab import generate_vocabulary_via_function_call
 
 # Shared-secret auth. When LINGUA_CORE_TOKEN is set (production / public route),
@@ -127,6 +131,65 @@ def generate_transformation(r: TransformReq):
         client(), vocab_list=r.vocab_list, language=r.language, level=r.level,
         niveau=r.niveau, number_sentences=r.number_sentences, transformation_en=t_en,
         model=_model(r.model), ui_language_name=r.ui_language_name,
+    )
+    return {"displayed": instr.displayed_to_user, "context": instr.internal_context}
+
+
+# ---- translation (free-answer task) ----
+class TranslationReq(BaseModel):
+    vocab_list: list[str]
+    language: str
+    level: str
+    niveau: str
+    number_sentences: int = 3
+    direction: str = "to_learning"
+    ui_language_name: str = "English"
+    model: str | None = None
+
+
+@app.post("/generate/translation")
+def generate_translation(r: TranslationReq):
+    instr = translation_task.build(
+        client(), vocab_list=r.vocab_list, language=r.language, level=r.level,
+        niveau=r.niveau, number_sentences=r.number_sentences, model=_model(r.model),
+        ui_language_name=r.ui_language_name, direction=r.direction,
+    )
+    return {"displayed": instr.displayed_to_user, "context": instr.internal_context}
+
+
+# ---- sentence building / error detection / conjugation (free-answer, vocab-based) ----
+class VocabTaskReq(BaseModel):
+    vocab_list: list[str]
+    language: str
+    level: str
+    niveau: str
+    ui_lang: str = "en"
+    model: str | None = None
+
+
+@app.post("/generate/sentence")
+def generate_sentence(r: VocabTaskReq):
+    instr = sentence_task.build(
+        client(), vocab_list=r.vocab_list, language=r.language, level=r.level,
+        niveau=r.niveau, model=_model(r.model), ui_lang=r.ui_lang,
+    )
+    return {"displayed": instr.displayed_to_user, "context": instr.internal_context}
+
+
+@app.post("/generate/error")
+def generate_error(r: VocabTaskReq):
+    instr = error_task.build(
+        client(), vocab_list=r.vocab_list, language=r.language, level=r.level,
+        niveau=r.niveau, model=_model(r.model), ui_lang=r.ui_lang,
+    )
+    return {"displayed": instr.displayed_to_user, "context": instr.internal_context}
+
+
+@app.post("/generate/conjugation")
+def generate_conjugation(r: VocabTaskReq):
+    instr = conjugation_task.build(
+        client(), vocab_list=r.vocab_list, language=r.language, level=r.level,
+        niveau=r.niveau, model=_model(r.model), ui_lang=r.ui_lang,
     )
     return {"displayed": instr.displayed_to_user, "context": instr.internal_context}
 
