@@ -218,6 +218,10 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_transformation": "🔄 **Sentence transformation.** A few sentences are given — you rewrite them following a rule (active↔passive, reported speech, tense change, and more).",
         "transform_type": "🔄 Transformation",
         "help_transform_type": "Which rewriting rule to drill. 'Mixed' varies the rule per sentence.",
+        "grammar_focus": "🔎 Grammar focus",
+        "help_grammar_focus": "Optional. Bias the blanks toward one grammar point. A typed focus overrides the dropdown.",
+        "grammar_focus_none": "— Vocabulary-driven (no focus) —",
+        "grammar_focus_custom_ph": "Or type your own focus, e.g. 'passé composé', 'reflexive verbs'…",
         "new_task_btn": "🎯 New task",
         "correct_btn": "📝 Correct text",
         "task_heading": "Task",
@@ -430,6 +434,10 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_transformation": "🔄 **Satztransformation.** Du bekommst Sätze und formst sie nach einer Regel um (Aktiv↔Passiv, indirekte Rede, Zeitenwechsel u. a.).",
         "transform_type": "🔄 Transformation",
         "help_transform_type": "Welche Umform-Regel geübt wird. „Gemischt“ variiert die Regel pro Satz.",
+        "grammar_focus": "🔎 Grammatik-Fokus",
+        "help_grammar_focus": "Optional. Lenkt die Lücken auf einen Grammatikpunkt. Eingetippter Fokus überschreibt das Dropdown.",
+        "grammar_focus_none": "— Vokabel-getrieben (kein Fokus) —",
+        "grammar_focus_custom_ph": "Oder eigenen Fokus eintippen, z. B. „Passé composé“, „reflexive Verben“…",
         "new_task_btn": "🎯 Neue Aufgabe",
         "correct_btn": "📝 Text korrigieren",
         "task_heading": "Aufgabe",
@@ -642,6 +650,10 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_transformation": "🔄 **Transformation de phrases.** Quelques phrases te sont données — tu les réécris selon une règle (actif↔passif, discours indirect, changement de temps, etc.).",
         "transform_type": "🔄 Transformation",
         "help_transform_type": "Quelle règle de réécriture travailler. « Mixte » varie la règle selon la phrase.",
+        "grammar_focus": "🔎 Focus grammatical",
+        "help_grammar_focus": "Optionnel. Oriente les trous vers un point de grammaire. Le texte saisi prime sur la liste.",
+        "grammar_focus_none": "— Basé sur le vocabulaire (aucun focus) —",
+        "grammar_focus_custom_ph": "Ou saisis ton propre focus, p. ex. « passé composé », « verbes pronominaux »…",
         "new_task_btn": "🎯 Nouvel exercice",
         "correct_btn": "📝 Corriger le texte",
         "task_heading": "Exercice",
@@ -855,6 +867,10 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_transformation": "🔄 **Transformación de frases.** Se te dan unas frases — las reescribes según una regla (activa↔pasiva, estilo indirecto, cambio de tiempo, etc.).",
         "transform_type": "🔄 Transformación",
         "help_transform_type": "Qué regla de reescritura practicar. «Mixto» varía la regla por frase.",
+        "grammar_focus": "🔎 Enfoque gramatical",
+        "help_grammar_focus": "Opcional. Orienta los huecos hacia un punto gramatical. El texto escrito tiene prioridad.",
+        "grammar_focus_none": "— Basado en vocabulario (sin enfoque) —",
+        "grammar_focus_custom_ph": "O escribe tu propio enfoque, p. ej. «pretérito», «verbos reflexivos»…",
         "new_task_btn": "🎯 Nuevo ejercicio",
         "correct_btn": "📝 Corregir texto",
         "task_heading": "Ejercicio",
@@ -1068,6 +1084,10 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_transformation": "🔄 **Трансформація речень.** Тобі дають кілька речень — ти переписуєш їх за правилом (активний↔пасивний стан, непряма мова, зміна часу тощо).",
         "transform_type": "🔄 Трансформація",
         "help_transform_type": "Яке правило перетворення тренувати. «Змішано» змінює правило щоразу.",
+        "grammar_focus": "🔎 Граматичний фокус",
+        "help_grammar_focus": "Необов'язково. Спрямовує пропуски на один граматичний пункт. Введений текст має пріоритет.",
+        "grammar_focus_none": "— На основі словника (без фокуса) —",
+        "grammar_focus_custom_ph": "Або введи власний фокус, напр. «passé composé», «зворотні дієслова»…",
         "new_task_btn": "🎯 Нове завдання",
         "correct_btn": "📝 Перевірити текст",
         "task_heading": "Завдання",
@@ -1281,6 +1301,10 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_transformation": "🔄 **Transformacja zdań.** Dostajesz kilka zdań — przekształcasz je według reguły (strona czynna↔bierna, mowa zależna, zmiana czasu itd.).",
         "transform_type": "🔄 Transformacja",
         "help_transform_type": "Którą regułę przekształcania ćwiczyć. „Mieszane“ zmienia regułę co zdanie.",
+        "grammar_focus": "🔎 Fokus gramatyczny",
+        "help_grammar_focus": "Opcjonalne. Ukierunkowuje luki na jeden punkt gramatyczny. Wpisany tekst ma pierwszeństwo.",
+        "grammar_focus_none": "— Na podstawie słownictwa (bez fokusu) —",
+        "grammar_focus_custom_ph": "Albo wpisz własny fokus, np. „passé composé“, „czasowniki zwrotne“…",
         "new_task_btn": "🎯 Nowe zadanie",
         "correct_btn": "📝 Popraw tekst",
         "task_heading": "Zadanie",
@@ -1495,6 +1519,10 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_transformation": "🔄 **המרת משפטים.** מקבלים כמה משפטים — וכותבים אותם מחדש לפי כלל (פעיל↔סביל, דיבור עקיף, שינוי זמן ועוד).",
         "transform_type": "🔄 המרה",
         "help_transform_type": "איזה כלל המרה לתרגל. „מעורב“ משנה את הכלל בכל משפט.",
+        "grammar_focus": "🔎 מיקוד דקדוקי",
+        "help_grammar_focus": "אופציונלי. מטה את החללים לנקודה דקדוקית אחת. טקסט שהוקלד גובר על הרשימה.",
+        "grammar_focus_none": "— מבוסס אוצר מילים (ללא מיקוד) —",
+        "grammar_focus_custom_ph": "או הקלד מיקוד משלך, למשל „passé composé“, „פעלים חוזרים“…",
         "new_task_btn": "🎯 משימה חדשה",
         "correct_btn": "📝 תקן טקסט",
         "task_heading": "משימה",
@@ -1706,6 +1734,10 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "desc_transformation": "🔄 **تحويل الجُمل.** تُعطى بضع جُمل — تعيد صياغتها وفق قاعدة (معلوم↔مجهول، كلام غير مباشر، تغيير الزمن، وغيرها).",
         "transform_type": "🔄 التحويل",
         "help_transform_type": "أي قاعدة تحويل تتدرّب عليها. «منوّع» يغيّر القاعدة لكل جملة.",
+        "grammar_focus": "🔎 التركيز النحوي",
+        "help_grammar_focus": "اختياري. يوجّه الفراغات نحو نقطة نحوية واحدة. النص المكتوب يتجاوز القائمة.",
+        "grammar_focus_none": "— حسب المفردات (بدون تركيز) —",
+        "grammar_focus_custom_ph": "أو اكتب تركيزك الخاص، مثل «passé composé» أو «الأفعال الانعكاسية»…",
         "new_task_btn": "🎯 مهمة جديدة",
         "correct_btn": "📝 صحّح النص",
         "task_heading": "المهمة",
@@ -2366,6 +2398,51 @@ TRANSFORM_DISPLAY: dict[str, dict[str, str]] = {
 }
 
 
+# Cloze grammar-focus labels (keys from src.config.GRAMMAR_FOCI).
+GRAMMAR_FOCUS_DISPLAY: dict[str, dict[str, str]] = {
+    "en": {
+        "tenses": "Verb tenses", "mood": "Mood (subjunctive)", "pronouns": "Pronouns",
+        "articles_gender": "Articles & gender", "adjective_agreement": "Adjective agreement",
+        "prepositions": "Prepositions", "cases": "Cases & declension", "negation": "Negation",
+    },
+    "de": {
+        "tenses": "Zeitformen", "mood": "Modus (Konjunktiv)", "pronouns": "Pronomen",
+        "articles_gender": "Artikel & Genus", "adjective_agreement": "Adjektiv-Angleichung",
+        "prepositions": "Präpositionen", "cases": "Kasus & Deklination", "negation": "Verneinung",
+    },
+    "fr": {
+        "tenses": "Temps verbaux", "mood": "Mode (subjonctif)", "pronouns": "Pronoms",
+        "articles_gender": "Articles & genre", "adjective_agreement": "Accord de l'adjectif",
+        "prepositions": "Prépositions", "cases": "Cas & déclinaison", "negation": "Négation",
+    },
+    "es": {
+        "tenses": "Tiempos verbales", "mood": "Modo (subjuntivo)", "pronouns": "Pronombres",
+        "articles_gender": "Artículos y género", "adjective_agreement": "Concordancia del adjetivo",
+        "prepositions": "Preposiciones", "cases": "Casos y declinación", "negation": "Negación",
+    },
+    "uk": {
+        "tenses": "Часи дієслів", "mood": "Спосіб (умовний)", "pronouns": "Займенники",
+        "articles_gender": "Артиклі та рід", "adjective_agreement": "Узгодження прикметника",
+        "prepositions": "Прийменники", "cases": "Відмінки", "negation": "Заперечення",
+    },
+    "pl": {
+        "tenses": "Czasy", "mood": "Tryb (przypuszczający)", "pronouns": "Zaimki",
+        "articles_gender": "Rodzajniki i rodzaj", "adjective_agreement": "Zgodność przymiotnika",
+        "prepositions": "Przyimki", "cases": "Przypadki", "negation": "Przeczenie",
+    },
+    "ar": {
+        "tenses": "الأزمنة", "mood": "الصيغة (المنصوب)", "pronouns": "الضمائر",
+        "articles_gender": "أدوات التعريف والجنس", "adjective_agreement": "مطابقة الصفة",
+        "prepositions": "حروف الجر", "cases": "الإعراب", "negation": "النفي",
+    },
+    "he": {
+        "tenses": "זמני הפועל", "mood": "מודוס (דרך התנאי)", "pronouns": "כינויי גוף",
+        "articles_gender": "יידוע ומין", "adjective_agreement": "התאמת שם התואר",
+        "prepositions": "מילות יחס", "cases": "יחסות", "negation": "שלילה",
+    },
+}
+
+
 def _lookup(table: dict[str, dict[str, str]], key: str, lang: str, fallback: str) -> str:
     """Two-level lookup with safe fallback to fallback string."""
     table_for_lang = table.get(lang) or table.get(DEFAULT_UI_LANG, {})
@@ -2403,6 +2480,10 @@ def tier_display(key: str, lang: str) -> str:
 
 def transform_display(key: str, lang: str) -> str:
     return _lookup(TRANSFORM_DISPLAY, key, lang, key)
+
+
+def grammar_focus_display(key: str, lang: str) -> str:
+    return _lookup(GRAMMAR_FOCUS_DISPLAY, key, lang, key)
 
 
 def t(key: str, lang: str = DEFAULT_UI_LANG, **fmt: object) -> str:

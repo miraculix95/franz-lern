@@ -20,8 +20,12 @@ def build(
     model: str,
     ui_lang: str = "en",
     ui_language_name: str = "English",
+    grammar_focus: str = "",
 ) -> TaskInstruction:
-    """Generate a cloze exercise with two anti-cheat mitigations."""
+    """Generate a cloze exercise with two anti-cheat mitigations.
+
+    ``grammar_focus`` (optional) biases the blanks toward one grammar point.
+    """
     selected = random.sample(vocab_list, min(len(vocab_list), number_trous))
     messages = build_cloze_messages(
         language=language,
@@ -30,6 +34,7 @@ def build(
         selected_vocab=selected,
         number_trous=number_trous,
         ui_language_name=ui_language_name,
+        grammar_focus=grammar_focus,
     )
     response = client.chat.completions.create(
         model=model,

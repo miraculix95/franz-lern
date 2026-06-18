@@ -113,6 +113,21 @@ TRANSFORMATIONS: dict[str, str] = {
 }
 DEFAULT_TRANSFORMATION: str = "mixed"
 
+# Cloze grammar-focus presets: bias the blanks toward one grammar point instead
+# of the default vocab-driven blanks. Keys are stable; the English phrase is
+# injected into the (English) cloze prompt, the label is localized in
+# i18n.GRAMMAR_FOCUS_DISPLAY. Free-text focus (typed by the user) overrides these.
+GRAMMAR_FOCI: dict[str, str] = {
+    "tenses": "verb tenses — the blanks must test correctly conjugated verb forms across tenses",
+    "mood": "verb mood — the blanks must test the subjunctive/conditional where the language has it",
+    "pronouns": "pronouns — the blanks must test subject, object, relative and possessive pronouns",
+    "articles_gender": "articles and grammatical gender — the blanks must test the correct article/gender form",
+    "adjective_agreement": "adjective agreement — the blanks must test adjective endings agreeing in gender and number",
+    "prepositions": "prepositions — the blanks must test the correct preposition (and any case it governs)",
+    "cases": "noun/adjective case — the blanks must test correct case endings and declension",
+    "negation": "negation — the blanks must test correct negation forms and particles",
+}
+
 # OpenRouter model IDs (https://openrouter.ai/models).
 # 4-tier selection: budget / balanced / premium / best.
 # See research/2026-04-20-model-provider-analysis.md for the rationale.

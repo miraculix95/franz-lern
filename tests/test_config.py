@@ -3,6 +3,7 @@ from src.config import (
     DEFAULT_MODEL,
     DEFAULT_MODEL_UK,
     DEFAULT_TRANSFORMATION,
+    GRAMMAR_FOCI,
     INPUT_KEYBOARD_URL,
     LANGUAGES,
     LEVELS,
@@ -77,6 +78,13 @@ def test_transformations_have_default_and_mixed():
     assert "mixed" in TRANSFORMATIONS
     # every transformation carries a non-empty English prompt phrase
     assert all(isinstance(v, str) and v.strip() for v in TRANSFORMATIONS.values())
+
+
+def test_grammar_foci_have_prompt_phrases():
+    assert len(GRAMMAR_FOCI) >= 5
+    assert all(isinstance(v, str) and v.strip() for v in GRAMMAR_FOCI.values())
+    # 'none' is a UI sentinel, never a real focus key
+    assert "none" not in GRAMMAR_FOCI
 
 
 def test_input_keyboard_urls_cover_non_latin_languages():

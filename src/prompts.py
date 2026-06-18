@@ -157,14 +157,29 @@ def build_cloze_messages(
     selected_vocab: list[str],
     number_trous: int,
     ui_language_name: str = "English",
+    grammar_focus: str = "",
 ) -> list[dict]:
     """Messages for structured cloze generation via the ``emit_cloze`` tool.
 
     Answers land in a separate JSON field — the ``body`` string has only
     ``___`` placeholders, never the solution words.
     ``vocab_hints`` are explanations in the user's UI language.
+
+    When ``grammar_focus`` is set, the blanks are biased toward that grammar
+    point (overriding the default "every vocab is a blank" rule).
     """
     joined = ", ".join(selected_vocab)
+    focus_block = (
+        ""
+        if not grammar_focus
+        else (
+            f"\n\nGRAMMAR FOCUS (takes precedence): the learner wants to drill {grammar_focus}. "
+            f"Choose the blanks SPECIFICALLY so that filling them correctly requires mastering "
+            f"this point — the blanked words may be inflected forms or function words rather than "
+            f"the listed vocab. Still weave the vocab into the text as content, but you need NOT "
+            f"blank every vocab. 'answers' are whatever words you actually blanked."
+        )
+    )
     return [
         {
             "role": "system",
@@ -196,6 +211,7 @@ def build_cloze_messages(
                 f"paraphrase, whichever is clearer).\n\n"
                 f"'answers': the actual words placed in the blanks, in the order blanks "
                 f"appear in body (same randomized permutation as above)."
+                + focus_block
             ),
         },
     ]

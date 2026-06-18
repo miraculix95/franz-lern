@@ -22,6 +22,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from src.config import (  # noqa: E402
     DEFAULT_LANGUAGE,
     DEFAULT_TRANSFORMATION,
+    GRAMMAR_FOCI,
     INPUT_KEYBOARD_URL,
     LANGUAGES,
     LEVELS,
@@ -41,6 +42,7 @@ from src.i18n import (  # noqa: E402
     UI_LANG_NAMES,
     UI_LANGS,
     detect_ui_language,
+    grammar_focus_display,
     language_display,
     language_to_english,
     mentor_display,
@@ -717,10 +719,13 @@ def _generate_task(
             )
             state.theme = instr.internal_context["theme"]
         elif task_key == "cloze":
+            focus = (getattr(state, "cloze_focus_custom", "") or "").strip()
+            if not focus and getattr(state, "cloze_focus_key", "none") != "none":
+                focus = GRAMMAR_FOCI.get(state.cloze_focus_key, "")
             instr = cloze_task.build(
                 client, vocab_list=state.vocab_list, language=lang_en, level=level,
                 niveau=niveau, number_trous=state.number_trous, model=model,
-                ui_lang=ui_lang, ui_language_name=ui_lang_name,
+                ui_lang=ui_lang, ui_language_name=ui_lang_name, grammar_focus=focus,
             )
         elif task_key == "translation":
             instr = trans_task.build(
@@ -882,6 +887,8 @@ def _render_main_page() -> None:
         ("number_trous", 4),
         ("number_sentences", 1),
         ("transform_type", DEFAULT_TRANSFORMATION),
+        ("cloze_focus_key", "none"),
+        ("cloze_focus_custom", ""),
         ("translation_direction", "to_learning"),
         ("file_path_extract_trigger", None),
         ("uploaded_vocab_file_trigger", None),
@@ -983,6 +990,26 @@ def _render_main_page() -> None:
         state.number_trous = st.number_input(
             t("num_blanks", ui_lang), min_value=3, max_value=20, value=state.number_trous,
             help=t("help_num_blanks", ui_lang),
+        )
+        focus_keys = ["none"] + list(GRAMMAR_FOCI.keys())
+        focus_labels = {"none": t("grammar_focus_none", ui_lang)}
+        focus_labels.update({k: grammar_focus_display(k, ui_lang) for k in GRAMMAR_FOCI})
+        cur_focus = state.cloze_focus_key if state.cloze_focus_key in focus_keys else "none"
+        fcol1, fcol2 = st.columns(2)
+        pick_f = fcol1.selectbox(
+            t("grammar_focus", ui_lang),
+            [focus_labels[k] for k in focus_keys],
+            index=focus_keys.index(cur_focus),
+            help=t("help_grammar_focus", ui_lang),
+            key="cloze_focus_sel",
+        )
+        state.cloze_focus_key = next(k for k, v in focus_labels.items() if v == pick_f)
+        state.cloze_focus_custom = fcol2.text_input(
+            t("grammar_focus", ui_lang),
+            value=state.cloze_focus_custom,
+            placeholder=t("grammar_focus_custom_ph", ui_lang),
+            label_visibility="collapsed",
+            key="cloze_focus_custom_inp",
         )
         st.caption(t("cloze_freeform_hint", ui_lang))
     elif task_key == "translation":

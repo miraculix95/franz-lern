@@ -51,6 +51,16 @@ def test_transform_display_covers_all_keys_all_ui_langs():
             assert transform_display(k, lang) != k, f"{lang}/{k} missing display"
 
 
+def test_grammar_focus_display_covers_all_keys_all_ui_langs():
+    from src.config import GRAMMAR_FOCI
+    from src.i18n import grammar_focus_display
+    for lang in ["en", "de", "fr", "es", "uk", "pl", "ar", "he"]:
+        for k in GRAMMAR_FOCI:
+            assert grammar_focus_display(k, lang) != k, f"{lang}/{k} missing display"
+        # the 'no focus' sentinel must be localized too
+        assert t("grammar_focus_none", lang) != "grammar_focus_none"
+
+
 def test_input_help_localized_in_all_ui_langs():
     # The keyboard-input hint (title + body) must be present and formatable in
     # every UI language, with both {language} and {url} placeholders honoured.

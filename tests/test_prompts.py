@@ -76,6 +76,23 @@ def test_cloze_messages_contain_vocabs_and_trous():
     assert "emit_cloze" in combined  # tool is mentioned by name in system prompt
 
 
+def test_cloze_messages_grammar_focus_optional():
+    base = build_cloze_messages(
+        language="französisch", level="B2", niveau="Standardsprache",
+        selected_vocab=["maison"], number_trous=4,
+    )
+    assert "GRAMMAR FOCUS" not in " ".join(m["content"] for m in base)
+
+    focused = build_cloze_messages(
+        language="französisch", level="B2", niveau="Standardsprache",
+        selected_vocab=["maison"], number_trous=4,
+        grammar_focus="the subjunctive mood",
+    )
+    combined = " ".join(m["content"] for m in focused)
+    assert "GRAMMAR FOCUS" in combined
+    assert "the subjunctive mood" in combined
+
+
 def test_cloze_function_spec_has_answers_separate():
     # Answers live in their own field so they can't leak into body.
     props = CLOZE_FUNCTION_SPEC["parameters"]["properties"]
