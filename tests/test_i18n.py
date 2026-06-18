@@ -43,6 +43,17 @@ def test_translating_vocab_key_present_in_all_langs():
         assert t("status_translating_vocab", lang) != "status_translating_vocab"
 
 
+def test_input_help_localized_in_all_ui_langs():
+    # The keyboard-input hint (title + body) must be present and formatable in
+    # every UI language, with both {language} and {url} placeholders honoured.
+    for lang in ["en", "de", "fr", "es", "uk", "pl", "ar", "he"]:
+        title = t("input_help_title", lang, language="X")
+        body = t("input_help_body", lang, language="X", url="https://kbd.example")
+        assert title not in ("input_help_title", "")
+        assert "https://kbd.example" in body
+        assert "{language}" not in body and "{url}" not in body
+
+
 def test_task_names_for_all_langs_have_same_length():
     lengths = {lang: len(task_names_for(lang)) for lang in ["en", "de", "fr", "es", "uk", "pl", "ar", "he"]}
     assert len(set(lengths.values())) == 1, f"Task-name lists differ in length: {lengths}"

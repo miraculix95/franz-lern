@@ -2,12 +2,15 @@ from src.config import (
     DEFAULT_LANGUAGE,
     DEFAULT_MODEL,
     DEFAULT_MODEL_UK,
+    INPUT_KEYBOARD_URL,
     LANGUAGES,
     LEVELS,
     MENTORS,
     MODEL_TIERS,
     MODELS,
     NIVEAU_LEVELS,
+    NON_LATIN_LANGUAGES,
+    RTL_LANGUAGES,
     THEMES,
     default_model_for_language,
 )
@@ -65,3 +68,17 @@ def test_default_model_for_language_swaps_on_ukrainian():
     assert default_model_for_language("französisch") == DEFAULT_MODEL
     assert default_model_for_language("ukrainisch") == DEFAULT_MODEL_UK
     assert default_model_for_language("englisch") == DEFAULT_MODEL
+
+
+def test_input_keyboard_urls_cover_non_latin_languages():
+    # The input-help trigger set must be real learning languages, and the two
+    # RTL languages (Arabic, Hebrew) must be a subset of it.
+    assert set(INPUT_KEYBOARD_URL) == set(NON_LATIN_LANGUAGES)
+    for lang in INPUT_KEYBOARD_URL:
+        assert lang in LANGUAGES, f"{lang} not a learning language"
+    for lang, url in INPUT_KEYBOARD_URL.items():
+        assert url.startswith("https://"), f"{lang}: {url} not https"
+    assert RTL_LANGUAGES <= set(NON_LATIN_LANGUAGES)
+    # Latin-script languages must NOT trigger the hint.
+    for lang in ["französisch", "englisch", "spanisch", "deutsch", "polnisch"]:
+        assert lang not in NON_LATIN_LANGUAGES

@@ -32,6 +32,18 @@ LANGUAGES: list[str] = [
 # Right-to-left learning languages — UI wraps task/feedback output in dir=rtl.
 RTL_LANGUAGES: set[str] = {"hebräisch", "arabisch"}
 
+# Learning languages written in a non-Latin script: the learner's physical
+# keyboard likely can't type them, so the practice area shows an input-help hint
+# (OS keyboard shortcut + an online-keyboard fallback for copy-paste).
+# Note: orthogonal to RTL — Ukrainian/Greek are LTR but still need their own layout.
+INPUT_KEYBOARD_URL: dict[str, str] = {
+    "ukrainisch": "https://www.lexilogos.com/keyboard/ukrainian.htm",
+    "griechisch": "https://www.lexilogos.com/keyboard/greek_modern.htm",
+    "arabisch": "https://www.lexilogos.com/keyboard/arabic.htm",
+    "hebräisch": "https://www.lexilogos.com/keyboard/hebrew.htm",
+}
+NON_LATIN_LANGUAGES: frozenset[str] = frozenset(INPUT_KEYBOARD_URL)
+
 MENTORS: list[str] = [
     "Netter Lehrer",
     "Strenger Lehrer",

@@ -21,6 +21,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.config import (  # noqa: E402
     DEFAULT_LANGUAGE,
+    INPUT_KEYBOARD_URL,
     LANGUAGES,
     LEVELS,
     MENTOR_AVATARS,
@@ -683,6 +684,19 @@ def _render_header(language: str, mentor: str, ui_lang: str) -> None:
     st.caption(t("meta_hint", ui_lang))
 
 
+def _render_input_help(language: str, ui_lang: str) -> None:
+    """Keyboard-input hint for non-Latin learning languages (Cyrillic, Greek,
+    Arabic, Hebrew). The learner's physical keyboard likely can't type the
+    script, so we point at the OS layout + an online-keyboard fallback.
+    Collapsed by default so it doesn't nag users who already have a layout."""
+    url = INPUT_KEYBOARD_URL.get(language)
+    if not url:
+        return
+    lang_label = language_display(language, ui_lang)
+    with st.expander(t("input_help_title", ui_lang, language=lang_label), expanded=False):
+        st.markdown(t("input_help_body", ui_lang, language=lang_label, url=url))
+
+
 def _generate_task(
     task_key: str, task_label: str, client: openai.OpenAI,
     language: str, level: str, niveau: str, model: str, ui_lang: str,
@@ -904,6 +918,7 @@ def _render_main_page() -> None:
         _soft_reset_tasks(state)
         st.rerun()
     st.caption(t("practice_intro", ui_lang))
+    _render_input_help(language, ui_lang)
     task_names = task_names_for(ui_lang)
 
     # Pre-selection overview: expander with the full catalogue of types + their
