@@ -34,7 +34,12 @@ from src.tasks import conjugation as conjugation_task
 from src.tasks import synonym_antonym as synonym_task
 from src.tasks import quiz as quiz_task
 from src.tasks import dictation as dictation_task
-from src.vocab import generate_vocabulary_via_function_call
+from src.vocab import (
+    extract_vocabulary_from_text,
+    fetch_article_text,
+    generate_vocabulary_via_function_call,
+    translate_vocabulary_via_function_call,
+)
 
 # Shared-secret auth. When LINGUA_CORE_TOKEN is set (production / public route),
 # every endpoint except /health requires `Authorization: Bearer <token>`. When
@@ -91,6 +96,61 @@ def vocab_generate(r: VocabReq):
         client(), language=r.language, level=r.level, niveau=r.niveau, model=_model(r.model),
     )
     return {"vocab": vocab}
+
+
+# ---- vocab sourcing: extract from text / URL, translate (glosses) ----
+class VocabExtractReq(BaseModel):
+    text: str
+    language: str
+    level: str
+    number: int = 20
+    model: str | None = None
+
+
+@app.post("/vocab/extract")
+def vocab_extract(r: VocabExtractReq):
+    vocab = extract_vocabulary_from_text(
+        client(), text=r.text, language=r.language, level=r.level,
+        number=r.number, model=_model(r.model),
+    )
+    return {"vocab": vocab}
+
+
+class VocabUrlReq(BaseModel):
+    url: str
+    language: str
+    level: str
+    number: int = 20
+    model: str | None = None
+
+
+@app.post("/vocab/from-url")
+def vocab_from_url(r: VocabUrlReq):
+    try:
+        text = fetch_article_text(r.url)
+    except Exception as exc:  # newspaper3k raises various errors on bad URLs
+        raise HTTPException(status_code=502, detail=f"could not fetch URL: {exc}") from exc
+    vocab = extract_vocabulary_from_text(
+        client(), text=text, language=r.language, level=r.level,
+        number=r.number, model=_model(r.model),
+    )
+    return {"vocab": vocab}
+
+
+class VocabTranslateReq(BaseModel):
+    words: list[str]
+    learning_language: str
+    ui_language_name: str = "English"
+    model: str | None = None
+
+
+@app.post("/vocab/translate")
+def vocab_translate(r: VocabTranslateReq):
+    translations = translate_vocabulary_via_function_call(
+        client(), words=r.words, learning_language=r.learning_language,
+        ui_language_name=r.ui_language_name, model=_model(r.model),
+    )
+    return {"translations": translations}
 
 
 # ---- cloze (structured tool-call task) ----
