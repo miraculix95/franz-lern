@@ -4,6 +4,10 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+# ffmpeg: transcodes recorded speaking audio (webm/opus) → OGG for Gemini.
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
+
 # Deps first for layer caching.
 COPY api/requirements-docker.txt ./api/requirements-docker.txt
 RUN pip install --no-cache-dir -r api/requirements-docker.txt

@@ -40,6 +40,7 @@ from src.tasks import conjugation as conjugation_task
 from src.tasks import synonym_antonym as synonym_task
 from src.tasks import quiz as quiz_task
 from src.tasks import dictation as dictation_task
+from src.tasks import speaking as speaking_task
 from src.vocab import (
     extract_vocabulary_from_text,
     fetch_article_text,
@@ -462,6 +463,56 @@ def delf_evaluate_endpoint(r: DelfEvalReq):
     return {
         "criteria": a.criteria, "word_count": a.word_count, "overall": a.overall,
         "suggestions": a.suggestions, "total": a.total, "max_total": delf_task.MAX_TOTAL,
+    }
+
+
+# ---- speaking (production orale): spoken-task brief + Gemini audio grille ----
+class SpeakingTaskReq(BaseModel):
+    language: str
+    level: str
+    theme: str = ""
+    ui_language_name: str = "English"
+    model: str | None = None
+
+
+@app.post("/speaking/task")
+def speaking_task_endpoint(r: SpeakingTaskReq):
+    instr = speaking_task.build_task(
+        client(), language=r.language, level=r.level, theme=r.theme,
+        model=_model(r.model), ui_language_name=r.ui_language_name,
+    )
+    return {"displayed": instr.displayed_to_user, "language": r.language}
+
+
+class SpeakingEvalReq(BaseModel):
+    audio_base64: str
+    mime_type: str = "audio/webm"
+    task: str
+    language: str
+    level: str
+    ui_language_name: str = "English"
+    gemini_model: str = speaking_task.DEFAULT_GEMINI_MODEL
+
+
+@app.post("/speaking/evaluate")
+def speaking_evaluate_endpoint(r: SpeakingEvalReq):
+    try:
+        audio = base64.b64decode(r.audio_base64)
+    except Exception as exc:  # malformed payload
+        raise HTTPException(status_code=400, detail=f"invalid audio: {exc}") from exc
+    if not audio:
+        raise HTTPException(status_code=400, detail="empty audio")
+    try:
+        a = speaking_task.evaluate_audio(
+            audio_bytes=audio, mime_type=r.mime_type, task=r.task,
+            language=r.language, level=r.level, ui_language_name=r.ui_language_name,
+            gemini_model=r.gemini_model,
+        )
+    except RuntimeError as exc:  # missing GEMINI key / transcode failure
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    return {
+        "criteria": a.criteria, "transcript": a.transcript, "overall": a.overall,
+        "suggestions": a.suggestions, "total": a.total, "max_total": speaking_task.MAX_TOTAL,
     }
 
 

@@ -852,3 +852,73 @@ def build_answer_comment_prompt(comment: str) -> list[dict]:
         {"role": "system", "content": "Beantworte die folgende Frage sachlich und präzise."},
         {"role": "user", "content": comment},
     ]
+
+
+# ---- Speaking (production orale): spoken-task brief + audio oral grille ----
+
+def build_speaking_task_prompt(
+    *,
+    language: str,
+    level: str,
+    theme: str,
+    ui_language_name: str,
+) -> list[dict]:
+    """Produce a short spoken-production task; the learner answers by speaking."""
+    topic = f" Topic/context: {theme}." if theme.strip() else ""
+    return [
+        {
+            "role": "system",
+            "content": (
+                f"You are an examiner writing a spoken-production task (production orale) "
+                f"for {language} learners at CEFR level {level}. "
+                f"Write the ENTIRE task in {ui_language_name} — never in English unless "
+                f"{ui_language_name} is English. Output ONLY the task text: no title, no "
+                f"heading, no exam label, no model answer."
+            ),
+        },
+        {
+            "role": "user",
+            "content": (
+                f"Write a clear, concrete speaking task the learner can answer by talking "
+                f"for about 1–2 minutes (give an opinion, describe an experience, argue a "
+                f"position, or role-play a situation).{topic} Make the communicative goal "
+                f"explicit (whom they address, what they must achieve). 2–4 sentences. "
+                f"No example answer."
+            ),
+        },
+    ]
+
+
+def build_speaking_eval_prompt(
+    *,
+    task: str,
+    language: str,
+    level: str,
+    ui_language_name: str,
+) -> str:
+    """Instruction (paired with the learner's audio) to grade a spoken production.
+
+    Returned to the multimodal model together with the audio; the model must
+    reply with a single JSON object (no markdown fence) of the shape described.
+    """
+    return (
+        f"You are a DELF/DALF examiner assessing a {language} SPOKEN production "
+        f"(production orale) at CEFR level {level}. The learner was given this task:\n\n"
+        f"TASK:\n{task}\n\n"
+        f"Listen to the attached audio of the learner speaking and assess it on FIVE "
+        f"criteria, each scored 0–5 (5 = fully meets the level's expectation). Use these "
+        f"exact keys, in this order:\n"
+        f"- consigne: task achievement — did they address the task with relevant content?\n"
+        f"- lexicon: vocabulary range & accuracy\n"
+        f"- grammar: morphosyntax & grammatical accuracy\n"
+        f"- coherence: coherence, cohesion & fluency (linking, hesitations, flow)\n"
+        f"- pronunciation: pronunciation, intonation & phonological clarity\n\n"
+        f"Reply with a SINGLE JSON object (no markdown, no code fence) with keys:\n"
+        f'  "criteria": array of 5 objects {{"key","label","score","comment"}},\n'
+        f'  "transcript": string — what the learner actually said, kept in {language},\n'
+        f'  "overall": string — 2–3 sentence overall assessment,\n'
+        f'  "suggestions": array of 2–4 short concrete improvement tips.\n'
+        f"Write every 'label', 'comment', 'overall' and 'suggestion' in {ui_language_name}; "
+        f"only the transcript stays in {language}. If the audio is empty, silent or "
+        f"unintelligible, score every criterion 0 and say so in {ui_language_name}."
+    )
