@@ -416,6 +416,29 @@ def reading_questions(r: ReadingQReq):
     return {"multiple_choice": q.multiple_choice, "open_questions": q.open_questions}
 
 
+class OpenEvalReq(BaseModel):
+    text: str
+    question: str
+    reference_answer: str
+    user_answer: str
+    language: str
+    ui_language_name: str = "English"
+    model: str | None = None
+
+
+@app.post("/reading/evaluate-open")
+def reading_evaluate_open(r: OpenEvalReq):
+    # V1 parity: grade an open-ended answer with a verdict + feedback (used by
+    # both reading and listening, which share generate_questions).
+    ev = reading_task.evaluate_open(
+        client(), text=r.text, question=r.question,
+        reference_answer=r.reference_answer, user_answer=r.user_answer,
+        language=r.language, model=_model(r.model),
+        ui_language_name=r.ui_language_name,
+    )
+    return {"verdict": ev.verdict, "feedback": ev.feedback}
+
+
 # ---- CEFR placement test (structured + pure-logic scoring) ----
 class PlacementReq(BaseModel):
     language: str
