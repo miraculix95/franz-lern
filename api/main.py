@@ -21,7 +21,7 @@ from pydantic import BaseModel
 
 from api.client import DEFAULT_MODEL, build_client, elevenlabs_key
 from src.config import TEXT_TYPES, TRANSFORMATIONS
-from src.correction import correct_text
+from src.correction import answer_comment, correct_text, extract_comments
 from src.tasks import cloze as cloze_task
 from src.tasks import delf as delf_task
 from src.tasks import placement as placement_task
@@ -315,13 +315,22 @@ class CorrectReq(BaseModel):
 
 @app.post("/correct")
 def correct(r: CorrectReq):
-    return {
-        "correction": correct_text(
-            client(), task=r.task, user_text=r.user_text, language=r.language,
-            niveau=r.niveau, mentor=r.mentor, model=_model(r.model),
-            ui_language_name=r.ui_language_name,
-        )
-    }
+    # V1 parity: pull <meta-questions> out of the answer, grade the cleaned text,
+    # and answer each embedded question separately.
+    cleaned, comments = extract_comments(r.user_text)
+    correction = correct_text(
+        client(), task=r.task, user_text=cleaned, language=r.language,
+        niveau=r.niveau, mentor=r.mentor, model=_model(r.model),
+        ui_language_name=r.ui_language_name,
+    )
+    comment_answers = [
+        {
+            "question": c,
+            "answer": answer_comment(client(), comment=c, model=_model(r.model)),
+        }
+        for c in comments
+    ]
+    return {"correction": correction, "comment_answers": comment_answers}
 
 
 # ---- DELF production écrite (consigne + grille assessment) ----
