@@ -662,9 +662,12 @@ def build_delf_task_prompt(
         {
             "role": "system",
             "content": (
-                f"You are a DELF/DALF examiner writing a production-écrite task for "
-                f"{language} learners at CEFR level {level}. Output ONLY the task brief "
-                f"(consigne) — never a model answer or the text itself."
+                f"You are an examiner writing a written-production task for "
+                f"{language} learners at CEFR level {level}. "
+                f"Write the ENTIRE consigne in {ui_language_name} — never in English "
+                f"unless {ui_language_name} is English. Output ONLY the consigne text: "
+                f"no title, no heading, no exam label, no section header, no model "
+                f"answer, and not the learner's text itself."
             ),
         },
         {
@@ -676,7 +679,7 @@ def build_delf_task_prompt(
                 f"knows the communicative goal. State the text type and the ~{word_target}-word "
                 f"target explicitly.\n\n"
                 f"Write the consigne in {ui_language_name}. Keep it to 2–4 sentences. "
-                f"Do NOT write any example answer."
+                f"No title or heading. Do NOT write any example answer."
             ),
         },
     ]
