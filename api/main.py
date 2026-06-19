@@ -17,11 +17,17 @@ import base64
 import os
 
 from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from api.client import DEFAULT_MODEL, build_client, elevenlabs_key
 from src.config import TEXT_TYPES, TRANSFORMATIONS
-from src.correction import answer_comment, correct_text, extract_comments
+from src.correction import (
+    answer_comment,
+    correct_text,
+    correct_text_stream,
+    extract_comments,
+)
 from src.tasks import cloze as cloze_task
 from src.tasks import delf as delf_task
 from src.tasks import placement as placement_task
@@ -391,6 +397,25 @@ def correct(r: CorrectReq):
         for c in comments
     ]
     return {"correction": correction, "comment_answers": comment_answers}
+
+
+@app.post("/correct/stream")
+def correct_stream(r: CorrectReq):
+    # Same grading as /correct, streamed token-by-token for the live-feedback UI.
+    # Any embedded <meta-questions> are answered and appended after the feedback.
+    cleaned, comments = extract_comments(r.user_text)
+
+    def gen():
+        yield from correct_text_stream(
+            client(), task=r.task, user_text=cleaned, language=r.language,
+            niveau=r.niveau, mentor=r.mentor, model=_model(r.model),
+            ui_language_name=r.ui_language_name,
+        )
+        for c in comments:
+            ans = answer_comment(client(), comment=c, model=_model(r.model))
+            yield f"\n\n---\n\n**{c}**\n\n{ans}"
+
+    return StreamingResponse(gen(), media_type="text/plain; charset=utf-8")
 
 
 # ---- DELF production écrite (consigne + grille assessment) ----

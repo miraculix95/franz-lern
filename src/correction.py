@@ -39,6 +39,33 @@ def correct_text(
     return response.choices[0].message.content.strip()
 
 
+def correct_text_stream(
+    client: Any,
+    *,
+    task: str,
+    user_text: str,
+    language: str,
+    niveau: str,
+    mentor: str,
+    model: str,
+    ui_language_name: str = "English",
+):
+    """Yield the correction text in chunks as the model produces them.
+
+    Streaming counterpart of ``correct_text`` for the V2 live-feedback UI; V1
+    keeps using the buffered ``correct_text``.
+    """
+    messages = build_correction_prompt(
+        language=language, niveau=niveau, mentor=mentor,
+        task=task, user_text=user_text, ui_language_name=ui_language_name,
+    )
+    stream = client.chat.completions.create(model=model, messages=messages, stream=True)
+    for chunk in stream:
+        delta = chunk.choices[0].delta.content
+        if delta:
+            yield delta
+
+
 def answer_comment(client: Any, *, comment: str, model: str) -> str:
     messages = build_answer_comment_prompt(comment)
     response = client.chat.completions.create(model=model, messages=messages)
