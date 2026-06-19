@@ -50,7 +50,9 @@ def build(
     body = payload["body"]
     answers = payload["answers"]
 
-    display_vocab = sorted(selected, key=str.lower)
+    # Randomize the shown vocab order (decoupled from blank order, not alphabetical).
+    display_vocab = list(selected)
+    random.shuffle(display_vocab)
 
     displayed = (
         f"**{title}**\n\n"

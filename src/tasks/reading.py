@@ -10,6 +10,7 @@ Flow:
 from __future__ import annotations
 
 import json
+import random
 from dataclasses import dataclass
 from typing import Any
 
@@ -96,8 +97,19 @@ def generate_questions(
         tool_choice={"type": "function", "function": {"name": "emit_reading_questions"}},
     )
     payload = json.loads(response.choices[0].message.tool_calls[0].function.arguments)
+    mc = list(payload.get("multiple_choice", []))
+    # Randomize option positions so the correct answer isn't predictably first
+    # (LLMs tend to park it at index 0). Same mitigation as the placement test.
+    for q in mc:
+        opts = list(q.get("options", []))
+        ci = q.get("correct_index", 0)
+        if opts and 0 <= ci < len(opts):
+            correct = opts[ci]
+            random.shuffle(opts)
+            q["options"] = opts
+            q["correct_index"] = opts.index(correct)
     return ReadingQuestions(
-        multiple_choice=list(payload.get("multiple_choice", [])),
+        multiple_choice=mc,
         open_questions=list(payload.get("open_questions", [])),
     )
 
