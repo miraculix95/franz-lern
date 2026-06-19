@@ -922,3 +922,64 @@ def build_speaking_eval_prompt(
         f"only the transcript stays in {language}. If the audio is empty, silent or "
         f"unintelligible, score every criterion 0 and say so in {ui_language_name}."
     )
+
+
+# ---- Conversation chat with inline correction ----
+
+CHAT_FUNCTION_SPEC: dict = {
+    "name": "emit_chat_turn",
+    "description": (
+        "Continue the conversation in the target language and, separately, correct "
+        "the learner's most recent message if it has mistakes."
+    ),
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "reply": {
+                "type": "string",
+                "description": (
+                    "Your natural conversational reply in the target language: 1–3 "
+                    "sentences, normally ending with a question to keep the chat going."
+                ),
+            },
+            "correction": {
+                "type": "string",
+                "description": (
+                    "A short correction of the learner's LAST message, written in the "
+                    "UI language (quote the fixed form). Empty string if it was correct."
+                ),
+            },
+        },
+        "required": ["reply", "correction"],
+    },
+}
+
+
+def build_chat_messages(
+    *,
+    history: list[dict],
+    language: str,
+    niveau: str,
+    ui_language_name: str,
+) -> list[dict]:
+    """System prompt + conversation history for a corrective chat turn.
+
+    `history` is the running dialogue ([{role: 'user'|'assistant', content}], the
+    learner's newest message last). The model continues it and corrects only that
+    last learner message via the emit_chat_turn tool.
+    """
+    system = (
+        f"You are a warm, encouraging {language} conversation partner helping a learner "
+        f"practise through chat. Speak at register: {niveau}. "
+        f"Always reply in {language} with 1–3 natural sentences, and usually end with a "
+        f"question to keep the conversation flowing. "
+        f"Separately, check ONLY the learner's most recent message for mistakes and give a "
+        f"brief, friendly correction in {ui_language_name} (quote the corrected form); if "
+        f"that message is already correct, return an empty correction. "
+        f"Always use the emit_chat_turn function."
+    )
+    messages: list[dict] = [{"role": "system", "content": system}]
+    for m in history:
+        role = "assistant" if m.get("role") == "assistant" else "user"
+        messages.append({"role": role, "content": str(m.get("content", ""))})
+    return messages

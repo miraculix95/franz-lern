@@ -41,6 +41,7 @@ from src.tasks import synonym_antonym as synonym_task
 from src.tasks import quiz as quiz_task
 from src.tasks import dictation as dictation_task
 from src.tasks import speaking as speaking_task
+from src.tasks import chat as chat_task
 from src.vocab import (
     extract_vocabulary_from_text,
     fetch_article_text,
@@ -514,6 +515,28 @@ def speaking_evaluate_endpoint(r: SpeakingEvalReq):
         "criteria": a.criteria, "transcript": a.transcript, "overall": a.overall,
         "suggestions": a.suggestions, "total": a.total, "max_total": speaking_task.MAX_TOTAL,
     }
+
+
+# ---- conversation chat (reply + inline correction) ----
+class ChatMsg(BaseModel):
+    role: str
+    content: str
+
+
+class ChatReq(BaseModel):
+    history: list[ChatMsg]
+    language: str
+    niveau: str
+    ui_language_name: str = "English"
+    model: str | None = None
+
+
+@app.post("/chat")
+def chat_endpoint(r: ChatReq):
+    return chat_task.respond(
+        client(), history=[m.model_dump() for m in r.history], language=r.language,
+        niveau=r.niveau, model=_model(r.model), ui_language_name=r.ui_language_name,
+    )
 
 
 # ---- reading comprehension (multi-step: passage → questions) ----
