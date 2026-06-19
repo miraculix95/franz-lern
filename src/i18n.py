@@ -454,6 +454,19 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "cloze_text_heading": "Testo cloze:",
         "level": "Livello linguistico",
     },
+    # Greek: V2 offers an Greek UI; only task-prompt prefixes needed here, the
+    # rest falls back to English per-key in t().
+    "el": {
+        "error_task_prompt": "Βρες και διόρθωσε τα λάθη στο παρακάτω κείμενο:",
+        "sentence_task_prompt": "Φτιάξε μια πρόταση χρησιμοποιώντας αυτές τις λέξεις:",
+        "writing_task_prompt": "Γράψε ένα κείμενο για το θέμα: {theme}",
+        "conjugation_task_prompt": "Κλίνε το ρήμα «{verb}» για το πρόσωπο «{person}» στους εξής χρόνους: ενεστώτας, αόριστος, μέλλοντας, παρακείμενος, υποτακτική ενεστώτα, στιγμιαίος μέλλοντας, ενεστώτας διαρκείας.",
+        "synant_task_prompt": "Βρες συνώνυμα και αντώνυμα για:",
+        "cloze_vocab_heading": "Λεξιλόγιο (αλφαβητικά):",
+        "cloze_use_these": "Χρησιμοποίησε αυτές",
+        "cloze_text_heading": "Κείμενο με κενά:",
+        "level": "Γλωσσικό επίπεδο",
+    },
     "de": {
         "app_title": "{language} — Lernprogramm",
         "meta_hint": "💡 Out-of-band-Fragen in spitzen Klammern einbetten, z.B. `<was heißt passé composé?>` — bekommst separate Antwort.",
