@@ -33,12 +33,12 @@ def test_build_returns_structured_cloze():
     # Title + body appear; answers are NOT in displayed output.
     assert "Test Titel" in result.displayed_to_user
     assert "Dans la ___" in result.displayed_to_user
-    # Vocabs are shown sorted alphabetically (so order does not hint blanks).
+    # Vocab options are shuffled so their order does not hint which blank they
+    # fill; assert all are present, not their order.
     displayed = result.displayed_to_user
-    i_chaise = displayed.rfind("chaise")
-    i_maison = displayed.rfind("maison")
-    i_voiture = displayed.rfind("voiture")
-    assert i_chaise < i_maison < i_voiture, "vocab list must be sorted alphabetically"
+    assert "chaise" in displayed
+    assert "maison" in displayed
+    assert "voiture" in displayed
     # Answers stored for internal use (future scoring) but NOT in displayed text.
     assert result.internal_context["answers"] == ["maison", "voiture", "chaise"]
 

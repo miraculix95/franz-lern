@@ -331,6 +331,25 @@ def build_conjugation_prompt(*, language: str, level: str, vocab_list: list[str]
     ]
 
 
+# Generic coach styles (V2). Maps a style key to a feedback-voice instruction.
+# A free-text coach (anything not in this map) falls back to "voice and style of X",
+# which is how the original persona-based coaches worked.
+COACH_STYLES = {
+    "friendly": "Give warm, encouraging feedback that builds the learner's confidence.",
+    "strict": "Give strict, demanding feedback and hold a high standard.",
+    "neutral": "Give neutral, professional, matter-of-fact feedback.",
+    "socratic": "Give feedback as Socratic questions that guide the learner to find the fix themselves.",
+    "humorous": "Give feedback with light, good-natured humor.",
+}
+
+
+def _coach_voice(mentor: str) -> str:
+    style = COACH_STYLES.get((mentor or "").strip().lower())
+    if style:
+        return style
+    return f"Give feedback in the voice and style of {mentor}."
+
+
 def build_correction_prompt(
     *,
     language: str,
@@ -346,7 +365,7 @@ def build_correction_prompt(
             "content": (
                 f"You are a native {language.capitalize()} teacher. Correct the text below "
                 f"at native-speaker level. Consider the given task. The learner writes in "
-                f"register: {niveau}. Give feedback in the voice and style of {mentor}. Be concise.\n\n"
+                f"register: {niveau}. {_coach_voice(mentor)} Be concise.\n\n"
                 f"IMPORTANT: Respond entirely in {ui_language_name}. Do not mix languages.\n\n"
                 f"CORRECTION RULES:\n"
                 f"1. Accept ALL grammatically correct forms — verify subject-verb agreement, "
