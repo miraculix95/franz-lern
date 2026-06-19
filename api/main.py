@@ -13,12 +13,13 @@ additions in Phase 2.
 """
 from __future__ import annotations
 
+import base64
 import os
 
 from fastapi import Depends, FastAPI, HTTPException, Request
 from pydantic import BaseModel
 
-from api.client import DEFAULT_MODEL, build_client
+from api.client import DEFAULT_MODEL, build_client, elevenlabs_key
 from src.config import TEXT_TYPES, TRANSFORMATIONS
 from src.correction import correct_text
 from src.tasks import cloze as cloze_task
@@ -32,6 +33,7 @@ from src.tasks import error_detection as error_task
 from src.tasks import conjugation as conjugation_task
 from src.tasks import synonym_antonym as synonym_task
 from src.tasks import quiz as quiz_task
+from src.tasks import dictation as dictation_task
 from src.vocab import generate_vocabulary_via_function_call
 
 # Shared-secret auth. When LINGUA_CORE_TOKEN is set (production / public route),
@@ -238,6 +240,65 @@ def quiz_score(r: QuizScoreReq):
         "correct": result.correct,
         "total": result.total,
         "per_word": result.per_word,
+    }
+
+
+# ---- dictation (LLM text → ElevenLabs TTS) ----
+class DictationReq(BaseModel):
+    language: str
+    level: str
+    niveau: str
+    sentences: int = 3
+    model: str | None = None
+
+
+@app.post("/dictation")
+def dictation(r: DictationReq):
+    key = elevenlabs_key()
+    if not key:
+        raise HTTPException(status_code=503, detail="TTS not configured")
+    text = dictation_task.generate_text(
+        client(), language=r.language, level=r.level, niveau=r.niveau,
+        model=_model(r.model), sentences=r.sentences,
+    )
+    try:
+        audio = dictation_task.synthesize_speech(text, api_key=key)
+    except dictation_task.TTSUnavailable as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    return {"text": text, "audio_base64": base64.b64encode(audio).decode("ascii")}
+
+
+# ---- listening (TTS passage + comprehension questions) ----
+class ListeningReq(BaseModel):
+    language: str
+    level: str
+    niveau: str
+    ui_language_name: str = "English"
+    model: str | None = None
+
+
+@app.post("/listening")
+def listening(r: ListeningReq):
+    key = elevenlabs_key()
+    if not key:
+        raise HTTPException(status_code=503, detail="TTS not configured")
+    transcript = dictation_task.generate_text(
+        client(), language=r.language, level=r.level, niveau=r.niveau,
+        model=_model(r.model), sentences=6,
+    )
+    try:
+        audio = dictation_task.synthesize_speech(transcript, api_key=key)
+    except dictation_task.TTSUnavailable as exc:
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
+    q = reading_task.generate_questions(
+        client(), text=transcript, language=r.language, model=_model(r.model),
+        ui_language_name=r.ui_language_name,
+    )
+    return {
+        "transcript": transcript,
+        "audio_base64": base64.b64encode(audio).decode("ascii"),
+        "multiple_choice": q.multiple_choice,
+        "open_questions": q.open_questions,
     }
 
 

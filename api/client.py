@@ -22,3 +22,12 @@ def build_client() -> OpenAI:
     if not key:
         raise RuntimeError("OPENROUTER_API_KEY not set (managed key required in V2).")
     return OpenAI(api_key=key, base_url="https://openrouter.ai/api/v1")
+
+
+def elevenlabs_key() -> str:
+    """Managed ElevenLabs key for TTS (listening / dictation)."""
+    return (
+        os.environ.get("ELEVENLABS_KEY")
+        or os.environ.get("ELEVENLABS_API_KEY")
+        or ""
+    ).strip()

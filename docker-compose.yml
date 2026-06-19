@@ -12,6 +12,7 @@ services:
     environment:
       - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
       - LINGUA_CORE_TOKEN=${LINGUA_CORE_TOKEN}
+      - ELEVENLABS_KEY=${ELEVENLABS_KEY}
     expose:
       - "8080"
     healthcheck:
