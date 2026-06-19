@@ -440,6 +440,20 @@ _TRANSLATIONS: dict[str, dict[str, str]] = {
         "read_reveal_answers": "🔍 Show correct MC answers",
         "read_reference_answer": "Reference answer",
     },
+    # Italian: V2 offers an Italian UI but the original V1 strings were never
+    # translated. Only the task-prompt prefixes that lingua-core emits are needed
+    # here; every other key falls back to English per-key in t().
+    "it": {
+        "error_task_prompt": "Trova e correggi gli errori nel testo seguente:",
+        "sentence_task_prompt": "Costruisci una frase usando queste parole:",
+        "writing_task_prompt": "Scrivi un testo sull'argomento: {theme}",
+        "conjugation_task_prompt": "Coniuga il verbo '{verb}' per la persona '{person}' nei seguenti tempi: presente, passato, futuro, passato prossimo, congiuntivo presente, futuro prossimo, presente progressivo.",
+        "synant_task_prompt": "Trova sinonimi e contrari per:",
+        "cloze_vocab_heading": "Vocabolario (in ordine alfabetico):",
+        "cloze_use_these": "Usa queste",
+        "cloze_text_heading": "Testo cloze:",
+        "level": "Livello linguistico",
+    },
     "de": {
         "app_title": "{language} — Lernprogramm",
         "meta_hint": "💡 Out-of-band-Fragen in spitzen Klammern einbetten, z.B. `<was heißt passé composé?>` — bekommst separate Antwort.",
