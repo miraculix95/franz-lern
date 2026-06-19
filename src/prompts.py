@@ -294,7 +294,9 @@ def build_sentence_building_prompt(
     words = ", ".join(selected_vocab)
     return (
         f"Create a single {language} sentence using these words: {words}. "
-        f"Register: {niveau}. CEFR level: {level}.{NO_ANSWERS_HINT}"
+        f"Register: {niveau}. CEFR level: {level}.{NO_ANSWERS_HINT} "
+        f"Output ONLY the {language} sentence itself — no title, no heading, "
+        f"no preamble, no explanation, no language labels."
     )
 
 
@@ -309,7 +311,9 @@ def build_error_detection_prompt(
     return (
         f"Create 3 grammatically and orthographically flawed {language} sentences with "
         f"register: {niveau}, using these vocabs (understandable at CEFR {level}): "
-        f"{joined}. Do NOT provide the corrected sentences."
+        f"{joined}. Do NOT provide the corrected sentences. "
+        f"Output ONLY a numbered list (1., 2., 3.) of the {language} sentences — "
+        f"no title, no heading, no preamble, no explanation, no language labels."
     )
 
 
