@@ -95,13 +95,15 @@ class VocabReq(BaseModel):
     language: str
     level: str
     niveau: str
+    theme: str = ""  # optional: pin the list to a topic (Topic-Units)
     model: str | None = None
 
 
 @app.post("/vocab/generate")
 def vocab_generate(r: VocabReq):
     vocab = generate_vocabulary_via_function_call(
-        client(), language=r.language, level=r.level, niveau=r.niveau, model=_model(r.model),
+        client(), language=r.language, level=r.level, niveau=r.niveau,
+        theme=r.theme, model=_model(r.model),
     )
     return {"vocab": vocab}
 
@@ -341,6 +343,7 @@ class ListeningReq(BaseModel):
     language: str
     level: str
     niveau: str
+    theme: str = ""  # optional: pin the passage to a topic (Topic-Units)
     ui_language_name: str = "English"
     model: str | None = None
 
@@ -352,7 +355,7 @@ def listening(r: ListeningReq):
         raise HTTPException(status_code=503, detail="TTS not configured")
     transcript = dictation_task.generate_text(
         client(), language=r.language, level=r.level, niveau=r.niveau,
-        model=_model(r.model), sentences=6,
+        theme=r.theme, model=_model(r.model), sentences=6,
     )
     try:
         audio = dictation_task.synthesize_speech(transcript, api_key=key)

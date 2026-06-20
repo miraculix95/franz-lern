@@ -42,6 +42,7 @@ def generate_text(
     model: str,
     sentences: int = 3,
     avoid_recent: list[str] | None = None,
+    theme: str = "",
 ) -> str:
     """Generate a dictation text with heavy variety injection.
 
@@ -57,6 +58,14 @@ def generate_text(
         language=language, level=level, niveau=niveau, sentences=sentences,
         scenario=scenario, style=style,
     )
+    if theme:
+        messages.append({
+            "role": "user",
+            "content": (
+                f"The text must be about the theme: {theme}. "
+                f"Keep the specified level, register and length."
+            ),
+        })
     if avoid_recent:
         joined = "\n\n".join(f"- {t[:200]}" for t in avoid_recent[-3:])
         messages.append({

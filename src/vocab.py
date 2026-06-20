@@ -56,14 +56,20 @@ def generate_vocabulary_via_function_call(
     level: str,
     niveau: str,
     model: str,
+    theme: str = "",
 ) -> list[str]:
     """Ask the LLM to emit a vocabulary list via structured tool-calling.
 
     Uses the modern ``tools`` / ``tool_choice`` API (not the deprecated
     ``functions``/``function_call`` — OpenRouter providers like Mistral
     reject those with HTTP 400).
+
+    ``theme`` (optional) pins the list to a topic — used by Topic-Units;
+    empty keeps the original thematically-coherent behaviour (V1 parity).
     """
-    user_prompt = build_vocab_autogen_prompt(language=language, level=level, niveau=niveau)
+    user_prompt = build_vocab_autogen_prompt(
+        language=language, level=level, niveau=niveau, theme=theme
+    )
     response = client.chat.completions.create(
         model=model,
         messages=[

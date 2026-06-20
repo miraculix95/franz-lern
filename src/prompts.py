@@ -80,13 +80,21 @@ def build_vocab_extract_prompt(*, language: str, level: str, number: int) -> str
     )
 
 
-def build_vocab_autogen_prompt(*, language: str, level: str, niveau: str) -> str:
+def build_vocab_autogen_prompt(
+    *, language: str, level: str, niveau: str, theme: str = ""
+) -> str:
+    # Empty theme keeps the original wording (V1 parity); a theme pins the list.
+    thematic = (
+        f"All words must relate to the theme: {theme}."
+        if theme
+        else "Pick thematically coherent words."
+    )
     return (
         f"Create a list of 20 {language} vocabulary items with a balanced mix of "
         f"parts of speech: roughly equal shares of nouns, verbs, adjectives, and "
         f"adverbs (not a list dominated by nouns). "
         f"Target CEFR level: {level}. Register: {niveau}. "
-        f"Pick thematically coherent words."
+        f"{thematic}"
     )
 
 
