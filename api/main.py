@@ -42,6 +42,7 @@ from src.tasks import quiz as quiz_task
 from src.tasks import dictation as dictation_task
 from src.tasks import speaking as speaking_task
 from src.tasks import chat as chat_task
+from src.tasks import grammar as grammar_task
 from src.vocab import (
     extract_vocabulary_from_text,
     fetch_article_text,
@@ -620,3 +621,40 @@ class RecommendReq(BaseModel):
 @app.post("/placement/recommend")
 def placement_recommend(r: RecommendReq):
     return {"level": placement_task.recommend_level(r.questions, r.answers)}
+
+
+# ---- standalone grammar track (P4): on-the-fly explanation + focused drill ----
+class GrammarExplainReq(BaseModel):
+    language: str
+    level: str
+    topic: str
+    ui_language_name: str = "English"
+    model: str | None = None
+
+
+@app.post("/grammar/explain")
+def grammar_explain(r: GrammarExplainReq):
+    instr = grammar_task.explain(
+        client(), language=r.language, level=r.level, topic=r.topic,
+        model=_model(r.model), ui_language_name=r.ui_language_name,
+    )
+    return {"displayed": instr.displayed_to_user, "context": instr.internal_context}
+
+
+class GrammarDrillReq(BaseModel):
+    language: str
+    level: str
+    topic: str
+    exercise_type: str = "cloze"
+    ui_language_name: str = "English"
+    model: str | None = None
+
+
+@app.post("/grammar/drill")
+def grammar_drill(r: GrammarDrillReq):
+    instr = grammar_task.drill(
+        client(), language=r.language, level=r.level, topic=r.topic,
+        exercise_type=r.exercise_type, model=_model(r.model),
+        ui_language_name=r.ui_language_name,
+    )
+    return {"displayed": instr.displayed_to_user, "context": instr.internal_context}
