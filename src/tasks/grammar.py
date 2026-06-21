@@ -7,6 +7,8 @@ same idiom as the other task modules; correction of the drill reuses /correct.
 """
 from __future__ import annotations
 
+import json
+import re
 from typing import Any
 
 from src.tasks.base import TaskInstruction
@@ -33,6 +35,53 @@ _DRILL_INSTRUCTION = {
         "grammar point."
     ),
 }
+
+
+def _parse_str_array(text: str) -> list | None:
+    text = (text or "").strip()
+    text = re.sub(r"^```(?:json)?|```$", "", text).strip()
+    try:
+        arr = json.loads(text)
+    except Exception:
+        return None
+    return arr if isinstance(arr, list) else None
+
+
+def translate_labels(
+    client: Any,
+    *,
+    names: list[str],
+    ui_language_name: str,
+    model: str,
+) -> dict[str, str]:
+    """Translate grammar-topic labels into the UI language for the dropdown.
+
+    Returns {original_name: translated_name}. The English wording becomes natural
+    target-UI grammar terminology; any parenthesised/quoted form (the learning-
+    language term) stays unchanged. Best effort: returns {} on any failure so the
+    caller can fall back to the canonical English names.
+    """
+    if not names:
+        return {}
+    listing = "\n".join(f"{i + 1}. {n}" for i, n in enumerate(names))
+    messages = [
+        {
+            "role": "system",
+            "content": (
+                f"You translate grammar-topic labels into {ui_language_name}. For each "
+                f"numbered English label, give the natural {ui_language_name} grammar term. "
+                f"Keep any parenthesised or quoted form (the learning-language term) "
+                f"unchanged. Return ONLY a JSON array of strings — same length and same "
+                f"order as the input, one translation per item, no numbering, no extra text."
+            ),
+        },
+        {"role": "user", "content": listing},
+    ]
+    response = client.chat.completions.create(model=model, messages=messages)
+    arr = _parse_str_array(response.choices[0].message.content or "")
+    if not arr or len(arr) != len(names):
+        return {}
+    return {name: str(t) for name, t in zip(names, arr)}
 
 
 def explain(

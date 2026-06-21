@@ -658,3 +658,19 @@ def grammar_drill(r: GrammarDrillReq):
         ui_language_name=r.ui_language_name,
     )
     return {"displayed": instr.displayed_to_user, "context": instr.internal_context}
+
+
+class GrammarLabelsReq(BaseModel):
+    names: list[str]
+    ui_language_name: str = "English"
+    model: str | None = None
+
+
+@app.post("/grammar/labels")
+def grammar_labels(r: GrammarLabelsReq):
+    # Translate grammar-topic dropdown labels into the UI language (overlay).
+    labels = grammar_task.translate_labels(
+        client(), names=r.names, ui_language_name=r.ui_language_name,
+        model=_model(r.model),
+    )
+    return {"labels": labels}
