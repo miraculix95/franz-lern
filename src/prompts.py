@@ -625,6 +625,38 @@ def build_reading_questions_messages(
     ]
 
 
+def build_grade_prompt(
+    *,
+    language: str,
+    task: str,
+    user_answer: str,
+    niveau: str = "Standardsprache",
+    ui_language_name: str = "English",
+) -> list[dict]:
+    """Coarse correctness verdict for a free-text answer to a generic task
+    (cloze, grammar drill). No reference answer — judge the answer against the
+    task. First line MUST be one verdict word so the caller can map it to a score.
+    """
+    return [
+        {
+            "role": "system",
+            "content": (
+                f"You assess a {language} learner's answer to an exercise "
+                f"(register: {niveau}). Judge correctness only — grammar, "
+                f"vocabulary and whether the answer fulfils the task.\n\n"
+                f"FORMAT — the first line MUST be exactly one of: "
+                f"CORRECT (no real errors) / PARTIAL (some errors but on the "
+                f"right track) / INCORRECT (mostly wrong, off-task or empty). "
+                f"Then one short line of reason in {ui_language_name}."
+            ),
+        },
+        {
+            "role": "user",
+            "content": f"TASK:\n{task}\n\nLEARNER'S ANSWER:\n{user_answer}",
+        },
+    ]
+
+
 def build_reading_eval_prompt(
     *,
     text: str,

@@ -606,6 +606,24 @@ def reading_evaluate_open(r: OpenEvalReq):
     return {"verdict": ev.verdict, "feedback": ev.feedback}
 
 
+# ---- generic answer grade (free-text → coarse verdict for scoring) ----
+class GradeReq(BaseModel):
+    language: str
+    task: str
+    user_text: str
+    niveau: str = "Standardsprache"
+    model: str | None = None
+
+
+@app.post("/grade")
+def grade(r: GradeReq):
+    verdict = reading_task.grade_free_answer(
+        client(), language=r.language, task=r.task, user_answer=r.user_text,
+        niveau=r.niveau, model=_model(r.model),
+    )
+    return {"verdict": verdict}
+
+
 # ---- CEFR placement test (structured + pure-logic scoring) ----
 class PlacementReq(BaseModel):
     language: str

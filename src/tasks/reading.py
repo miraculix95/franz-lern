@@ -16,6 +16,7 @@ from typing import Any
 
 from src.prompts import (
     READING_QUESTIONS_FUNCTION_SPEC,
+    build_grade_prompt,
     build_reading_eval_prompt,
     build_reading_questions_messages,
     build_reading_text_prompt,
@@ -175,3 +176,42 @@ def evaluate_open(
         verdict = "ERROR"
     feedback = "\n".join(lines[1:]).strip() or raw
     return OpenEvaluation(verdict=verdict, feedback=feedback)
+
+
+def grade_free_answer(
+    client: Any,
+    *,
+    language: str,
+    task: str,
+    user_answer: str,
+    niveau: str = "Standardsprache",
+    model: str,
+    ui_language_name: str = "English",
+) -> str:
+    """Score a free-text answer to a generic task (cloze, grammar drill, …) into
+    one verdict word: CORRECT / PARTIAL / INCORRECT (ERROR if unparseable).
+
+    Unlike evaluate_open there is no reference answer — the model judges the
+    learner's answer against the task itself. Only the verdict is returned; the
+    streamed correction remains the learner-facing feedback.
+    """
+    if not user_answer.strip():
+        return "INCORRECT"
+    messages = build_grade_prompt(
+        language=language, task=task, user_answer=user_answer,
+        niveau=niveau, ui_language_name=ui_language_name,
+    )
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        temperature=0.2,
+    )
+    raw = (response.choices[0].message.content or "").strip()
+    first = raw.splitlines()[0].strip().upper() if raw else ""
+    if first.startswith("CORRECT"):
+        return "CORRECT"
+    if first.startswith("PARTIAL"):
+        return "PARTIAL"
+    if first.startswith("INCORRECT"):
+        return "INCORRECT"
+    return "ERROR"
