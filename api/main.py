@@ -321,6 +321,7 @@ class DictationReq(BaseModel):
     niveau: str
     sentences: int = 3
     model: str | None = None
+    speed: float | None = None  # override the per-level default (0.7–1.2)
 
 
 @app.post("/dictation")
@@ -332,8 +333,9 @@ def dictation(r: DictationReq):
         client(), language=r.language, level=r.level, niveau=r.niveau,
         model=_model(r.model), sentences=r.sentences,
     )
+    speed = r.speed if r.speed is not None else dictation_task.speed_for_level(r.level)
     try:
-        audio = dictation_task.synthesize_speech(text, api_key=key)
+        audio = dictation_task.synthesize_speech(text, api_key=key, speed=speed)
     except dictation_task.TTSUnavailable as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
     return {"text": text, "audio_base64": base64.b64encode(audio).decode("ascii")}
@@ -347,6 +349,7 @@ class ListeningReq(BaseModel):
     theme: str = ""  # optional: pin the passage to a topic (Topic-Units)
     ui_language_name: str = "English"
     model: str | None = None
+    speed: float | None = None  # override the per-level default (0.7–1.2)
 
 
 @app.post("/listening")
@@ -358,8 +361,9 @@ def listening(r: ListeningReq):
         client(), language=r.language, level=r.level, niveau=r.niveau,
         theme=r.theme, model=_model(r.model), sentences=6,
     )
+    speed = r.speed if r.speed is not None else dictation_task.speed_for_level(r.level)
     try:
-        audio = dictation_task.synthesize_speech(transcript, api_key=key)
+        audio = dictation_task.synthesize_speech(transcript, api_key=key, speed=speed)
     except dictation_task.TTSUnavailable as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
     q = reading_task.generate_questions(

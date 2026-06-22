@@ -28,6 +28,21 @@ DEFAULT_VOICE_ID = "EXAVITQu4vr4xnSDxMaL"
 
 ELEVENLABS_TTS_URL = "https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
 
+# ElevenLabs `speed` accepts 0.7–1.2 (default 1.0); below 1.0 the voice articulates
+# *naturally* slower (with real pauses), which is far better for beginners than
+# stretching a fast recording client-side. Per CEFR level — A1 as slow as allowed,
+# up to slightly-above-native at C2. The v2 player's playback slider stays for
+# personal fine-tuning on top of this baseline.
+TTS_SPEED_MIN, TTS_SPEED_MAX = 0.7, 1.2
+_SPEED_BY_LEVEL = {
+    "A1": 0.7, "A2": 0.8, "B1": 0.9, "B2": 1.0, "C1": 1.1, "C2": 1.2,
+}
+
+
+def speed_for_level(level: str | None) -> float:
+    """CEFR level → ElevenLabs generation speed, clamped to the valid range."""
+    return _SPEED_BY_LEVEL.get((level or "").upper(), 1.0)
+
 
 class TTSUnavailable(RuntimeError):
     """Raised when no ElevenLabs key is configured or the API call fails."""
@@ -90,15 +105,20 @@ def synthesize_speech(
     api_key: str,
     voice_id: str = DEFAULT_VOICE_ID,
     model_id: str = "eleven_multilingual_v2",
+    speed: float = 1.0,
     timeout: float = 30.0,
 ) -> bytes:
     """Call ElevenLabs TTS, return raw MP3 bytes.
+
+    ``speed`` (0.7–1.2) sets the generation pace; values are clamped to the
+    valid range so a level mapping can't push the API into a 422.
 
     Raises TTSUnavailable on auth / network / quota errors so the UI can
     gracefully show a fallback message without crashing.
     """
     if not api_key:
         raise TTSUnavailable("No ELEVENLABS_KEY configured.")
+    speed = max(TTS_SPEED_MIN, min(TTS_SPEED_MAX, speed))
     url = ELEVENLABS_TTS_URL.format(voice_id=voice_id)
     headers = {
         "xi-api-key": api_key,
@@ -108,7 +128,11 @@ def synthesize_speech(
     payload = {
         "text": text,
         "model_id": model_id,
-        "voice_settings": {"stability": 0.5, "similarity_boost": 0.75},
+        "voice_settings": {
+            "stability": 0.5,
+            "similarity_boost": 0.75,
+            "speed": speed,
+        },
     }
     try:
         r = requests.post(url, json=payload, headers=headers, timeout=timeout)
@@ -136,7 +160,9 @@ def build(
         client, language=language, level=level, niveau=niveau, model=model,
         sentences=sentences,
     )
-    audio_bytes = synthesize_speech(text, api_key=elevenlabs_key)
+    audio_bytes = synthesize_speech(
+        text, api_key=elevenlabs_key, speed=speed_for_level(level),
+    )
     return TaskInstruction(
         displayed_to_user="",  # UI shows audio player, not the text, until reveal
         internal_context={"text": text, "audio": audio_bytes},
