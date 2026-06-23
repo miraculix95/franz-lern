@@ -43,6 +43,7 @@ from src.tasks import dictation as dictation_task
 from src.tasks import speaking as speaking_task
 from src.tasks import chat as chat_task
 from src.tasks import grammar as grammar_task
+from src.safety import is_illegal_minor_sexual
 from src.vocab import (
     extract_vocabulary_from_text,
     fetch_article_text,
@@ -696,3 +697,18 @@ def grammar_labels(r: GrammarLabelsReq):
         model=_model(r.model),
     )
     return {"labels": labels}
+
+
+# ---- content safety floor (CSAM only — adult content is allowed) ----
+class ModerateReq(BaseModel):
+    text: str
+    model: str | None = None
+
+
+@app.post("/moderate")
+def moderate(r: ModerateReq):
+    # Narrow legal floor: blocks ONLY sexual content involving minors. Adult/
+    # explicit topics are allowed (censor-free stance). Used on user free-text
+    # (custom themes / focus) before generation. See src/safety.py.
+    blocked = is_illegal_minor_sexual(client(), text=r.text, model=_model(r.model))
+    return {"blocked": blocked}
