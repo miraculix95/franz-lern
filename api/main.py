@@ -28,22 +28,23 @@ from src.correction import (
     correct_text_stream,
     extract_comments,
 )
+from src.prompts import build_translate_prompt
+from src.safety import is_illegal_minor_sexual
+from src.tasks import chat as chat_task
 from src.tasks import cloze as cloze_task
+from src.tasks import conjugation as conjugation_task
 from src.tasks import delf as delf_task
+from src.tasks import dictation as dictation_task
+from src.tasks import error_detection as error_task
+from src.tasks import grammar as grammar_task
 from src.tasks import placement as placement_task
+from src.tasks import quiz as quiz_task
 from src.tasks import reading as reading_task
+from src.tasks import sentence_building as sentence_task
+from src.tasks import speaking as speaking_task
+from src.tasks import synonym_antonym as synonym_task
 from src.tasks import transformation as transform_task
 from src.tasks import translation as translation_task
-from src.tasks import sentence_building as sentence_task
-from src.tasks import error_detection as error_task
-from src.tasks import conjugation as conjugation_task
-from src.tasks import synonym_antonym as synonym_task
-from src.tasks import quiz as quiz_task
-from src.tasks import dictation as dictation_task
-from src.tasks import speaking as speaking_task
-from src.tasks import chat as chat_task
-from src.tasks import grammar as grammar_task
-from src.safety import is_illegal_minor_sexual
 from src.vocab import (
     extract_vocabulary_from_text,
     fetch_article_text,
@@ -605,6 +606,25 @@ def reading_evaluate_open(r: OpenEvalReq):
         ui_language_name=r.ui_language_name,
     )
     return {"verdict": ev.verdict, "feedback": ev.feedback}
+
+
+# ---- on-demand translation (comprehension aid: "translate this passage") ----
+class TranslateReq(BaseModel):
+    text: str
+    language: str
+    ui_language_name: str = "English"
+    model: str | None = None
+
+
+@app.post("/translate")
+def translate(r: TranslateReq):
+    resp = client().chat.completions.create(
+        model=_model(r.model),
+        messages=build_translate_prompt(
+            text=r.text, language=r.language, ui_language_name=r.ui_language_name,
+        ),
+    )
+    return {"translation": (resp.choices[0].message.content or "").strip()}
 
 
 # ---- generic answer grade (free-text → coarse verdict for scoring) ----

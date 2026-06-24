@@ -12,6 +12,7 @@ from src.prompts import (
     build_reading_questions_messages,
     build_reading_text_prompt,
     build_sentence_building_prompt,
+    build_translate_prompt,
     build_translation_prompt,
     build_vocab_autogen_prompt,
     build_vocab_extract_prompt,
@@ -24,6 +25,17 @@ def test_vocab_extract_prompt_includes_level_and_count():
     assert "B2" in p
     assert "30" in p
     assert "französisch" in p
+
+
+def test_translate_prompt_targets_ui_language_and_carries_text():
+    msgs = build_translate_prompt(
+        text="Il faisait nuit à Paris.", language="French", ui_language_name="German",
+    )
+    combined = " ".join(m["content"] for m in msgs)
+    assert "German" in combined
+    assert "French" in combined
+    # the source passage rides in the user message verbatim
+    assert any("Il faisait nuit à Paris." in m["content"] for m in msgs)
 
 
 def test_vocab_autogen_prompt_includes_niveau():

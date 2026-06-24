@@ -271,6 +271,32 @@ def build_translation_prompt(
     )
 
 
+def build_translate_prompt(
+    *,
+    text: str,
+    language: str,
+    ui_language_name: str,
+) -> list[dict]:
+    """On-demand translation of an exercise passage into the learner's UI
+    language — a comprehension aid (button), not an exercise. Faithful, natural
+    prose; no commentary, no teaching, no echoing the original."""
+    return [
+        {
+            "role": "system",
+            "content": (
+                f"You translate {language} text into {ui_language_name} for a "
+                f"language learner who wants to check their understanding.\n"
+                f"Translate faithfully and naturally into {ui_language_name}. "
+                f"Output ONLY the {ui_language_name} translation — no preamble, no "
+                f"notes, no commentary, do not repeat the original {language} text. "
+                f"Preserve paragraph breaks. Leave any blanks or gaps (e.g. '___', "
+                f"'[...]', numbered placeholders) exactly where they are."
+            ),
+        },
+        {"role": "user", "content": text},
+    ]
+
+
 def build_transformation_prompt(
     *,
     language: str,
