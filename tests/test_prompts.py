@@ -205,7 +205,10 @@ def test_reading_questions_prompt_mentions_tool_and_counts():
     combined = " ".join(m["content"] for m in msgs)
     assert "emit_reading_questions" in combined
     assert "5" in combined and "3" in combined
-    assert "English" in combined
+    # Questions/options/answers are written in the LEARNING language now (#13),
+    # like a real comprehension exam — not translated into the UI language.
+    assert "French" in combined
+    assert "Do NOT translate" in combined
 
 
 def test_reading_questions_spec_declares_mc_and_open():

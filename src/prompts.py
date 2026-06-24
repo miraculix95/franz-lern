@@ -612,8 +612,10 @@ def build_reading_questions_messages(
 ) -> list[dict]:
     """Messages to produce MC + open-ended questions via the emit_reading_questions tool.
 
-    Questions are phrased in the UI language so the learner reads the
-    instructions comfortably; the passage itself stays in the learning language.
+    Questions, options and reference answers are written in the LEARNING
+    language (like a real comprehension exam — DELF/telc test reading in the
+    target language), matching the passage. ``ui_language_name`` is retained for
+    call-site compatibility but no longer steers the question language.
     """
     return [
         {
@@ -629,8 +631,9 @@ def build_reading_questions_messages(
                 f"output. Distractors in multiple-choice items must be plausible "
                 f"but clearly wrong — no trick questions, no two-valid-answers.\n\n"
                 f"LANGUAGE RULE: write the questions, options, and reference "
-                f"answers in {ui_language_name}. The text itself stays in "
-                f"{language} and is not rewritten."
+                f"answers in {language} — the SAME language as the passage, as a "
+                f"real {language} comprehension exam would. Do NOT translate them "
+                f"into another language."
             ),
         },
         {
