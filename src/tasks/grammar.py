@@ -104,7 +104,13 @@ def explain(
                 f"word/sentence in {language} (with a short {ui_language_name} gloss). "
                 f"Use simple Markdown: a one-line intro, the rule in bold or a small "
                 f"heading, a few bullet examples, and a short 'common mistakes' note. "
-                f"Keep it tight — a quick reference, not a textbook chapter."
+                f"Keep it tight — a quick reference, not a textbook chapter.\n"
+                f"GLOSS PRECISELY: when the point involves gender or agreement, the "
+                f"{ui_language_name} gloss must make the distinction VISIBLE — never gloss two "
+                f"differently-gendered words identically (e.g. distinguish 'el gato (m.)' from "
+                f"'la gata (f.)' rather than translating both the same). Any article or function "
+                f"word you show in an example (e.g. los/las, un/una) must itself be briefly "
+                f"explained, not left for the learner to infer."
             ),
         },
         {
