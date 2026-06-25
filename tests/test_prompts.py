@@ -8,6 +8,7 @@ from src.prompts import (
     build_conjugation_prompt,
     build_correction_prompt,
     build_error_detection_prompt,
+    build_literature_adapt_prompt,
     build_reading_eval_prompt,
     build_reading_questions_messages,
     build_reading_text_prompt,
@@ -36,6 +37,23 @@ def test_translate_prompt_targets_ui_language_and_carries_text():
     assert "French" in combined
     # the source passage rides in the user message verbatim
     assert any("Il faisait nuit à Paris." in m["content"] for m in msgs)
+
+
+def test_literature_adapt_prompt_carries_passage_and_levels():
+    msgs = build_literature_adapt_prompt(
+        passage="Phileas Fogg était un membre du Reform-Club de Londres.",
+        language="French",
+        source_level="B2",
+        target_level="A2",
+    )
+    combined = " ".join(m["content"] for m in msgs)
+    assert "A2" in combined  # target level
+    assert "B2" in combined  # source level
+    assert "French" in combined
+    # keep-the-story, not a summary/translation
+    assert "summary" in combined.lower() and "translation" in combined.lower()
+    # the source passage rides in the user message verbatim
+    assert any("Phileas Fogg" in m["content"] for m in msgs)
 
 
 def test_vocab_autogen_prompt_includes_niveau():

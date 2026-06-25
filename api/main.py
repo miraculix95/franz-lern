@@ -28,7 +28,7 @@ from src.correction import (
     correct_text_stream,
     extract_comments,
 )
-from src.prompts import build_translate_prompt
+from src.prompts import build_literature_adapt_prompt, build_translate_prompt
 from src.safety import is_illegal_minor_sexual
 from src.tasks import chat as chat_task
 from src.tasks import cloze as cloze_task
@@ -625,6 +625,27 @@ def translate(r: TranslateReq):
         ),
     )
     return {"translation": (resp.choices[0].message.content or "").strip()}
+
+
+# ---- literature adaptation (rewrite a PD literary passage to a CEFR level) ----
+class LiteratureAdaptReq(BaseModel):
+    passage: str
+    language: str
+    source_level: str = "C1"
+    target_level: str
+    model: str | None = None
+
+
+@app.post("/literature/adapt")
+def literature_adapt(r: LiteratureAdaptReq):
+    resp = client().chat.completions.create(
+        model=_model(r.model),
+        messages=build_literature_adapt_prompt(
+            passage=r.passage, language=r.language,
+            source_level=r.source_level, target_level=r.target_level,
+        ),
+    )
+    return {"adapted": (resp.choices[0].message.content or "").strip()}
 
 
 # ---- generic answer grade (free-text → coarse verdict for scoring) ----

@@ -297,6 +297,42 @@ def build_translate_prompt(
     ]
 
 
+def build_literature_adapt_prompt(
+    *,
+    passage: str,
+    language: str,
+    source_level: str,
+    target_level: str,
+) -> list[dict]:
+    """Rewrite a public-domain literary passage DOWN to a learner's CEFR level
+    while keeping it the same story — comprehensible-input adaptation, not a
+    translation and not a summary. Output is the rewritten passage only."""
+    return [
+        {
+            "role": "system",
+            "content": (
+                f"You adapt {language} literary passages for language learners. "
+                f"Rewrite the passage so a CEFR {target_level} learner can read it: "
+                f"simpler vocabulary and sentence structure, shorter sentences, but "
+                f"KEEP the same story, characters, setting, events and the author's "
+                f"tone. It must stay {language} literary prose about the same scene — "
+                f"not a summary, not a translation, not a commentary.\n"
+                f"Output ONLY the rewritten {language} passage — no title, no "
+                f"author name, no notes, no preamble, no quotation marks around it. "
+                f"Preserve paragraph breaks."
+            ),
+        },
+        {
+            "role": "user",
+            "content": (
+                f"Here is a {language} literary passage at roughly CEFR "
+                f"{source_level}. Rewrite it for a {target_level} learner:\n\n"
+                f"---\n{passage}\n---"
+            ),
+        },
+    ]
+
+
 def build_transformation_prompt(
     *,
     language: str,
