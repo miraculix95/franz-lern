@@ -6,4 +6,3 @@ uvicorn[standard]>=0.30
 openai>=1.10
 python-dotenv>=1.0
 requests>=2.31
-google-genai>=1.0

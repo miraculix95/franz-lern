@@ -515,11 +515,12 @@ def speaking_evaluate_endpoint(r: SpeakingEvalReq):
         raise HTTPException(status_code=400, detail="empty audio")
     try:
         a = speaking_task.evaluate_audio(
+            client(),
             audio_bytes=audio, mime_type=r.mime_type, task=r.task,
             language=r.language, level=r.level, ui_language_name=r.ui_language_name,
             gemini_model=r.gemini_model,
         )
-    except RuntimeError as exc:  # missing GEMINI key / transcode failure
+    except RuntimeError as exc:  # transcode failure
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     return {
         "criteria": a.criteria, "transcript": a.transcript, "overall": a.overall,
