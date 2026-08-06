@@ -14,10 +14,12 @@ additions in Phase 2.
 from __future__ import annotations
 
 import base64
+import json
 import os
 
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import StreamingResponse
+from langfuse import propagate_attributes
 from pydantic import BaseModel
 
 from api.client import DEFAULT_MODEL, build_client, elevenlabs_key
@@ -70,6 +72,55 @@ async def require_token(request: Request) -> None:
 app = FastAPI(
     title="lingua-core", version="0.1.0", dependencies=[Depends(require_token)],
 )
+
+
+@app.middleware("http")
+async def _langfuse_trace_context(request: Request, call_next):
+    """Tag every LLM call in this request for Langfuse: user (X-User-Id header),
+    session (X-Session-Id), plus language/niveau (from body) and task (path).
+
+    v4 SDK mechanism: ``propagate_attributes`` sets trace-level attributes that
+    flow onto the nested openai generations — no per-call-site changes. Strictly
+    best-effort: it never touches the create() call, so a request can never break
+    because of tracing (worst case a trace is just untagged).
+    """
+    body = b""
+    try:
+        body = await request.body()
+
+        async def _receive() -> dict:
+            return {"type": "http.request", "body": body, "more_body": False}
+
+        request._receive = _receive  # re-expose the consumed body to the handler
+    except Exception:
+        pass
+
+    meta: dict = {}
+    try:
+        data = json.loads(body) if body else {}
+        lang = data.get("language") or data.get("learning_language")
+        niveau = data.get("niveau") or data.get("level")
+        if lang:
+            meta["language"] = lang
+        if niveau:
+            meta["niveau"] = niveau
+    except Exception:
+        pass
+
+    task = request.url.path.lstrip("/") or "root"
+    uid = request.headers.get("x-user-id") or None
+    sid = request.headers.get("x-session-id") or None
+    tags = [t for t in (task, meta.get("language")) if t] or None
+
+    with propagate_attributes(
+        user_id=uid,
+        session_id=sid,
+        tags=tags,
+        metadata=meta or None,
+        trace_name=f"lingua-core:{task}",
+    ):
+        return await call_next(request)
+
 
 _client = None
 
