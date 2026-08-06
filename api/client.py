@@ -9,7 +9,10 @@ import os
 from pathlib import Path
 
 from dotenv import load_dotenv
-from openai import OpenAI
+# Langfuse drop-in: instrumentiert jeden chat.completions.create automatisch
+# (Latenz, Tokens, Kosten) → Langfuse. Verhält sich wie openai.OpenAI; ohne
+# gesetzte LANGFUSE_*-Env-Vars tract es einfach nicht (bricht keine Calls).
+from langfuse.openai import OpenAI
 
 # .env lives at the repo root (one level up from api/).
 load_dotenv(Path(__file__).resolve().parent.parent / ".env", override=False)
