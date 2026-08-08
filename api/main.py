@@ -94,6 +94,14 @@ async def _langfuse_trace_context(request: Request, call_next):
     best-effort: it never touches the create() call, so a request can never break
     because of tracing (worst case a trace is just untagged).
     """
+    # /voice/* is the Vapi custom-llm callback and STREAMS the response. The body
+    # replay + request._receive override below breaks StreamingResponse (Starlette
+    # BaseHTTPMiddleware disconnect-listener replays http.request → RuntimeError),
+    # which silently killed the voice turn (no opener, no reply). Skip tracing for
+    # the voice callback entirely — pass straight through, untouched.
+    if request.url.path.startswith("/voice/"):
+        return await call_next(request)
+
     body = b""
     try:
         body = await request.body()
