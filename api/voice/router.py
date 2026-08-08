@@ -74,6 +74,18 @@ SCENARIOS = {
     "complaint": {"label": "Reklamation im Geschäft", "setup": "You play a shop clerk; the learner returns a faulty product and complains. Handle the complaint."},
     "market": {"label": "Auf dem Markt handeln", "setup": "You play a market-stall vendor; the learner haggles over the price of your goods. Banter and negotiate."},
     "hotel": {"label": "An der Hotelrezeption", "setup": "You play a hotel receptionist; the learner is checking in. Handle the check-in and ask for details."},
+    "restaurant": {"label": "Im Restaurant", "setup": "You play a waiter in a proper sit-down restaurant; the learner is a guest. Seat them, take a full meal order and suggest dishes and drinks."},
+    "pharmacy": {"label": "In der Apotheke", "setup": "You play a pharmacist; the learner is a customer describing symptoms and asking for medicine. Ask a couple of questions, then advise and hand over the medicine."},
+    "airport": {"label": "Am Flughafen-Check-in", "setup": "You play an airline check-in agent at the airport; the learner is a passenger checking in. Handle luggage, seat choice and the boarding pass."},
+    "train": {"label": "Am Bahnhof", "setup": "You play a ticket clerk at a train station; the learner wants to buy a ticket. Ask about destination, time and class, and give the price."},
+    "phone": {"label": "Termin am Telefon", "setup": "You play a receptionist on a phone call; the learner is calling to book an appointment. Find a suitable slot and take their details. It is a phone call — you cannot see each other."},
+    "apartment": {"label": "Wohnungsbesichtigung", "setup": "You play a landlord showing a flat; the learner is a prospective tenant viewing it. Show them around and answer questions about rent, rooms and terms."},
+    "clothes": {"label": "Kleidung einkaufen", "setup": "You play a shop assistant in a clothing store; the learner is shopping and trying things on. Help with sizes, colours and fit."},
+    "bank": {"label": "Bei der Bank", "setup": "You play a bank clerk; the learner is a customer opening an account or sorting out a problem with their card. Handle their request politely."},
+    "date": {"label": "Erstes Date", "setup": "You play someone on a first date with the learner at a bar; make warm, curious small talk — ask about their life, interests and little stories."},
+    "neighbor": {"label": "Gespräch mit dem Nachbarn", "setup": "You play the learner's neighbour, meeting them in the hallway; make friendly small talk or ask a small favour. Keep it neighbourly and light."},
+    "hairdresser": {"label": "Beim Friseur", "setup": "You play a hairdresser; the learner is your client in the chair. Ask what cut or style they want and chat casually while you work."},
+    "tourist": {"label": "In der Touristeninfo", "setup": "You play a clerk at a tourist information desk; the learner is a visitor asking about sights, opening hours and how to get there. Recommend and explain."},
 }
 
 COACH_STYLE = {
