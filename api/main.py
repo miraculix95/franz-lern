@@ -63,7 +63,11 @@ _API_TOKEN = (os.environ.get("LINGUA_CORE_TOKEN") or "").strip()
 
 
 async def require_token(request: Request) -> None:
-    if request.url.path == "/health" or not _API_TOKEN:
+    # /voice/* is the Vapi custom-llm callback (server-to-server, cannot carry
+    # LINGUA_CORE_TOKEN); it is authed by an unguessable path-secret + an HMAC
+    # voice-token from lingua-v2 (see api/voice/). Exempt it from the shared-token gate.
+    p = request.url.path
+    if p == "/health" or p.startswith("/voice/") or not _API_TOKEN:
         return
     if request.headers.get("authorization") != f"Bearer {_API_TOKEN}":
         raise HTTPException(status_code=401, detail="invalid or missing token")
@@ -72,6 +76,12 @@ async def require_token(request: Request) -> None:
 app = FastAPI(
     title="lingua-core", version="0.1.0", dependencies=[Depends(require_token)],
 )
+
+# Voice-Lernagent custom-llm callback (Vapi → core). /voice/* is exempt from
+# require_token above and self-auths via path-secret + HMAC voice-token.
+from api.voice.router import router as voice_router  # noqa: E402
+
+app.include_router(voice_router)
 
 
 @app.middleware("http")
